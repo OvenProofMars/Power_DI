@@ -27,7 +27,7 @@ return {
 		en = "Interval between auto saves, in seconds",
 	},
 	max_cycles_title = {
-		en = "Maximun cycles",
+		en = "Maximum cycles",
 	},
 	max_cycles_tooltip = {
 		en = "Maximum coroutine cycles per frame, increasing this number will speed up the data creation, but you risk dropping frames",

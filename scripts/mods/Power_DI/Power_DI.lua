@@ -96,13 +96,12 @@ end
 
 --Dump data for debugging--
 function mod.debug_dump()
-    mod:notify("test")
-    PDI.data.save_data.report_templates = {}
-    PDI.save_manager.save("save_data", PDI.data.save_data)
-    :next(function()mod:echo("clear successful")end)
--- local datetime_string = os.date('%d_%m_%y_%H_%M_%S')
--- DMF:dtf(PDI.data, "PDI_data_dump_"..datetime_string, 10)
--- mod:notify("Data dump successful")
+    local datetime_string = os.date('%d_%m_%y_%H_%M_%S')
+    DMF:dtf(PDI.data, "PDI_data_dump_"..datetime_string, 10)
+    mod:notify("Data dump successful")
+    -- PDI.data.save_data.report_templates = {}
+    -- PDI.save_manager.save("save_data", PDI.data.save_data)
+    -- :next(function()mod:echo("clear successful")end)
 end
 
 
