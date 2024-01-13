@@ -37,15 +37,15 @@ Here you can create a filter to filter the dataset with. It uses a simplified lu
 
 Available options:
 
-* `=`&emsp;equal
-* `~`&emsp;not equal
-* `>`&emsp;greater than
-* `<`&emsp;less than
-* `or`&emsp;or
-* `and`&emsp;and
-* `(`&emsp;bracket open
-* `)`&emsp;bracket close
-* `""`&emsp;string
+* `=`&nbsp;&nbsp;&nbsp;&nbsp;equal
+* `~`&nbsp;&nbsp;&nbsp;&nbsp;not equal
+* `>`&nbsp;&nbsp;&nbsp;&nbsp;greater than
+* `<`&nbsp;&nbsp;&nbsp;&nbsp;less than
+* `or`&nbsp;&nbsp;&nbsp;&nbsp;or
+* `and`&nbsp;&nbsp;&nbsp;&nbsp;and
+* `(`&nbsp;&nbsp;&nbsp;&nbsp;bracket open
+* `)`&nbsp;&nbsp;&nbsp;&nbsp;bracket close
+* `""`&nbsp;&nbsp;&nbsp;&nbsp;string
 
 Example:
 
