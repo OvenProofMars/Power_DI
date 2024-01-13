@@ -37,15 +37,7 @@ Here you can create a filter to filter the dataset with. It uses a simplified lu
 
 Available options:
 
-* `=`&nbsp;&nbsp;&nbsp;&nbsp;equal
-* `~`&nbsp;&nbsp;&nbsp;&nbsp;not equal
-* `>`&nbsp;&nbsp;&nbsp;&nbsp;greater than
-* `<`&nbsp;&nbsp;&nbsp;&nbsp;less than
-* `or`&nbsp;&nbsp;&nbsp;&nbsp;or
-* `and`&nbsp;&nbsp;&nbsp;&nbsp;and
-* `(`&nbsp;&nbsp;&nbsp;&nbsp;bracket open
-* `)`&nbsp;&nbsp;&nbsp;&nbsp;bracket close
-* `""`&nbsp;&nbsp;&nbsp;&nbsp;string
+`=` equal, `~` not equal, `>` greater than, `<` less than, `or` or, `and` and, `(` bracket open, `)` bracket close, `""` string
 
 Example:
 
@@ -63,11 +55,23 @@ List of fields that will be used as rows. Press the "Add selected field" button 
 #### Values
 List of values that will be used. Select a value to edit it, or press clear selections to add a new value. After selecting a value you can delete it by pressing the "x".
 
-label       label that will be visible in the report
-type        Select between "sum", "count" and "calculated field"
-field       Select the field you want to use as the base for the value. Only visible when "sum" or "count" has been selected.
-function    Create a function to use for the calculated column. Works the same as the data filter, except you use the value labels instead of the field names. Only available when "calculated field"
-visible     Select if the value needs to be visible in the final report. Only useful in combination with calculated fields.
-format      Select a format to use. "None" to use the raw data, "number" to format the number with "," every thousend, "percentage" to show the value as a percentage
+* label - label that will be visible in the report
+* type - select between "sum", "count" and "calculated field"
+* field - Select the field you want to use as the base for the value. Only visible when "sum" or "count" has been selected.
+* function - create a function to use for the calculated column. Works the same as the data filter, except you use the value labels instead of the field names. Only available when "calculated field"
+* visible - select if the value needs to be visible in the final report. Only useful in combination with calculated fields.
+* format - select a format to use. "None" to use the raw data, "number" to format the number with "," every thousend, "percentage" to show the value as a percentage
 
+### Settings
+![Settings](https://i.imgur.com/8JxQzuE.png "Settings")
 
+* Open Power DI - create a keybind to open the main Power DI view.
+* Dump data - create a keybind to dump the data to a file ("\Warhammer 40,000 DARKTIDE\binaries\dump")
+* Auto save - enable to periodical saving of the recorded data during a mission.
+* Auto save interval - interval between auto saves, in seconds.
+* Maximum cycles - maximum number of loops the calculations will be allowed to do per frame. Higher numbers could impact fps.
+* Debug mode - enable to print additional info to the console.
+
+## Creating addons
+
+I'll add some information regarding the mod's structure and API here later.
