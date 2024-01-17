@@ -26,12 +26,22 @@ session_manager.new = function()
     local session_id = generate_session_id()
     local session_index = #save_data.sessions_index+1
     local session = {}
+    local state_manager = Managers.state
+    local data_service_manager = Managers.data_service
+    local mechanism_manager = Managers.mechanism
+    local backend_mission_id = mechanism_manager and mechanism_manager:backend_mission_id()
     session.info = {}
     session.info.session_id = session_id
     session.info.game_version = APPLICATION_SETTINGS.game_version
     session.info.power_di_version = mod.version
-    session.info.mission = Managers.state.mission and Managers.state.mission:mission()
-    session.info.difficulty = Managers.state.difficulty and Managers.state.difficulty:get_difficulty() or nil
+    session.info.mission = state_manager.mission and state_manager.mission:mission()
+
+    if backend_mission_id then
+        data_service_manager.mission_board:fetch_mission(backend_mission_id)
+        :next(function(mission_data)session.info.mission_data = mission_data.mission end)
+    end
+
+    session.info.difficulty = state_manager.difficulty and state_manager.difficulty:get_difficulty() or nil
     session.info.date = os.date("%d/%m/%Y")
     session.info.start_time = os.date("%X")
     session.info.resumed = false
@@ -85,7 +95,7 @@ end
 session_manager.resume_or_create_session = function()
     local session_id = PDI.data.session_data.info and PDI.data.session_data.info.session_id
     if session_id == generate_session_id() then
-        session_manager.update_current_session_info({["resumed"] = true})
+        session_manager.update_current_session_info({resumed = true})
     else
         PDI.data.session_data = session_manager.new()
     end

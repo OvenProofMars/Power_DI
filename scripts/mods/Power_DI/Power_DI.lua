@@ -1,7 +1,8 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 local PDI = {}
-mod.version = "0.5"
+local MasterItems = require("scripts/backend/master_items")
+mod.version = "0.6"
 mod.cache = {}
 PDI.promise = require("scripts/foundation/utilities/promise")
 PDI.utilities = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\utilities]])
@@ -16,6 +17,10 @@ PDI.view_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\view_m
 
 --Function to print certain steps for debugging--
 local debug = mod:get("debug_mode")
+--Function to set debug mode--
+PDI.set_debug_mode = function (value)
+    debug = value
+end
 PDI.debug = function(function_name, context)
     if not debug then
        return 
@@ -29,6 +34,14 @@ PDI.debug = function(function_name, context)
         print("Debug: "..function_name.." ("..tostring(context)..")")
     end
 end
+
+--Setting functions table--
+local setting_functions = {
+    max_cycles = PDI.coroutine_manager.set_max_cycles,
+    debug_mode = PDI.set_debug_mode,
+    auto_save =  PDI.save_manager.set_auto_save,
+    auto_save_interval =  PDI.save_manager.set_auto_save_interval
+}
 
 --Create main data table--
 PDI.data = {}
@@ -56,17 +69,13 @@ function mod.update(main_dt)
     PDI.coroutine_manager.update()
 end
 
---Trigger for setting changes--
+--Trigger for updating settings--
 function mod.on_setting_changed(setting_id)
-    if setting_id == "max_cycles" then
-        local max_cyles = mod:get("max_cycles")
-        PDI.coroutine_manager.max_cyles = max_cyles
-    elseif setting_id == "debug_mode" then
-        debug = mod:get("debug_mode")
-    elseif setting_id == "auto_save" then
-        PDI.save_manager.auto_save = mod:get("auto_save")
-    elseif setting_id == "auto_save_interval" then
-        PDI.save_manager.auto_save_interval = mod:get("auto_save_interval")
+    print(setting_id)
+    local new_value = mod:get(setting_id)
+    local setting_function = setting_functions[setting_id]
+    if setting_function then
+        setting_function(new_value)
     end
 end
 

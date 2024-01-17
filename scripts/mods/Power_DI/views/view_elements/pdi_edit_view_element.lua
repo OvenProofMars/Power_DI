@@ -133,7 +133,7 @@ local function save_button_callback(self)
     PDI.save_manager.save("save_data", PDI.data.save_data)
     :next(
         function()
-            mod:echo("saved")
+            mod:notify("Saved")
         end
     )
 end
@@ -153,6 +153,8 @@ local function text_input_hotspot_change_function(hotspot_content, style)
         if is_writing then
             local input_text = content.input_text
             local text_length = input_text and Utf8.string_length(input_text) or 0
+            content.caret_position = text_length+1
+            content.force_caret_update = true
 
             -- if input_text and text_length > 0 and not content.selected_text then
             --     content.input_text = ""

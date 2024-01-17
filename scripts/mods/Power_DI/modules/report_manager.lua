@@ -32,7 +32,6 @@ local function generate_filter_function (template)
         end
     end
     local filter_function = Mods.lua.loadstring(function_string)
-    print(function_string)
     setfenv(filter_function, {select=select})
     PDI.debug("generate_filter_function", "start")
     return filter_function
@@ -261,8 +260,6 @@ local function generate_pivot_table_report_coroutine(template)
                 local output_row_table = output_table[index]
                 output_row_table.name = row_name
 
-                print(row_name)
-
                 if row_table.child_rows then
                     output_row_table.children = {}
                     generate_rows_structure(row_table, output_row_table.children)
@@ -273,7 +270,6 @@ local function generate_pivot_table_report_coroutine(template)
     end
 
     PDI.debug("generate_pivot_table_report_coroutine", "row structure start")
-    DMF:dtf(report_output.data, "report_output.data",10)
     generate_rows_structure(report_output.data, report_output.rows)
     PDI.debug("generate_pivot_table_report_coroutine", "row structure end")
 

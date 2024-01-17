@@ -74,6 +74,7 @@ local function create_report_size_table(self, report, report_size, number_of_col
         local label_size = get_text_size(report.template.label, font_name, font_size*1.5)
         local min_width = label_size+100
         max_row_width = math.max(max_row_width,min_width)
+        max_row_width = math.min(max_row_width, report_size[1]*0.6)
     else
         max_row_count, max_row_level, max_row_width = 1,1,250
     end
@@ -92,7 +93,7 @@ local function create_report_size_table(self, report, report_size, number_of_col
     local column_hight = report_size[2]*0.1
 
     local row_width = max_row_width
-    local row_hight = column_width / 6
+    local row_hight = sizes.block[1]*0.1
 
     local column_and_value_mask_width = column_width * number_of_columns
     local column_and_value_pivot_width = column_width * max_column_count
@@ -127,13 +128,11 @@ local function create_report_size_table(self, report, report_size, number_of_col
     return report_size_table
 end 
 local function horizontal_scroll(self, direction)
-    --DMF:dtf(data.value.grid, "value_grid", 10)
     local offset = self.sizes.column_item_size[1] * direction
     self._ui_scenegraph.value_pivot.position[1] = self._ui_scenegraph.value_pivot.position[1] - offset
     self._ui_scenegraph.column_pivot.position[1] = self._ui_scenegraph.column_pivot.position[1] - offset
     self.horizontal_scroll_index = (self.horizontal_scroll_index or 0) + direction
     UIScenegraph.update_scenegraph(self._ui_scenegraph, self._render_scale)
-    --data.value.grid:force_update_list_size()
 end
 local function get_definitions(self)
     local definitions = {
@@ -809,6 +808,7 @@ local function get_item_templates(self)
                         0,
                         0
                     },
+                    size_addition = {1000,0},
                     font_type = font_name,
                     font_size = font_size,
                     text_color = Color.terminal_text_body(255, true),
@@ -1014,7 +1014,6 @@ local function update_widgets_state(widgets_array, parent_state)
     end
 end
 local function toggle_row(self, widget)
-    --DMF:dtf(self, "PdiPivotTableViewElement_test", 15)
     local logic = widget.content.logic
     if logic.expanded then
         logic.expanded = false
@@ -1061,10 +1060,16 @@ local function generate_widgets(self)
         for _, row in ipairs(input_table) do
             
             local current_index = #row_widgets + 1
-            local item_definition = UIWidget.create_definition(row_item_template, "row_item", {text = row.name})
+            local row_text = row.name
+            local row_text = string.gsub(row_text," percent","%%")
+            if string.sub(row_text,1,4) == "loc_" then
+                row_text = Localize(row_text)
+            end
+            local item_definition = UIWidget.create_definition(row_item_template, "row_item", {text = row_text})
             local widget = self:_create_widget("row_widget_"..current_index, item_definition)
             local unit_size = self.sizes.unit_size
             widget.style.text.offset[1] = (unit_size*0.5) + (level_offset*level)
+            widget.style.text.font_size = 15
             widget.style.light_on.size = {unit_size,unit_size}
             widget.style.light_on.offset[1] = (unit_size*-0.41)+(level_offset*level)
             widget.style.light_off.size = {unit_size/6,unit_size/6}
@@ -1220,7 +1225,9 @@ PdiPivotTableViewElement.draw = function (self, dt, t, ui_renderer, render_setti
             local renderer = settings.renderer
             UIRenderer.begin_pass(renderer, ui_scenegraph, input_service, dt, render_settings)
             for _,widget in pairs(widgets) do
-                UIWidget.draw(widget, renderer)
+                if widget.visible then
+                    UIWidget.draw(widget, renderer)
+                end
             end
             UIRenderer.end_pass(renderer)
         end

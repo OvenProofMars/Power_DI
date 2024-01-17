@@ -111,6 +111,54 @@ local function iterate_dataset_coroutine(self, calculation_function)
     PDI.debug("iterate_dataset_coroutine", "end")
 end
 
+--Coroutine to iterate over a datasource--
+local function iterate_datasource_coroutine(self, datasource, calculation_function)
+    PDI.debug("iterate_datasource_coroutine", "start")
+    local calculation_function = coroutine_wrapper(self,calculation_function)
+    if is_array(datasource) then
+        PDI.debug("iterate_datasource_coroutine", "array")
+        for k, v in ipairs(datasource) do
+            if type(v) == "table" then
+                v = table.clone(v)
+            end
+            calculation_function(k,v)
+        end
+    else
+        PDI.debug("iterate_datasource_coroutine", "table")
+        for k, v in pairs(datasource) do
+            if type(v) == "table" then
+                v = table.clone(v)
+            end
+            calculation_function(k,v)
+        end
+    end
+    PDI.debug("iterate_datasource_coroutine", "end")
+end
+
+--Coroutine to iterate over a lookup table--
+-- local function iterate_lookup_coroutine(self, lookup, calculation_function)
+--     PDI.debug("iterate_lookup_coroutine", "start")
+--     local calculation_function = coroutine_wrapper(self,calculation_function)
+--     if is_array(lookup) then
+--         PDI.debug("iterate_lookup_coroutine", "array")
+--         for k, v in ipairs(lookup) do
+--             if type(v) == "table" then
+--                 v = table.clone(v)
+--             end
+--             calculation_function(k,v)
+--         end
+--     else
+--         PDI.debug("iterate_lookup_coroutine", "table")
+--         for k, v in pairs(lookup) do
+--             if type(v) == "table" then
+--                 v = table.clone(v)
+--             end
+--             calculation_function(k,v)
+--         end
+--     end
+--     PDI.debug("iterate_lookup_coroutine", "end")
+-- end
+
 --Coroutine to sort a dataset--
 local function sort_dataset_coroutine (self, sort_function)
     local function set2( t , i , j , ival , jval )
@@ -362,6 +410,32 @@ dataset_manager.iterate_dataset = function(self, calculation_function)
     return PDI.coroutine_manager.new(iterate_dataset_coroutine, self, calculation_function)
 end
 
+--Function to iterate over a datasource, returns a promise, uses coroutines--
+dataset_manager.iterate_datasource = function(self, data_source_name, calculation_function)
+    local dataset_template = dataset_manager.get_dataset_template(self.name)
+    local required_datasources = dataset_template.required_datasources
+    local has_datasource_required = false
+    for _, required_datasource_name in ipairs(required_datasources) do
+        if required_datasource_name == data_source_name then
+            has_datasource_required = true
+        end
+    end
+
+    if not has_datasource_required then
+        error("Use of datasource has not been declared")
+        return
+    end
+    
+    local datasource = PDI.data.session_data.datasources[data_source_name]
+    return PDI.coroutine_manager.new(iterate_datasource_coroutine, self, datasource, calculation_function)
+end
+
+--Function to iterate over a datasource, returns a promise, uses coroutines--
+-- dataset_manager.iterate_lookup = function(self, lookup_name, calculation_function)  
+--     local lookup = PDI.data.session_data.datasources[lookup_name]
+--     return PDI.coroutine_manager.new(iterate_datasource_coroutine, self, lookup, calculation_function)
+-- end
+
 --Function to sort the dataset, returns a promise, uses coroutines--
 dataset_manager.sort_dataset = function(self, sort_function)
     return PDI.coroutine_manager.new(sort_dataset_coroutine, self, sort_function)
@@ -371,6 +445,8 @@ end
 function_set = {
     append_dataset = dataset_manager.append_dataset,
     iterate_dataset = dataset_manager.iterate_dataset,
+    iterate_datasource = dataset_manager.iterate_datasource,
+    --iterate_lookup = dataset_manager.iterate_lookup,
     sort_dataset = dataset_manager.sort_dataset,
     complete_dataset = dataset_manager.dataset_complete,
 }

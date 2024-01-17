@@ -55,7 +55,6 @@ report_templates = {
                 format = "none"
             },
             {
-                --field_name = "crit%",
                 type = "calculated_field",
                 label = "Crit percent",
                 visible = true,
@@ -63,7 +62,6 @@ report_templates = {
                 function_string = "critical_hit_sum/critical_hit_count"
             },
             {
-                --field_name = "ws%",
                 type = "calculated_field",
                 label = "Weakspot percent",
                 visible = true,
@@ -72,7 +70,7 @@ report_templates = {
             },
         },
         filters = {
-            "attacker_type = \"Player\" and damage > 0 and defender_class ~ nil and attacker_name ~ nil"
+            "attacker_type = \"Player\" and damage > 0 and attacker_name ~ nil and defender_type ~ nil"
         },
     },
     player_defense_report = {
@@ -86,7 +84,7 @@ report_templates = {
             {
                 field_name = "health_damage",
                 type = "sum",
-                label = "Damage",
+                label = "Damage received",
                 visible = true,
                 format = "number"
             },
@@ -96,12 +94,12 @@ report_templates = {
         },
     },
     player_status_report = {
-        name = "Status report",
-        label = "Status report",
+        name = "Player status report",
+        label = "Player status report",
         dataset_name = "player_status",
         report_type = "pivot_table",
         columns = {"player_name"},
-        rows = {"state_name",},
+        rows = {"state_category", "state_name",},
         values = {
             {
                 field_name = "state_name",
@@ -141,7 +139,7 @@ report_templates = {
         dataset_name = "tagging",
         report_type = "pivot_table",
         columns = {"player_name"},
-        rows = {"tag_type", "target_name"},
+        rows = {"tag_type", "target_type", "target_class", "target_name"},
         values = {
             {
                 field_name = "target_name",
@@ -179,7 +177,7 @@ report_templates = {
         dataset_name = "blocked_attacks",
         report_type = "pivot_table",
         columns = {"player_name"},
-        rows = {"enemy_name"},
+        rows = {"enemy_type", "enemy_class", "enemy_name"},
         values = {
             {
                 field_name = "player_name",
@@ -203,6 +201,42 @@ report_templates = {
                 field_name = "player_name",
                 type = "count",
                 label = "Slots",
+                visible = true,
+                format = "number"
+            },
+        },
+        filters = {},
+    },
+    combat_abilities_report = {
+        name = "Combat ability report",
+        label = "Combat ability report",
+        dataset_name = "combat_abilities",
+        report_type = "pivot_table",
+        columns = {"player_name"},
+        rows = {"combat_ability"},
+        values = {
+            {
+                field_name = "player_name",
+                type = "count",
+                label = "Combat abilities",
+                visible = true,
+                format = "number"
+            },
+        },
+        filters = {},
+    },
+    player_buffs_report = {
+        name = "Player buffs report",
+        label = "Player buffs report",
+        dataset_name = "player_buffs",
+        report_type = "pivot_table",
+        columns = {"player_name"},
+        rows = {"source_category", "source_item_name", "source_sub_category", "source_name", "event", "template_name"},
+        values = {
+            {
+                field_name = "player_name",
+                type = "count",
+                label = "Buffs",
                 visible = true,
                 format = "number"
             },

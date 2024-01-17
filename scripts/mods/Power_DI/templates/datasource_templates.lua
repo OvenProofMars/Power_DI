@@ -1,4 +1,5 @@
 local mod = get_mod("Power_DI")
+local DMF = get_mod("DMF")
 local utilities = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\utilities]])
 local Component = require("scripts/utilities/component")
 local SmartTag = require("scripts/extension_systems/smart_tag/smart_tag")
@@ -6,11 +7,25 @@ local remove_tags_reason_lookup = table.mirror_array_inplace(table.keys(SmartTag
 local datasource_templates = {}
 local data_locations = {}
 
+local combat_ability_lookup = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\lookup_tables\combat_abilities]])
+
 mod.cache.active_interactions = {}
 mod.cache.active_smart_tags = {}
 mod.cache.active_player_states = {}
 mod.cache.active_combat_abilities = {}
 mod.cache.active_combat_abilities_2 = {}
+mod.cache.buffs = {}
+mod.cache.force_fields = {}
+mod.cache.zealot_relic = {}
+
+local buff_data_location_lookup = function (class_name)
+    local lookup = {
+        PlayerUnitBuffExtension = data_locations.PlayerBuffExtension(),
+        PlayerHuskBuffExtension = data_locations.PlayerBuffExtension(),
+        MinionBuffExtension = data_locations.MinionBuffExtension(),
+    }
+    return lookup[class_name]
+end
 
 --Datasource hook functions--
 local add_attack_result = function (self, damage_profile, attacked_unit, attacking_unit, attack_direction, hit_world_position, hit_weakspot, damage, attack_result, attack_type, damage_efficiency, is_critical_strike)
@@ -202,8 +217,9 @@ local rpc_player_unit_exit_coherency = function (self, channel_id, game_object_i
     output_table[#output_table+1] = temp_table
 end
 local rpc_add_buff = function(self, channel_id, game_object_id, buff_template_id, server_index, optional_lerp_value, optional_item_slot_id, optional_parent_buff_template_id, from_specialization)
-    local output_table = data_locations.BuffExtensionBase()
-    local game_session = Managers.state.game_session:game_session()
+    local class_name = self.__class_name
+    local output_table = buff_data_location_lookup(class_name)
+    local buff_lookup_table = mod.cache.buffs
     local unit_spawner_manager = Managers.state.unit_spawner
     local unit = unit_spawner_manager:unit(game_object_id)
     local unit_uuid = utilities.get_unit_uuid(unit)
@@ -211,23 +227,25 @@ local rpc_add_buff = function(self, channel_id, game_object_id, buff_template_id
 
     local temp_table = {}
 
-    output_table.lookup[server_index_uuid] = buff_template_id
-
-    temp_table.time = mod.utilities.get_gameplay_time()
     temp_table.event = "add_buff"
     temp_table.unit_uuid = unit_uuid
     temp_table.unit_position = utilities.get_position(unit)
-    temp_table.buff_template_name = NetworkLookup.buff_templates[buff_template_id]
+    temp_table.time = mod.utilities.get_gameplay_time()
+    
+    temp_table.buff_template_id = buff_template_id
     temp_table.optional_lerp_value = optional_lerp_value
-    temp_table.optional_item_slot_name = optional_item_slot_id and NetworkLookup.player_inventory_slot_names[optional_item_slot_id]
-    temp_table.optional_parent_buff_template_name = optional_parent_buff_template_id and NetworkLookup.buff_templates[optional_parent_buff_template_id]
+    temp_table.optional_parent_buff_id = optional_parent_buff_template_id
+    temp_table.optional_item_slot_id = optional_item_slot_id
     temp_table.from_specialization = from_specialization
+    temp_table.server_index = server_index
 
-    output_table.events[#output_table.events+1] = temp_table
+    buff_lookup_table[server_index_uuid] = temp_table
+    output_table[#output_table+1] = temp_table
 end
 local rpc_add_buff_with_stacks = function(self, channel_id, game_object_id, buff_template_id, server_index_array, optional_lerp_value, optional_item_slot_id, optional_parent_buff_template_id)
-    local output_table = data_locations.BuffExtensionBase()
-    local game_session = Managers.state.game_session:game_session()
+    local class_name = self.__class_name
+    local output_table = buff_data_location_lookup(class_name)
+    local buff_lookup_table = mod.cache.buffs
     local unit_spawner_manager = Managers.state.unit_spawner
     local unit = unit_spawner_manager:unit(game_object_id)
     local unit_uuid = utilities.get_unit_uuid(unit)
@@ -235,76 +253,99 @@ local rpc_add_buff_with_stacks = function(self, channel_id, game_object_id, buff
 
     local temp_table = {}
 
-    output_table.lookup[server_index_uuid] = buff_template_id
-
-    temp_table.time = mod.utilities.get_gameplay_time()
     temp_table.event = "add_buff_with_stacks"
     temp_table.unit_uuid = unit_uuid
     temp_table.unit_position = utilities.get_position(unit)
-    temp_table.buff_template_name = NetworkLookup.buff_templates[buff_template_id]
+    temp_table.time = mod.utilities.get_gameplay_time()
+    
+    temp_table.buff_template_id = buff_template_id
     temp_table.optional_lerp_value = optional_lerp_value
-    temp_table.optional_item_slot_name = optional_item_slot_id and NetworkLookup.player_inventory_slot_names[optional_item_slot_id]
-    temp_table.optional_parent_buff_template_name = optional_parent_buff_template_id and NetworkLookup.buff_templates[optional_parent_buff_template_id]
+    temp_table.optional_parent_buff_id = optional_parent_buff_template_id
+    temp_table.optional_item_slot_id = optional_item_slot_id
 
-    output_table.events[#output_table.events+1] = temp_table
+    buff_lookup_table[server_index_uuid] = temp_table
+    output_table[#output_table+1] = temp_table
 end
 local rpc_remove_buff = function(self, channel_id, game_object_id, server_index)
-    local output_table = data_locations.BuffExtensionBase()
-    local game_session = Managers.state.game_session:game_session()
+    local class_name = self.__class_name
+    local output_table = buff_data_location_lookup(class_name)
+    local buff_lookup_table = mod.cache.buffs
     local unit_spawner_manager = Managers.state.unit_spawner
     local unit = unit_spawner_manager:unit(game_object_id)
     local unit_uuid = utilities.get_unit_uuid(unit)
     local server_index_uuid = unit_uuid.."_"..server_index
-    local buff_template_id = output_table.lookup[server_index_uuid]
+    local buff_lookup = buff_lookup_table[server_index_uuid]
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
     temp_table.event = "remove_buff"
     temp_table.unit_uuid = unit_uuid
     temp_table.unit_position = utilities.get_position(unit)
-    temp_table.buff_template_name = buff_template_id and NetworkLookup.buff_templates[buff_template_id]
+    temp_table.time = mod.utilities.get_gameplay_time()
+    
+    temp_table.buff_template_id = buff_lookup.buff_template_id
+    temp_table.optional_lerp_value = buff_lookup.optional_lerp_value
+    temp_table.optional_parent_buff_id = buff_lookup.optional_parent_buff_template_id
+    temp_table.optional_item_slot_id = buff_lookup.optional_item_slot_id
+    temp_table.from_specialization = buff_lookup.from_specialization
+    temp_table.server_index = server_index
 
-    output_table.events[#output_table.events+1] = temp_table
+    --buff_lookup_table[server_index_uuid] = nil
+    output_table[#output_table+1] = temp_table
 end
 local rpc_buff_proc_set_active_time = function(self, channel_id, game_object_id, server_index, activation_frame)
-    local output_table = data_locations.BuffExtensionBase()
-    local game_session = Managers.state.game_session:game_session()
+    local class_name = self.__class_name
+    local output_table = buff_data_location_lookup(class_name)
+    local buff_lookup_table = mod.cache.buffs
     local unit_spawner_manager = Managers.state.unit_spawner
     local unit = unit_spawner_manager:unit(game_object_id)
     local unit_uuid = utilities.get_unit_uuid(unit)
     local server_index_uuid = unit_uuid.."_"..server_index
-    local buff_template_id = output_table.lookup[server_index_uuid]
+    local buff_lookup = buff_lookup_table[server_index_uuid]
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
     temp_table.event = "buff_proc_set_active_time"
     temp_table.unit_uuid = unit_uuid
     temp_table.unit_position = utilities.get_position(unit)
-    temp_table.buff_template_name = buff_template_id and NetworkLookup.buff_templates[buff_template_id]
+    temp_table.time = mod.utilities.get_gameplay_time()
+    
+    temp_table.buff_template_id = buff_lookup.buff_template_id
+    temp_table.optional_lerp_value = buff_lookup.optional_lerp_value
+    temp_table.optional_parent_buff_id = buff_lookup.optional_parent_buff_template_id
+    temp_table.optional_item_slot_id = buff_lookup.optional_item_slot_id
+    temp_table.from_specialization = buff_lookup.from_specialization
     temp_table.activation_frame = activation_frame
 
-    output_table.events[#output_table.events+1] = temp_table
+    --buff_lookup_table[server_index_uuid] = nil
+    output_table[#output_table+1] = temp_table
 end
 local rpc_buff_set_start_time = function(self, channel_id, game_object_id, server_index, activation_frame)
-    local output_table = data_locations.BuffExtensionBase()
-    local game_session = Managers.state.game_session:game_session()
+    local class_name = self.__class_name
+    local output_table = buff_data_location_lookup(class_name)
+    local buff_lookup_table = mod.cache.buffs
     local unit_spawner_manager = Managers.state.unit_spawner
     local unit = unit_spawner_manager:unit(game_object_id)
     local unit_uuid = utilities.get_unit_uuid(unit)
     local server_index_uuid = unit_uuid.."_"..server_index
-    local buff_template_id = output_table.lookup[server_index_uuid]
+    local buff_lookup = buff_lookup_table[server_index_uuid]
+
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
-    temp_table.event = "rpc_buff_set_start_time"
+    temp_table.event = "buff_set_start_time"
     temp_table.unit_uuid = unit_uuid
     temp_table.unit_position = utilities.get_position(unit)
-    temp_table.buff_template_name = buff_template_id and NetworkLookup.buff_templates[buff_template_id]
+    temp_table.time = mod.utilities.get_gameplay_time()
+    
+    temp_table.buff_template_id = buff_lookup.buff_template_id
+    temp_table.optional_lerp_value = buff_lookup.optional_lerp_value
+    temp_table.optional_parent_buff_id = buff_lookup.optional_parent_buff_template_id
+    temp_table.optional_item_slot_id = buff_lookup.optional_item_slot_id
+    temp_table.from_specialization = buff_lookup.from_specialization
     temp_table.activation_frame = activation_frame
 
-    output_table.events[#output_table.events+1] = temp_table
+    --buff_lookup_table[server_index_uuid] = nil
+    output_table[#output_table+1] = temp_table
 end
 local rpc_player_collected_materials = function(self, channel_id, peer_id, material_type_lookup, material_size_lookup)
     local output_table = data_locations.PickupSystem()
@@ -1084,24 +1125,63 @@ local PUME_update = function (self, unit, dt, t)
         active_player_states[unit_uuid] = state_name
     end
 
-
     local output_table = data_locations.CombatAbility()
     local active_combat_abilities = mod.cache.active_combat_abilities
     local combat_ability_action = self._combat_ability_action_read_component
+    local template_name = combat_ability_action.template_name
     local current_action_name = combat_ability_action.current_action_name
-    
-    if current_action_name == "none" then
+    local lookup_string = template_name.."_"..current_action_name
+    local combat_ability_name = combat_ability_lookup[lookup_string]
+ 
+    if not combat_ability_name then
         active_combat_abilities[unit_uuid] = nil
-    elseif active_combat_abilities[unit_uuid] ~= current_action_name then
+    elseif not active_combat_abilities[unit_uuid] then
         local temp_table = {}
-
         temp_table.time = mod.utilities.get_gameplay_time()
         temp_table.player_unit_uuid = unit_uuid
-        temp_table.action = current_action_name
-        temp_table.template_name = combat_ability_action.template_name
+        temp_table.combat_ability = combat_ability_name
 
         output_table[#output_table+1] = temp_table
-        active_combat_abilities[unit_uuid] = current_action_name
+        active_combat_abilities[unit_uuid] = combat_ability_name
+    end
+
+    local force_field_system = self._force_field_system
+    if force_field_system then
+        local active_force_fields = mod.cache.force_fields
+        local number_of_active_force_fields = force_field_system._extensions.ForceFieldExtension
+        local previous_number_of_active_force_fields = active_force_fields[unit_uuid] or 0
+        if number_of_active_force_fields > previous_number_of_active_force_fields then
+            local _, unit_extension = next(force_field_system._unit_to_extension_map)
+            local specialization_extension = unit_extension.specialization_extension
+            local shield_type
+            if specialization_extension._active_special_rules.psyker_sphere_shield then
+                shield_type = "Telekine Dome"
+            else
+                shield_type = "Telekine Shield"
+            end
+            local temp_table = {}
+            temp_table.time = mod.utilities.get_gameplay_time()
+            temp_table.player_unit_uuid = unit_uuid
+            temp_table.combat_ability = shield_type
+
+            output_table[#output_table+1] = temp_table
+        end
+        active_force_fields[unit_uuid] = number_of_active_force_fields
+    end
+
+    local weapon_action_extension = unit_data_extension:read_component("weapon_action")
+    local current_action_name = weapon_action_extension and weapon_action_extension.current_action_name
+    local template_name = weapon_action_extension and weapon_action_extension.template_name
+    local relic_lookup = mod.cache.zealot_relic
+    if relic_lookup[unit_uuid] == nil and template_name == "zealot_relic" and current_action_name == "action_wield" then
+        local temp_table = {}
+        temp_table.time = mod.utilities.get_gameplay_time()
+        temp_table.player_unit_uuid = unit_uuid
+        temp_table.combat_ability = "Chorus of Spiritual Fortitude"
+        output_table[#output_table+1] = temp_table
+        relic_lookup[unit_uuid] = template_name
+    elseif relic_lookup[unit_uuid] ~= nil and template_name ~= "zealot_relic" then
+        relic_lookup[unit_uuid] = nil
     end
 end
 local rpc_trigger_timed_mood = function (self, channel_id, go_id, mood_type_id)
@@ -1238,11 +1318,8 @@ datasource_templates = {
             },
         },
     },
-    {   name = "BuffExtensionBase",
-        data_structure = {
-            events = {},
-            lookup = {},
-        },
+    {   name = "PlayerBuffExtension",
+        data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerUnitBuffExtension,
@@ -1255,20 +1332,9 @@ datasource_templates = {
                 },
             },
             {
-                hook_class = CLASS.PlayerUnitBuffExtension,
+                hook_class = CLASS.PlayerHuskBuffExtension,
                 hook_functions = {
                     rpc_add_buff = rpc_add_buff,
-                    rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
-                    rpc_remove_buff = rpc_remove_buff,
-                    rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
-                    rpc_buff_set_start_time = rpc_buff_set_start_time,
-                },
-            },
-            {
-                hook_class = CLASS.MinionBuffExtension,
-                hook_functions = {
-                    rpc_add_buff = rpc_add_buff,
-                    rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
                     rpc_remove_buff = rpc_remove_buff,
                     rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
                     rpc_buff_set_start_time = rpc_buff_set_start_time,
@@ -1276,6 +1342,21 @@ datasource_templates = {
             },
         },
     },
+    {   name = "MinionBuffExtension",
+    data_structure = {},
+    hook_templates = {
+        {
+            hook_class = CLASS.MinionBuffExtension,
+            hook_functions = {
+                rpc_add_buff = rpc_add_buff,
+                rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
+                rpc_remove_buff = rpc_remove_buff,
+                rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
+                rpc_buff_set_start_time = rpc_buff_set_start_time,
+            },
+        },
+    },
+},
     {   name = "UnitSpawnerManager",
         data_structure = {},
         hook_templates = {

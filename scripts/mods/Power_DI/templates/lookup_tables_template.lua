@@ -3,16 +3,45 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 
+local ArchetypeTalents = require("scripts/settings/ability/archetype_talents/archetype_talents")
+
 local lookup_tables = {
     game_version = APPLICATION_SETTINGS.game_version,
     power_di_version = mod.version,
-    minion_categories = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\lookup_tables\minion_categories]])
-
-    --["breeds"] = DMF.deepcopy(require("scripts/settings/breed/breeds")),
-    --["damage_profile_template_data"] = DMF.deepcopy(require("scripts/settings/damage/damage_profile_templates")),
-    --["buff_templates_data"] = DMF.deepcopy(require("scripts/settings/buff/buff_templates")),
-    --["MasterItems"] = DMF.deepcopy(require("scripts/backend/master_items"):get_cached()),
+    minion_categories = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\lookup_tables\minion_categories]]),
+    player_state_categories = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\lookup_tables\player_state_categories]]),
+    BuffTemplates = require("scripts/settings/buff/buff_templates"),
+    ArchetypeTalents = ArchetypeTalents,
+    weapon_trait_templates = require("scripts/settings/equipment/weapon_traits/weapon_trait_templates"),
 }
+
+local buff_to_talent = {}
+
+local function add_by_key(table)
+    local output
+    for key, value in pairs(table) do
+        if key == "buff_template_name" then
+            output = value
+        elseif type(value) == "table" then
+            local child_output = add_by_key(value)
+            if child_output then
+                output = child_output
+            end
+        end
+    end
+    return output
+end
+
+for _, table in pairs(ArchetypeTalents) do
+    for talent_name, talent_template in pairs(table) do
+        local buff_template_name = add_by_key(talent_template)
+        if buff_template_name then
+            buff_to_talent[buff_template_name] = talent_template
+        end
+    end
+end
+
+lookup_tables.buff_to_talent = buff_to_talent
 
 local network_lookup = DMF.deepcopy(NetworkLookup)
 for k, v in pairs(network_lookup) do

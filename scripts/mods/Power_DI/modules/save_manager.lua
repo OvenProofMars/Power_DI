@@ -1,8 +1,21 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
+local MasterItems = require("scripts/backend/master_items")
 local PDI
+local auto_save_setting = mod:get("auto_save")
+local auto_save_interval = mod:get("auto_save_interval")
 local save_manager = {}
 save_manager.queue = {}
+
+--Function to set auto save--
+save_manager.set_auto_save = function(value)
+    auto_save_setting = value
+end
+
+--Function to set auto save interval--
+save_manager.set_auto_save_interval = function(value)
+    auto_save_interval = value
+end
 
 --Function that returns the currently loaded session id--
 local function get_loaded_session_id()
@@ -83,7 +96,7 @@ save_manager.load = function(file_or_table_name)
     return promise
 end
 
---Function to save multiple tables at the same time, still needs promide implementation--
+--Function to save multiple tables at the same time, still needs promise implementation--
 save_manager.save_multiple = function(input_table)
     for table_key, table_value in pairs(input_table) do
         save_manager.save(table_key, table_value)
@@ -92,16 +105,17 @@ end
 
 --Function that auto saves every interval while in a mission--
 local function auto_save()
-    if save_manager.auto_save then
+    if auto_save_setting then
         if PDI.utilities.in_game() then
             local gameplay_time = mod.utilities.get_gameplay_time()
             if gameplay_time == 0 then
                 return
             end
-            local auto_save_interval = save_manager.auto_save_interval
             local modulus = gameplay_time % auto_save_interval
             if (modulus > (auto_save_interval-1)) and not saved_this_cycle then
-                PDI.session_manager.save_current_session()
+                local session_data = PDI.data.session_data
+                save_manager.save("session_data", session_data)
+                --PDI.session_manager.save_current_session()
                 saved_this_cycle = true
             elseif (modulus < (auto_save_interval-1)) then
                 saved_this_cycle = false
@@ -113,9 +127,6 @@ end
 --Initialize module, loads the save data, and latest session data--
 save_manager.init = function(input_table)
     PDI = input_table
-
-    save_manager.auto_save = mod:get("auto_save")
-    save_manager.auto_save_interval = mod:get("auto_save_interval")
 
     local promise = PDI.promise:new()
     local sessions_index
@@ -156,9 +167,9 @@ save_manager.init = function(input_table)
     :next(
         function()
             if session_id then
-                local power_di_version = sessions[session_id].info.power_di_version
-                local game_version = sessions[session_id].info.game_version
-                local lookup_tables_filename = "lookup_tables_"..power_di_version.."_v"..game_version
+                -- local power_di_version = sessions[session_id].info.power_di_version
+                -- local game_version = sessions[session_id].info.game_version
+                local lookup_tables_filename = "lookup_tables_"..mod.version.."_v"..APPLICATION_SETTINGS.game_version
                 return save_manager.load(lookup_tables_filename)
             else
                 return PDI.promise:rejected("no previous session found")
@@ -171,7 +182,15 @@ save_manager.init = function(input_table)
         end,
         function(err)
             PDI.data.lookup_data = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\templates\lookup_tables_template]])
-            PDI.utilities.clean_table_for_saving(PDI.data.lookup_data)
+            local master_item_promise = PDI.promise:new()
+            local master_items_callback = function()
+                local items = MasterItems.get_cached()
+                PDI.data.lookup_data.MasterItems = items
+                PDI.utilities.clean_table_for_saving(PDI.data.lookup_data)
+                master_item_promise:resolve()
+            end
+            MasterItems.add_listener(master_items_callback)
+            return master_item_promise
         end
     )
     :next(

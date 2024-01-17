@@ -4,6 +4,7 @@ local PDI
 local coroutine_manager = {}
 
 local queue = {}
+local max_cycles = mod:get("max_cycles")
 local yield_counter = 0
 
 --Function to handle the coroutine queue--
@@ -53,14 +54,17 @@ coroutine_manager.new = function(fn, ...)
 end
 
 --Function to check if the coroutine must yield--
-coroutine_manager.must_yield = function ()
-    yield_counter = yield_counter or 0
-    if yield_counter >= coroutine_manager.max_cycles then
+coroutine_manager.must_yield = function()
+    yield_counter = yield_counter + 1
+    if yield_counter >= max_cycles then
         yield_counter = 0
         return true
-    else
-        yield_counter = yield_counter + 1
-        return false
     end
+    return false
+end
+
+--Function to set the max cycles--
+coroutine_manager.set_max_cycles = function (value)
+    max_cycles = value
 end
 return coroutine_manager

@@ -225,10 +225,6 @@ view_manager.init_data_in_game = function(self, session_id)
     PDI.report_manager.prepare_session(session_data)
 
     PDI.dataset_manager.generate_dataset(dataset_template)
-    :catch(function(error)
-        error(error)
-        DMF:dump(error)
-    end)
     :next( 
         function()
             return PDI.report_manager.generate_report(report_template)
