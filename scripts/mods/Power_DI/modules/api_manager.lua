@@ -34,6 +34,14 @@ api_manager.init = function(input_table)
     mod.reports.get_available_reports = function()
         return PDI.report_manager.get_available_reports()
     end
+    --Lookup tables API--
+    mod.lookup_tables = {}
+    mod.lookup_tables.register_lookup_table = function(lookup_table_template)
+        return PDI.lookup_manager.register_lookup_table(lookup_table_template)
+    end
+    mod.lookup_tables.get_available_lookup_tables = function()
+        return PDI.lookup_manager.get_available_lookup_tables()
+    end
 end
 
 return api_manager

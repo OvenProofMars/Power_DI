@@ -1,6 +1,8 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 
+local UIManager = Managers.ui
+
 local PDI, main_view_instance, loading, error, packages_loaded, selected_session_id, selected_report_name
 local font_name = "proxima_nova_bold"
 local font_size = "18"
@@ -90,7 +92,7 @@ view_manager.init = function (input_table)
     end
 end
 view_manager.open_main_view = function()
-    if not Managers.ui:chat_using_input() and not Managers.ui:view_instance("pdi_main_view") then
+    if not UIManager:chat_using_input() and not UIManager:view_instance("pdi_main_view") and not UIManager:view_active("title_view") then
         Managers.ui:open_view("pdi_main_view", 10,nil,nil,nil, PDI)
     elseif Managers.ui:view_instance("pdi_main_view") then
         Managers.ui:close_view("pdi_main_view")
@@ -155,6 +157,12 @@ end
 view_manager.get_error = function()
     return error
 end
+view_manager.set_selected_session_id = function(session_id)
+    selected_session_id = session_id
+end
+view_manager.get_selected_session_id = function()
+    return selected_session_id
+end
 view_manager.error_message_change_function = function (content,style)
     if error then
         loading = false
@@ -203,6 +211,9 @@ view_manager.session_selected_callback = function(self, session_id)
     )
 end
 view_manager.init_data_in_game = function(self, session_id)
+
+    selected_session_id = session_id
+
     local report_name = selected_report_name
     local report_template = PDI.report_manager.get_report_template(report_name)
     local dataset_name = report_template.dataset_name
@@ -238,7 +249,6 @@ view_manager.init_data_in_game = function(self, session_id)
     )
 end
 view_manager.report_selected_callback = function(self, report_list, widget_index, report_name)
-
     local grid = report_list.grid
     local current_selected_index = grid:selected_grid_index()
 
@@ -261,6 +271,8 @@ view_manager.report_selected_callback = function(self, report_list, widget_index
     local dataset_name = report_template.dataset_name
     local dataset_manager = PDI.dataset_manager
     local dataset_template = dataset_manager.get_dataset_template(dataset_name)
+
+    
 
     PDI.data.session_data.datasets[dataset_name] = nil
     PDI.data.session_data.reports[report_name] = nil

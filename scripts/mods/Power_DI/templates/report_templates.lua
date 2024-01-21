@@ -10,7 +10,7 @@ report_templates = {
         dataset_name = "attack_reports",
         report_type = "pivot_table",
         columns = {"attacker_name"},
-        rows = {"defender_type", "defender_class", "damage_category",},
+        rows = {"damage_category", "defender_type", "defender_class"},
         values = {
             {
                 field_name = "health_damage",
@@ -213,7 +213,7 @@ report_templates = {
         dataset_name = "combat_abilities",
         report_type = "pivot_table",
         columns = {"player_name"},
-        rows = {"combat_ability"},
+        rows = {"combat_ability_display_name"},
         values = {
             {
                 field_name = "player_name",

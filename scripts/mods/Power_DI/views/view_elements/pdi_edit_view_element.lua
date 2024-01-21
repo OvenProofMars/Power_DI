@@ -428,6 +428,7 @@ local function remove_value_callback(self, widget)
     local selected_grid_index = grid._selected_grid_index
 
     table.remove(widgets,selected_grid_index)
+    grid._selected_grid_index = nil
     grid:force_update_list_size()
     clear_value_options(self)
 end
@@ -616,8 +617,10 @@ local function clear_value_options_callback(self)
 
     if selected_grid_index then
         local value_widget = values_grid._widgets[selected_grid_index]
-        value_widget.content.hotspot.is_selected = false
-        values_grid._selected_grid_index = nil
+        if value_widget then
+            value_widget.content.hotspot.is_selected = false
+            values_grid._selected_grid_index = nil
+        end
     end
 
     clear_value_options(self)

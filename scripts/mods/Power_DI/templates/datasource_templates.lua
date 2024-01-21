@@ -3,21 +3,26 @@ local DMF = get_mod("DMF")
 local utilities = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\utilities]])
 local Component = require("scripts/utilities/component")
 local SmartTag = require("scripts/extension_systems/smart_tag/smart_tag")
+local BuffSettings = require("scripts/settings/buff/buff_settings")
+local buff_keywords = BuffSettings.keywords
 local remove_tags_reason_lookup = table.mirror_array_inplace(table.keys(SmartTag.REMOVE_TAG_REASONS))
+local combat_ability_lookup = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\templates\custom_lookup_table_templates\combat_abilities]])
 local datasource_templates = {}
 local data_locations = {}
 
-local combat_ability_lookup = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\lookup_tables\combat_abilities]])
 
 mod.cache.active_interactions = {}
 mod.cache.active_smart_tags = {}
 mod.cache.active_player_states = {}
-mod.cache.active_combat_abilities = {}
-mod.cache.active_combat_abilities_2 = {}
+mod.cache.previous_frame_action = {}
 mod.cache.buffs = {}
 mod.cache.force_fields = {}
 mod.cache.zealot_relic = {}
 
+
+local unit_spawner_manager = Managers.state.unit_spawner
+
+--Function to lookup which data location to use for the buff functions--
 local buff_data_location_lookup = function (class_name)
     local lookup = {
         PlayerUnitBuffExtension = data_locations.PlayerBuffExtension(),
@@ -538,6 +543,34 @@ local rpc_player_unwield_slot = function(self, channel_id, go_id, slot_id)
     temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
     temp_table.player_unit_position = utilities.get_position(player_unit)
     temp_table.slot_name = NetworkLookup.player_inventory_slot_names[slot_id]
+
+    output_table[#output_table+1] = temp_table
+end
+local on_slot_wielded = function(self, slot_name, t, skip_wield_action)
+    local output_table = data_locations.VisualLoadoutSystem()
+    local player_unit = self._unit
+
+    local temp_table = {}
+
+    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.event = "player_wield_slot_local"
+    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
+    temp_table.player_unit_position = utilities.get_position(player_unit)
+    temp_table.slot_name = slot_name
+
+    output_table[#output_table+1] = temp_table
+end
+local on_slot_unwielded = function(self, slot_name, t)
+    local output_table = data_locations.VisualLoadoutSystem()
+    local player_unit = self._unit
+
+    local temp_table = {}
+
+    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.event = "player_unwield_slot_local"
+    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
+    temp_table.player_unit_position = utilities.get_position(player_unit)
+    temp_table.slot_name = slot_name
 
     output_table[#output_table+1] = temp_table
 end
@@ -1126,23 +1159,38 @@ local PUME_update = function (self, unit, dt, t)
     end
 
     local output_table = data_locations.CombatAbility()
-    local active_combat_abilities = mod.cache.active_combat_abilities
+    local previous_frame_action_table = mod.cache.previous_frame_action
+    local previous_frame_action = previous_frame_action_table[unit_uuid]
     local combat_ability_action = self._combat_ability_action_read_component
     local template_name = combat_ability_action.template_name
-    local current_action_name = combat_ability_action.current_action_name
-    local lookup_string = template_name.."_"..current_action_name
-    local combat_ability_name = combat_ability_lookup[lookup_string]
- 
-    if not combat_ability_name then
-        active_combat_abilities[unit_uuid] = nil
-    elseif not active_combat_abilities[unit_uuid] then
-        local temp_table = {}
-        temp_table.time = mod.utilities.get_gameplay_time()
-        temp_table.player_unit_uuid = unit_uuid
-        temp_table.combat_ability = combat_ability_name
 
-        output_table[#output_table+1] = temp_table
-        active_combat_abilities[unit_uuid] = combat_ability_name
+    
+    local current_action_name = combat_ability_action.current_action_name
+    local previous_action_name = combat_ability_action.previous_action_name
+
+    if template_name ~= "none" then
+        if previous_frame_action ~= current_action_name then
+            local lookup = combat_ability_lookup[template_name]
+            local use_ability_charge_action = lookup.use_ability_charge_action
+            if current_action_name == "none" and  previous_action_name == use_ability_charge_action then
+                local display_name = lookup.display_name
+                if template_name == "veteran_combat_ability" then
+                    local buff_extension = self._buff_extension
+                    local veteran_combat_ability_stance_active = buff_extension:has_keyword(buff_keywords.veteran_combat_ability_stance)
+                    if veteran_combat_ability_stance_active then
+                        display_name = "Executioner's Stance"
+                    end
+                end
+                local temp_table = {}
+                temp_table.player_unit_uuid = unit_uuid
+                temp_table.player_unit_position = utilities.get_position(unit)
+                temp_table.combat_ability_display_name = display_name
+                temp_table.time = mod.utilities.get_gameplay_time()
+
+                output_table[#output_table+1] = temp_table
+            end
+        end
+        previous_frame_action_table[unit_uuid] = current_action_name
     end
 
     local force_field_system = self._force_field_system
@@ -1160,9 +1208,11 @@ local PUME_update = function (self, unit, dt, t)
                 shield_type = "Telekine Shield"
             end
             local temp_table = {}
-            temp_table.time = mod.utilities.get_gameplay_time()
+
             temp_table.player_unit_uuid = unit_uuid
-            temp_table.combat_ability = shield_type
+            temp_table.player_unit_position = utilities.get_position(unit)
+            temp_table.combat_ability_display_name = shield_type
+            temp_table.time = mod.utilities.get_gameplay_time()
 
             output_table[#output_table+1] = temp_table
         end
@@ -1175,9 +1225,12 @@ local PUME_update = function (self, unit, dt, t)
     local relic_lookup = mod.cache.zealot_relic
     if relic_lookup[unit_uuid] == nil and template_name == "zealot_relic" and current_action_name == "action_wield" then
         local temp_table = {}
-        temp_table.time = mod.utilities.get_gameplay_time()
+
         temp_table.player_unit_uuid = unit_uuid
-        temp_table.combat_ability = "Chorus of Spiritual Fortitude"
+        temp_table.player_unit_position = utilities.get_position(unit)
+        temp_table.combat_ability_display_name = "Chorus of Spiritual Fortitude"
+        temp_table.time = mod.utilities.get_gameplay_time()
+
         output_table[#output_table+1] = temp_table
         relic_lookup[unit_uuid] = template_name
     elseif relic_lookup[unit_uuid] ~= nil and template_name ~= "zealot_relic" then
@@ -1197,36 +1250,6 @@ local rpc_trigger_timed_mood = function (self, channel_id, go_id, mood_type_id)
     temp_table.mood_type = mood_type
 
     output_table[#output_table+1] = temp_table
-end
-local PHAE_update = function (self, unit, dt, t)
-    local output_table = data_locations.PlayerHuskAbilityExtension()
-    local active_combat_abilities = mod.cache.active_combat_abilities_2
-    local combat_ability_component = self._components.combat_ability
-    local combat_ability_active = combat_ability_component.active
-    local combat_ability_charges = combat_ability_component.num_charges
-    local unit_uuid = utilities.get_unit_uuid(unit)
-
-    active_combat_abilities[unit_uuid] = active_combat_abilities[unit_uuid] or false
-    
-    if active_combat_abilities[unit_uuid] ~= combat_ability_active then
-        local temp_table = {}
-        local event
-
-        if combat_ability_active then
-            event = "combat_ability_activated"
-        else
-            event = "combat_ability_deactivated"
-        end
-
-        temp_table.time = mod.utilities.get_gameplay_time()
-        temp_table.player_unit_uuid = unit_uuid
-        temp_table.player_unit_position = utilities.get_position(unit)
-        temp_table.event = event
-        temp_table.combat_ability_charges = combat_ability_charges
-        output_table[#output_table+1] = temp_table
-        active_combat_abilities[unit_uuid] = combat_ability_active
-    end
-    
 end
 local rpc_minion_set_dead = function (self, channel_id, unit_id, attack_direction, hit_zone_id, damage_profile_id, do_ragdoll_push, herding_template_id_or_nil)
 	local output_table = data_locations.MinionDeathManager()
@@ -1343,20 +1366,20 @@ datasource_templates = {
         },
     },
     {   name = "MinionBuffExtension",
-    data_structure = {},
-    hook_templates = {
-        {
-            hook_class = CLASS.MinionBuffExtension,
-            hook_functions = {
-                rpc_add_buff = rpc_add_buff,
-                rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
-                rpc_remove_buff = rpc_remove_buff,
-                rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
-                rpc_buff_set_start_time = rpc_buff_set_start_time,
+        data_structure = {},
+        hook_templates = {
+            {
+                hook_class = CLASS.MinionBuffExtension,
+                hook_functions = {
+                    rpc_add_buff = rpc_add_buff,
+                    rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
+                    rpc_remove_buff = rpc_remove_buff,
+                    rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
+                    rpc_buff_set_start_time = rpc_buff_set_start_time,
+                },
             },
         },
     },
-},
     {   name = "UnitSpawnerManager",
         data_structure = {},
         hook_templates = {
@@ -1427,6 +1450,13 @@ datasource_templates = {
                 hook_functions = {
                     rpc_player_wield_slot = rpc_player_wield_slot,
                     rpc_player_unwield_slot = rpc_player_unwield_slot,
+                },
+            },
+            {
+                hook_class = CLASS.PlayerUnitWeaponExtension,
+                hook_functions = {
+                    on_slot_wielded = on_slot_wielded,
+                    on_slot_unwielded = on_slot_unwielded,
                 },
             },
         },
@@ -1539,17 +1569,6 @@ datasource_templates = {
     {   name = "CombatAbility",
         data_structure = {},
         hook_templates = {},
-    },
-    {   name = "PlayerHuskAbilityExtension",
-        data_structure = {},
-        hook_templates = {
-            {
-                hook_class = CLASS.PlayerHuskAbilityExtension,
-                hook_functions = {
-                    update = PHAE_update,
-                },
-            },
-        },
     },
     {   name = "MinionDeathManager",
         data_structure = {},

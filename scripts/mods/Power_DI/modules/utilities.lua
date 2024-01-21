@@ -154,4 +154,21 @@ utilities.create_proxy_table = function(input_table)
     setmetatable(proxy, mt)
     return proxy
 end
+
+--Function to quickly check if a table is likely an array, only doing a few checks for speed--
+utilities.is_array = function(input_table)
+    local array_count = #input_table
+    if type(input_table) ~= "table" or array_count == 0 then
+        return false
+    end
+
+    local max_check = math.min(5,array_count)
+
+    for i = 1,5,1 do
+        if input_table[i] == nil then
+            return false
+        end
+    end
+    return true
+end
 return utilities

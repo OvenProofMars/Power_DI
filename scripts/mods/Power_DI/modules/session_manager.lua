@@ -1,11 +1,12 @@
 local mod = get_mod("Power_DI")
+local DMF = get_mod("DMF")
 local PDI
 local session_manager = {}
 session_manager.sessions = {}
 
 --Function to generate a session id--
 local function generate_session_id()
-    local session_id = Managers.connection:session_id() or ("local_"..PDI.utilities.uuid())
+    local session_id = Managers.connection:session_id() or "local"
     return session_id
 end
 
@@ -46,8 +47,10 @@ session_manager.new = function()
     session.info.start_time = os.date("%X")
     session.info.resumed = false
 
-    save_data.sessions[session_id] = session.info
-    save_data.sessions_index[session_index] = session_id
+    if session_id ~= "local" then
+        save_data.sessions[session_id] = session.info
+        save_data.sessions_index[session_index] = session_id
+    end
 
     PDI.datasource_manager.clear_cache()
     PDI.datasource_manager.add_datasources(session)
@@ -56,6 +59,10 @@ end
 
 --Function to save the current session data to disk--
 session_manager.save_current_session = function ()
+    local session_id = PDI.data.session_data.info.session_id
+    if session_id == "local" then
+        return
+    end
     local save_table = {
         ["save_data"] = PDI.data.save_data,
         ["session_data"] = PDI.data.session_data,
@@ -95,6 +102,13 @@ end
 session_manager.resume_or_create_session = function()
     local session_id = PDI.data.session_data.info and PDI.data.session_data.info.session_id
     if session_id == generate_session_id() then
+        local datasources = PDI.data.session_data.datasources
+        local auto_save_data = PDI.save_manager.get_loaded_auto_save_data()
+        if auto_save_data then
+            for k,v in pairs(auto_save_data) do
+                datasources[k] = v
+            end
+        end
         session_manager.update_current_session_info({resumed = true})
     else
         PDI.data.session_data = session_manager.new()
@@ -103,17 +117,37 @@ session_manager.resume_or_create_session = function()
     session_manager.save_current_session()
 end
 
+-- session_manager.new_session_check = function()
+--     local last_session_id = PDI.data.session_data.info and PDI.data.session_data.info.session_id
+--     local current_session_id = generate_session_id()
+
+--     return last_session_id ~= current_session_id
+-- end
+
+-- session_manager.create_session = function()
+--     PDI.data.session_data = session_manager.new()
+--     prepare_session(PDI.data.session_data)
+--     session_manager.save_current_session()
+-- end
+
+-- session_manager.resume_session = function()
+--     PDI.save_manager.load_auto_save()
+--     :next(
+--         function()
+--             session_manager.save_current_session()
+--         end
+--     )
+--     session_manager.update_current_session_info({resumed = true})
+--     prepare_session(PDI.data.session_data)
+-- end
+
 --Get the currently loaded session id--
 session_manager.get_loaded_session_id = function()
     local session_id = PDI.data.session_data.info and PDI.data.session_data.info.session_id
     return session_id
 end
 
---Hook to check if a session has ended, to update info in the save files--
-mod:hook_safe(CLASS.GameModeManager, "rpc_game_mode_end_conditions_met", function(self, channel_id, outcome_id)
-	local outcome = NetworkLookup.game_mode_outcomes[outcome_id]
-    PDI.session_manager.update_current_session_info({["outcome"] = outcome})
-end)
+
 
 return session_manager
 

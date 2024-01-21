@@ -53,7 +53,6 @@ local function set_session_info_change_function(content,style)
     content.text = session_info_text
     content.session_id = selected_session_id
 end
-
 local function get_definitions(self)
     local definitions = {
         scenegraph_definition = {
@@ -590,7 +589,6 @@ local function set_session_dropdown_custom_style(self, widget)
     end
 end
 
-
 PdiMainViewElement.init = function (self, parent, draw_layer, start_scale, context)
     PDI = context.PDI
     view_manager = PDI.view_manager
@@ -613,7 +611,7 @@ PdiMainViewElement.init = function (self, parent, draw_layer, start_scale, conte
     if in_game then
         local session = PDI.data.session_data
         local session_id = session.info.session_id
-        
+       
         local options_array = {
             {
             id = session_id,

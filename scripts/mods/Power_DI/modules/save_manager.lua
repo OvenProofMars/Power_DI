@@ -7,6 +7,8 @@ local auto_save_interval = mod:get("auto_save_interval")
 local save_manager = {}
 save_manager.queue = {}
 
+local auto_save_data = {}
+
 --Function to set auto save--
 save_manager.set_auto_save = function(value)
     auto_save_setting = value
@@ -28,9 +30,8 @@ save_manager.filenames = {
     ["save_data"] = "power_di",
     ["session_data"] = get_loaded_session_id,
     ["lookup_data"] = "lookup_tables_"..mod.version.."_v"..APPLICATION_SETTINGS.game_version,
-} 
-
-local saved_this_cycle = false
+    ["game_lookup_tables"] = "game_lookup_tables_v"..APPLICATION_SETTINGS.game_version
+}
 
 --Function to clean a string to comply with the stingray save functions--
 local function clean_string(input_string)
@@ -103,24 +104,90 @@ save_manager.save_multiple = function(input_table)
     end
 end
 
+local function auto_save_coroutine()
+    local auto_save_coroutine
+    
+    local function iterative_save()
+        local data_sources = PDI.data.session_data.datasources
+        for data_source_name, data_source_table in pairs(data_sources) do
+            save_manager.save("auto_save_"..data_source_name, table.clone(data_source_table))
+            :next(
+                function()
+                    coroutine.resume(auto_save_coroutine) 
+                end
+            )
+            coroutine:yield()
+        end
+    end
+
+    auto_save_coroutine = coroutine.create(iterative_save)
+    coroutine.resume(auto_save_coroutine)
+    return auto_save_coroutine
+end
+
+local saved_this_cycle = false
+
 --Function that auto saves every interval while in a mission--
 local function auto_save()
-    if auto_save_setting then
-        if PDI.utilities.in_game() then
-            local gameplay_time = mod.utilities.get_gameplay_time()
-            if gameplay_time == 0 then
-                return
+    if not auto_save_setting then
+        return
+    end
+
+    if not PDI.utilities.in_game() then
+        return
+    end
+
+    local gameplay_time = mod.utilities.get_gameplay_time()
+
+    if gameplay_time == 0 then
+        return
+    end
+
+    local modulus = gameplay_time % (auto_save_interval+1)
+    if modulus > auto_save_interval and not saved_this_cycle then
+        auto_save_coroutine()
+        saved_this_cycle = true
+    elseif modulus < auto_save_interval then
+        saved_this_cycle = false
+    end
+end
+
+save_manager.clear_auto_save_cache = function ()
+    auto_save_data = nil
+    local data_sources = PDI.datasource_manager.registered_datasources
+    for data_source_name, _ in pairs(data_sources) do
+        save_manager.save("auto_save_"..data_source_name, {})
+    end
+end
+
+local function load_auto_save ()
+    PDI.debug("load_auto_save", "start")
+    local data_sources = PDI.datasource_manager.registered_datasources
+    local promise_array = {}
+    for data_source_name, _ in pairs(data_sources) do
+        promise_array[#promise_array+1] = save_manager.load("auto_save_"..data_source_name)
+        :next(
+            function(data)
+                PDI.debug("load_auto_save", data_source_name)
+                auto_save_data[data_source_name] = data
             end
-            local modulus = gameplay_time % auto_save_interval
-            if (modulus > (auto_save_interval-1)) and not saved_this_cycle then
-                local session_data = PDI.data.session_data
-                save_manager.save("session_data", session_data)
-                --PDI.session_manager.save_current_session()
-                saved_this_cycle = true
-            elseif (modulus < (auto_save_interval-1)) then
-                saved_this_cycle = false
-            end
+        )
+    end
+    return PDI.promise.all(unpack(promise_array))
+end
+
+save_manager.get_loaded_auto_save_data = function()
+    if not next(auto_save_data) then
+        return
+    end
+    local has_data
+    for k,v in pairs(auto_save_data) do
+        if next(v) then
+            has_data = true
         end
+    end
+    if has_data then
+        return auto_save_data
     end
 end
 
@@ -139,6 +206,7 @@ save_manager.init = function(input_table)
         end,
         function(err)
             PDI.data.save_data = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\templates\save_data_template]])
+            return save_manager.save("save_data", PDI.data.save_data)
         end
     )
     :next(
@@ -162,45 +230,29 @@ save_manager.init = function(input_table)
             table.remove(sessions_index,#sessions_index)
             sessions[session_id] = nil
             session_id = nil
+            return save_manager.save("save_data", PDI.data.save_data)
         end
     )
     :next(
         function()
             if session_id then
-                -- local power_di_version = sessions[session_id].info.power_di_version
-                -- local game_version = sessions[session_id].info.game_version
-                local lookup_tables_filename = "lookup_tables_"..mod.version.."_v"..APPLICATION_SETTINGS.game_version
-                return save_manager.load(lookup_tables_filename)
-            else
-                return PDI.promise:rejected("no previous session found")
+                return load_auto_save()
             end
-        end
-    )
-    :next(
-        function(data)
-            PDI.data.lookup_data = data
         end,
         function(err)
-            PDI.data.lookup_data = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\templates\lookup_tables_template]])
-            local master_item_promise = PDI.promise:new()
-            local master_items_callback = function()
-                local items = MasterItems.get_cached()
-                PDI.data.lookup_data.MasterItems = items
-                PDI.utilities.clean_table_for_saving(PDI.data.lookup_data)
-                master_item_promise:resolve()
-            end
-            MasterItems.add_listener(master_items_callback)
-            return master_item_promise
-        end
-    )
-    :next(
-        function(a)
-            save_manager.save_multiple(PDI.data)
+            print("------")
+            DMF:dump(err)
+            print("------")
         end
     )
     :next(
         function()
             promise:resolve()
+        end,
+        function(err)
+            print("------")
+            DMF:dump(err)
+            print("------")
         end
     )
     return promise

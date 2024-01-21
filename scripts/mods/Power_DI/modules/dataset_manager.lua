@@ -5,7 +5,7 @@ local dataset_manager = {}
 
 dataset_manager.registered_datasets = {}
 local shared_data = {}
-local function_set, must_yield
+local function_set, must_yield, is_array
 
 --Wrap a function with a the coroutine yield check--
 local function coroutine_wrapper(self,fn)
@@ -18,19 +18,7 @@ local function coroutine_wrapper(self,fn)
     return coroutine_function
 end
 
---Function to quickly check if a table is likely an array, only doing a few checks for speed--
-local function is_array(input_table)
-    if type(input_table) ~= "table" then
-        return false
-    end
 
-    for i = 1,5,1 do
-        if input_table[i] == nil then
-            return false
-        end
-    end
-    return true
-end
 
 --Coroutine to clone a datasource to a dataset--
 local function clone_datasource_coroutine (self, datasource_name)
@@ -284,8 +272,8 @@ local function generate_proxies(session)
     proxies.datasource_proxies = {}
     proxies.lookup_proxies = {}
     local datasources = session.datasources
-    local lookup_tables = PDI.data.lookup_data
-    
+    local lookup_tables = PDI.lookup_manager.get_lookup_tables()
+   
     for datasource_name, datasource_table in pairs(datasources) do
         proxies.datasource_proxies[datasource_name] = PDI.utilities.create_proxy_table(datasource_table)
     end
@@ -320,6 +308,7 @@ end
 dataset_manager.init = function (input_table)
     PDI = input_table
     must_yield = PDI.coroutine_manager.must_yield
+    is_array = PDI.utilities.is_array
     local dataset_templates = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\templates\dataset_templates]])
     for dataset_name, dataset_template in pairs(dataset_templates) do
         mod.datasets.register_dataset(dataset_template)

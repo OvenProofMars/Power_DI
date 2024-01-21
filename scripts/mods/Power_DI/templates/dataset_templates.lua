@@ -351,7 +351,9 @@ local combat_abilities = function(data)
                 if player_lookup then
                     v.player_name = player_lookup.unit_name
                 end
+                v.combat_ability_charge_used = 1
                 v.player_unit_uuid = nil
+                v.player_unit_position = nil
             end
         )
     end
@@ -680,7 +682,8 @@ dataset_templates = {
         },
         legend = {
             player_name = "string",
-            combat_ability = "string",
+            combat_ability_display_name = "string",
+            combat_ability_charge_used = "number",
             time = "number",
         }
     },
