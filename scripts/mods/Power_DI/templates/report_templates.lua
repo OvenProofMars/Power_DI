@@ -207,23 +207,23 @@ report_templates = {
         },
         filters = {},
     },
-    combat_abilities_report = {
-        name = "Combat ability report",
-        label = "Combat ability report",
-        dataset_name = "combat_abilities",
+    player_abilities_report = {
+        name = "Player abilities report",
+        label = "Player abilities report",
+        dataset_name = "player_abilities",
         report_type = "pivot_table",
         columns = {"player_name"},
-        rows = {"combat_ability_display_name"},
+        rows = {"ability_type"},
         values = {
             {
                 field_name = "player_name",
                 type = "count",
-                label = "Combat abilities",
+                label = "Player abilities",
                 visible = true,
                 format = "number"
             },
         },
-        filters = {},
+        filters = {"event_type = \"Charge used\""},
     },
     player_buffs_report = {
         name = "Player buffs report",

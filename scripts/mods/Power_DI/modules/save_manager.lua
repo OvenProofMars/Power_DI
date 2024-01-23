@@ -103,7 +103,7 @@ save_manager.save_multiple = function(input_table)
         save_manager.save(table_key, table_value)
     end
 end
-
+--Coroutine function for auto saving--
 local function auto_save_coroutine()
     local auto_save_coroutine
     
@@ -152,6 +152,7 @@ local function auto_save()
     end
 end
 
+--Function to clear the auto save data on disk--
 save_manager.clear_auto_save_cache = function ()
     auto_save_data = nil
     local data_sources = PDI.datasource_manager.registered_datasources
@@ -160,6 +161,7 @@ save_manager.clear_auto_save_cache = function ()
     end
 end
 
+--Function to load the auto save data from disk, async, returns a promise--
 local function load_auto_save ()
     PDI.debug("load_auto_save", "start")
     local data_sources = PDI.datasource_manager.registered_datasources
@@ -176,6 +178,7 @@ local function load_auto_save ()
     return PDI.promise.all(unpack(promise_array))
 end
 
+--Function to get the local auto save data variable--
 save_manager.get_loaded_auto_save_data = function()
     if not next(auto_save_data) then
         return
@@ -253,6 +256,7 @@ save_manager.init = function(input_table)
             print("------")
             DMF:dump(err)
             print("------")
+            promise:resolve()
         end
     )
     return promise

@@ -341,9 +341,10 @@ local slots = function(data)
     )
 end
 
-local combat_abilities = function(data)
+local player_abilities = function(data)
     local UnitSpawnerManager = data.datasource_proxies.UnitSpawnerManager
-    data:append_dataset("CombatAbility")
+    local player_ability_types_lookup = {combat_ability = "Combat ability", grenade_ability = "Blitz ability"}
+    data:append_dataset("PlayerAbilities")
     :next(function()
         return data:iterate_dataset(
             function(k,v)
@@ -351,7 +352,15 @@ local combat_abilities = function(data)
                 if player_lookup then
                     v.player_name = player_lookup.unit_name
                 end
-                v.combat_ability_charge_used = 1
+                local event_type
+                if v.charge_delta > 0 then
+                    event_type = "Charge gained"
+                elseif v.charge_delta < 0 then
+                    event_type = "Charge used"
+                end
+                v.event_type = event_type
+                local ability_type = v.ability_type
+                v.ability_type = player_ability_types_lookup[ability_type]
                 v.player_unit_uuid = nil
                 v.player_unit_position = nil
             end
@@ -672,18 +681,19 @@ dataset_templates = {
             time = "number",
         }
     },
-    combat_abilities = {
-        name = "combat_abilities",
-        label = "Combat abilities",
-        dataset_function = combat_abilities,
+    player_abilities = {
+        name = "player_abilities",
+        label = "Player abilities",
+        dataset_function = player_abilities,
         required_datasources = {
-            "CombatAbility",
+            "PlayerAbilities",
             "UnitSpawnerManager",
         },
         legend = {
             player_name = "string",
-            combat_ability_display_name = "string",
-            combat_ability_charge_used = "number",
+            ability_type = "string",
+            charge_delta = "number",
+            event_type = "string",
             time = "number",
         }
     },

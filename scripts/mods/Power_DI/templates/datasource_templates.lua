@@ -14,13 +14,16 @@ local data_locations = {}
 mod.cache.active_interactions = {}
 mod.cache.active_smart_tags = {}
 mod.cache.active_player_states = {}
-mod.cache.previous_frame_action = {}
+mod.cache.player_ability_num_charges = {}
+mod.cache.player_psyker_grenade_abilities = {}
 mod.cache.buffs = {}
-mod.cache.force_fields = {}
-mod.cache.zealot_relic = {}
 
-
+local ability_types = {"combat_ability", "grenade_ability"}
 local unit_spawner_manager = Managers.state.unit_spawner
+local get_unit_uuid = utilities.get_unit_uuid
+local get_position = utilities.get_position
+local get_gameplay_time = utilities.get_gameplay_time
+local vector_to_string = utilities.vector_to_string
 
 --Function to lookup which data location to use for the buff functions--
 local buff_data_location_lookup = function (class_name)
@@ -31,7 +34,6 @@ local buff_data_location_lookup = function (class_name)
     }
     return lookup[class_name]
 end
-
 --Datasource hook functions--
 local add_attack_result = function (self, damage_profile, attacked_unit, attacking_unit, attack_direction, hit_world_position, hit_weakspot, damage, attack_result, attack_type, damage_efficiency, is_critical_strike)
     local output_table = data_locations.AttackReportManager()
@@ -39,15 +41,15 @@ local add_attack_result = function (self, damage_profile, attacked_unit, attacki
 
     local attack_report = {}
     
-    attack_report.time = mod.utilities.get_gameplay_time()
+    attack_report.time = get_gameplay_time()
     attack_report.damage_profile_name = damage_profile.name
-    attack_report.attacked_unit_uuid = utilities.get_unit_uuid(attacked_unit)
+    attack_report.attacked_unit_uuid = get_unit_uuid(attacked_unit)
     attack_report.attacked_unit_damage_taken = attacked_unit_health_extension and attacked_unit_health_extension:damage_taken()
-    attack_report.attacked_unit_position = utilities.get_position(attacked_unit)
-    attack_report.attacking_unit_uuid = utilities.get_unit_uuid(attacking_unit)
-    attack_report.attacking_unit_position = utilities.get_position(attacking_unit)
-    attack_report.attack_direction = attack_direction and utilities.vector_to_string(attack_direction)
-    attack_report.hit_world_position = hit_world_position and utilities.vector_to_string(hit_world_position)
+    attack_report.attacked_unit_position = get_position(attacked_unit)
+    attack_report.attacking_unit_uuid = get_unit_uuid(attacking_unit)
+    attack_report.attacking_unit_position = get_position(attacking_unit)
+    attack_report.attack_direction = attack_direction and vector_to_string(attack_direction)
+    attack_report.hit_world_position = hit_world_position and vector_to_string(hit_world_position)
     attack_report.hit_weakspot = hit_weakspot or false
     attack_report.damage = damage
     attack_report.attack_result = attack_result
@@ -65,11 +67,11 @@ local rpc_player_blocked_attack = function (self, channel_id, unit_id, attacking
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
-    temp_table.attacking_unit_uuid = utilities.get_unit_uuid(attacking_unit)
-    temp_table.attacking_unit_position = utilities.get_position(attacking_unit)
+    temp_table.time = get_gameplay_time()
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
+    temp_table.attacking_unit_uuid = get_unit_uuid(attacking_unit)
+    temp_table.attacking_unit_position = get_position(attacking_unit)
     temp_table.weapon_template_name = NetworkLookup.weapon_templates[weapon_template_id]
     temp_table.attack_type = NetworkLookup.attack_types[attack_type_id]
 
@@ -83,9 +85,9 @@ local rpc_player_suppressed = function (self, channel_id, unit_id, num_suppressi
     
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
+    temp_table.time = get_gameplay_time()
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
     temp_table.num_suppression_hits = num_suppression_hits
 
     output_table[#output_table+1] = temp_table
@@ -104,13 +106,13 @@ local rpc_interaction_started = function (self, channel_id, unit_id, is_level_un
     
     local temp_table ={}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "interaction_started"
     temp_table.interaction_type = interaction_type
-    temp_table.interactor_unit_uuid = utilities.get_unit_uuid(interactor_unit)
-    temp_table.interactor_unit_position = utilities.get_position(interactor_unit)
-    temp_table.interactee_unit_uuid = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactor_unit_uuid = get_unit_uuid(interactor_unit)
+    temp_table.interactor_unit_position = get_position(interactor_unit)
+    temp_table.interactee_unit_uuid = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
     temp_table.is_level_unit = is_level_unit
 
     output_table[#output_table+1] = temp_table
@@ -129,13 +131,13 @@ local rpc_interaction_stopped = function (self, channel_id, unit_id, is_level_un
 
     local temp_table ={}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "interaction_stopped"
     temp_table.interaction_type = interaction_type
-    temp_table.interactor_unit_uuid = utilities.get_unit_uuid(interactor_unit)
-    temp_table.interactor_unit_position = utilities.get_position(interactor_unit)
-    temp_table.interactee_unit_uuid = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactor_unit_uuid = get_unit_uuid(interactor_unit)
+    temp_table.interactor_unit_position = get_position(interactor_unit)
+    temp_table.interactee_unit_uuid = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
     temp_table.is_level_unit = self._is_level_unit
     temp_table.result = NetworkLookup.interaction_result[result]
 
@@ -151,12 +153,12 @@ local rpc_interaction_set_missing_player = function (self, channel_id, unit_id, 
 
     local temp_table ={}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "interaction_set_missing_player"
-    temp_table.interactor_unit_uuid = utilities.get_unit_uuid(interactor_unit)
-    temp_table.interactor_unit_position = utilities.get_position(interactor_unit)
-    temp_table.interactee_unit_uuid = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactor_unit_uuid = get_unit_uuid(interactor_unit)
+    temp_table.interactor_unit_position = get_position(interactor_unit)
+    temp_table.interactee_unit_uuid = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
     temp_table.is_level_unit = is_level_unit
     temp_table.is_missing = is_missing
 
@@ -172,10 +174,10 @@ local rpc_interaction_hot_join = function (self, channel_id, unit_id, is_level_u
     
     local temp_table ={}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "interaction_hot_join"
-    temp_table.interactee_unit_uuid = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactee_unit_uuid = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
     temp_table.is_level_unit = is_level_unit
     temp_table.active_type = active_type
 
@@ -194,10 +196,10 @@ local rpc_player_unit_enter_coherency = function (self, channel_id, game_object_
 
     temp_table.time = Managers.time:time("gameplay")
     temp_table.event = "enter"
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
-    temp_table.coherency_player_unit_uuid = utilities.get_unit_uuid(coherency_player_unit)
-    temp_table.coherency_player_unit_position = utilities.get_position(coherency_player_unit)
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
+    temp_table.coherency_player_unit_uuid = get_unit_uuid(coherency_player_unit)
+    temp_table.coherency_player_unit_position = get_position(coherency_player_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -214,10 +216,10 @@ local rpc_player_unit_exit_coherency = function (self, channel_id, game_object_i
 
     temp_table.time = Managers.time:time("gameplay")
     temp_table.event = "exit"
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
-    temp_table.coherency_player_unit_uuid = utilities.get_unit_uuid(coherency_player_unit)
-    temp_table.coherency_player_unit_position = utilities.get_position(coherency_player_unit)
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
+    temp_table.coherency_player_unit_uuid = get_unit_uuid(coherency_player_unit)
+    temp_table.coherency_player_unit_position = get_position(coherency_player_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -227,15 +229,15 @@ local rpc_add_buff = function(self, channel_id, game_object_id, buff_template_id
     local buff_lookup_table = mod.cache.buffs
     local unit_spawner_manager = Managers.state.unit_spawner
     local unit = unit_spawner_manager:unit(game_object_id)
-    local unit_uuid = utilities.get_unit_uuid(unit)
+    local unit_uuid = get_unit_uuid(unit)
     local server_index_uuid = unit_uuid.."_"..server_index
 
     local temp_table = {}
 
     temp_table.event = "add_buff"
     temp_table.unit_uuid = unit_uuid
-    temp_table.unit_position = utilities.get_position(unit)
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.unit_position = get_position(unit)
+    temp_table.time = get_gameplay_time()
     
     temp_table.buff_template_id = buff_template_id
     temp_table.optional_lerp_value = optional_lerp_value
@@ -253,15 +255,15 @@ local rpc_add_buff_with_stacks = function(self, channel_id, game_object_id, buff
     local buff_lookup_table = mod.cache.buffs
     local unit_spawner_manager = Managers.state.unit_spawner
     local unit = unit_spawner_manager:unit(game_object_id)
-    local unit_uuid = utilities.get_unit_uuid(unit)
+    local unit_uuid = get_unit_uuid(unit)
     local server_index_uuid = unit_uuid.."_"..server_index_array[1]
 
     local temp_table = {}
 
     temp_table.event = "add_buff_with_stacks"
     temp_table.unit_uuid = unit_uuid
-    temp_table.unit_position = utilities.get_position(unit)
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.unit_position = get_position(unit)
+    temp_table.time = get_gameplay_time()
     
     temp_table.buff_template_id = buff_template_id
     temp_table.optional_lerp_value = optional_lerp_value
@@ -277,7 +279,7 @@ local rpc_remove_buff = function(self, channel_id, game_object_id, server_index)
     local buff_lookup_table = mod.cache.buffs
     local unit_spawner_manager = Managers.state.unit_spawner
     local unit = unit_spawner_manager:unit(game_object_id)
-    local unit_uuid = utilities.get_unit_uuid(unit)
+    local unit_uuid = get_unit_uuid(unit)
     local server_index_uuid = unit_uuid.."_"..server_index
     local buff_lookup = buff_lookup_table[server_index_uuid]
 
@@ -285,8 +287,8 @@ local rpc_remove_buff = function(self, channel_id, game_object_id, server_index)
 
     temp_table.event = "remove_buff"
     temp_table.unit_uuid = unit_uuid
-    temp_table.unit_position = utilities.get_position(unit)
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.unit_position = get_position(unit)
+    temp_table.time = get_gameplay_time()
     
     temp_table.buff_template_id = buff_lookup.buff_template_id
     temp_table.optional_lerp_value = buff_lookup.optional_lerp_value
@@ -304,7 +306,7 @@ local rpc_buff_proc_set_active_time = function(self, channel_id, game_object_id,
     local buff_lookup_table = mod.cache.buffs
     local unit_spawner_manager = Managers.state.unit_spawner
     local unit = unit_spawner_manager:unit(game_object_id)
-    local unit_uuid = utilities.get_unit_uuid(unit)
+    local unit_uuid = get_unit_uuid(unit)
     local server_index_uuid = unit_uuid.."_"..server_index
     local buff_lookup = buff_lookup_table[server_index_uuid]
 
@@ -312,8 +314,8 @@ local rpc_buff_proc_set_active_time = function(self, channel_id, game_object_id,
 
     temp_table.event = "buff_proc_set_active_time"
     temp_table.unit_uuid = unit_uuid
-    temp_table.unit_position = utilities.get_position(unit)
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.unit_position = get_position(unit)
+    temp_table.time = get_gameplay_time()
     
     temp_table.buff_template_id = buff_lookup.buff_template_id
     temp_table.optional_lerp_value = buff_lookup.optional_lerp_value
@@ -331,7 +333,7 @@ local rpc_buff_set_start_time = function(self, channel_id, game_object_id, serve
     local buff_lookup_table = mod.cache.buffs
     local unit_spawner_manager = Managers.state.unit_spawner
     local unit = unit_spawner_manager:unit(game_object_id)
-    local unit_uuid = utilities.get_unit_uuid(unit)
+    local unit_uuid = get_unit_uuid(unit)
     local server_index_uuid = unit_uuid.."_"..server_index
     local buff_lookup = buff_lookup_table[server_index_uuid]
 
@@ -339,8 +341,8 @@ local rpc_buff_set_start_time = function(self, channel_id, game_object_id, serve
 
     temp_table.event = "buff_set_start_time"
     temp_table.unit_uuid = unit_uuid
-    temp_table.unit_position = utilities.get_position(unit)
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.unit_position = get_position(unit)
+    temp_table.time = get_gameplay_time()
     
     temp_table.buff_template_id = buff_lookup.buff_template_id
     temp_table.optional_lerp_value = buff_lookup.optional_lerp_value
@@ -362,8 +364,8 @@ local rpc_player_collected_materials = function(self, channel_id, peer_id, mater
     
     local temp_table = {}
 
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.time = get_gameplay_time()
     temp_table.material_type = NetworkLookup.material_type_lookup[material_type_lookup]
     temp_table.material_size = NetworkLookup.material_size_lookup[material_size_lookup]
 
@@ -404,13 +406,13 @@ local add_network_unit = function(self, unit, game_object_id, is_husk)
     end
 
     local temp_table = {}
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.unit_template_name = unit_template_name
     temp_table.unit_name = unit_name
-    temp_table.unit_position = utilities.get_position(unit)
+    temp_table.unit_position = get_position(unit)
     temp_table.max_health = max_health
-    temp_table.owner_unit_uuid = owner_unit and utilities.get_unit_uuid(owner_unit)
-    temp_table.owner_unit_position = owner_unit and utilities.get_position(owner_unit)
+    temp_table.owner_unit_uuid = owner_unit and get_unit_uuid(owner_unit)
+    temp_table.owner_unit_position = owner_unit and get_position(owner_unit)
 
     output_table[unit_uuid] = temp_table
 end
@@ -422,9 +424,9 @@ local rpc_start_boss_encounter = function(self, channel_id, unit_id)
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
-    temp_table.boss_unit_uuid = utilities.get_unit_uuid(boss_unit)
-    temp_table.boss_unit_position = utilities.get_position(boss_unit)
+    temp_table.time = get_gameplay_time()
+    temp_table.boss_unit_uuid = get_unit_uuid(boss_unit)
+    temp_table.boss_unit_position = get_position(boss_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -437,12 +439,12 @@ local rpc_start_pickup_animation = function (self, channel_id, pickup_id, pickup
 
 	local temp_table = {}
     
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "start_pickup_animation"
-    temp_table.pickup_unit_uuid = utilities.get_unit_uuid(pickup_unit)
-    temp_table.pickup_unit_position = utilities.get_position(pickup_unit)
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
+    temp_table.pickup_unit_uuid = get_unit_uuid(pickup_unit)
+    temp_table.pickup_unit_position = get_position(pickup_unit)
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -455,12 +457,12 @@ local rpc_start_place_animation = function (self, channel_id, pickup_id, pickup_
 
 	local temp_table = {}
     
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "start_place_animation"
-    temp_table.pickup_unit_uuid = utilities.get_unit_uuid(pickup_unit)
-    temp_table.pickup_unit_position = utilities.get_position(pickup_unit)
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
+    temp_table.pickup_unit_uuid = get_unit_uuid(pickup_unit)
+    temp_table.pickup_unit_position = get_position(pickup_unit)
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -473,12 +475,12 @@ local rpc_luggable_socket_luggable = function (self, channel_id, socket_id, sock
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "luggable_socket_luggable"
-    temp_table.socket_unit_uuid = utilities.get_unit_uuid(socket_unit)
-    temp_table.socket_unit_position = utilities.get_position(socket_unit)
-    temp_table.socketed_unit_uuid = utilities.get_unit_uuid(socketed_unit)
-    temp_table.socketed_unit_position = utilities.get_position(socketed_unit)
+    temp_table.socket_unit_uuid = get_unit_uuid(socket_unit)
+    temp_table.socket_unit_position = get_position(socket_unit)
+    temp_table.socketed_unit_uuid = get_unit_uuid(socketed_unit)
+    temp_table.socketed_unit_position = get_position(socketed_unit)
 
     output_table[#output_table+1] = temp_table
 
@@ -491,10 +493,10 @@ local rpc_luggable_socket_unlock = function (self, channel_id, socket_id, socket
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "luggable_socket_unlock"
-    temp_table.socket_unit_uuid = utilities.get_unit_uuid(socket_unit)
-    temp_table.socket_unit_position = utilities.get_position(socket_unit)
+    temp_table.socket_unit_uuid = get_unit_uuid(socket_unit)
+    temp_table.socket_unit_position = get_position(socket_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -506,10 +508,10 @@ local rpc_luggable_socket_set_visibility = function (self, channel_id, socket_id
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "luggable_socket_set_visibility"
-    temp_table.socket_unit_uuid = utilities.get_unit_uuid(socket_unit)
-    temp_table.socket_unit_position = utilities.get_position(socket_unit)
+    temp_table.socket_unit_uuid = get_unit_uuid(socket_unit)
+    temp_table.socket_unit_position = get_position(socket_unit)
     temp_table.value = value
 
     output_table[#output_table+1] = temp_table
@@ -522,10 +524,10 @@ local rpc_player_wield_slot = function(self, channel_id, go_id, slot_id)
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "player_wield_slot"
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
     temp_table.slot_name = NetworkLookup.player_inventory_slot_names[slot_id]
 
     output_table[#output_table+1] = temp_table
@@ -538,10 +540,10 @@ local rpc_player_unwield_slot = function(self, channel_id, go_id, slot_id)
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "player_unwield_slot"
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
     temp_table.slot_name = NetworkLookup.player_inventory_slot_names[slot_id]
 
     output_table[#output_table+1] = temp_table
@@ -552,10 +554,10 @@ local on_slot_wielded = function(self, slot_name, t, skip_wield_action)
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "player_wield_slot_local"
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
     temp_table.slot_name = slot_name
 
     output_table[#output_table+1] = temp_table
@@ -566,10 +568,10 @@ local on_slot_unwielded = function(self, slot_name, t)
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "player_unwield_slot_local"
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
     temp_table.slot_name = slot_name
 
     output_table[#output_table+1] = temp_table
@@ -582,10 +584,10 @@ local rpc_player_equip_item_from_profile_to_slot = function(self, channel_id, go
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "player_equip_item_from_profile_to_slot"
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
     temp_table.slot_name = NetworkLookup.player_inventory_slot_names[slot_id]
     temp_table.item_name = NetworkLookup.player_item_names[item_id]
 
@@ -600,12 +602,12 @@ local rpc_player_equip_item_to_slot = function(self, channel_id, go_id, slot_id,
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "player_equip_item_to_slot"
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
-    temp_table.optional_existing_unit_3p_uuid = optional_existing_unit_3p and utilities.get_unit_uuid(optional_existing_unit_3p)
-    temp_table.optional_existing_unit_3p_position = optional_existing_unit_3p and utilities.get_position(optional_existing_unit_3p)
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
+    temp_table.optional_existing_unit_3p_uuid = optional_existing_unit_3p and get_unit_uuid(optional_existing_unit_3p)
+    temp_table.optional_existing_unit_3p_position = optional_existing_unit_3p and get_position(optional_existing_unit_3p)
     temp_table.slot_name = NetworkLookup.player_inventory_slot_names[slot_id]
     temp_table.item_name = NetworkLookup.player_item_names[item_id]
 
@@ -623,10 +625,10 @@ local rpc_player_unequip_item_from_slot = function(self, channel_id, go_id, slot
 
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "player_unequip_item_from_slot"
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(player_unit)
-    temp_table.player_unit_position = utilities.get_position(player_unit)
+    temp_table.player_unit_uuid = get_unit_uuid(player_unit)
+    temp_table.player_unit_position = get_position(player_unit)
     temp_table.slot_name = slot_name
     temp_table.item_name = item_name
 
@@ -640,10 +642,10 @@ local rpc_health_station_use = function(self, channel_id, level_unit_id)
     
     local temp_table ={}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "health_station_use"
-    temp_table.health_station_unit_uuid = utilities.get_unit_uuid(health_station_unit)
-    temp_table.health_station_unit_position = utilities.get_position(health_station_unit)
+    temp_table.health_station_unit_uuid = get_unit_uuid(health_station_unit)
+    temp_table.health_station_unit_position = get_position(health_station_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -656,12 +658,12 @@ local rpc_health_station_on_socket_spawned = function(self, channel_id, level_un
    
     local temp_table ={}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "health_station_on_socket_spawned"
-    temp_table.health_station_unit_uuid = utilities.get_unit_uuid(health_station_unit)
-    temp_table.health_station_unit_position = utilities.get_position(health_station_unit)
-    temp_table.socket_unit_uuid = utilities.get_unit_uuid(socket_unit)
-    temp_table.socket_unit_position = utilities.get_position(socket_unit)
+    temp_table.health_station_unit_uuid = get_unit_uuid(health_station_unit)
+    temp_table.health_station_unit_position = get_position(health_station_unit)
+    temp_table.socket_unit_uuid = get_unit_uuid(socket_unit)
+    temp_table.socket_unit_position = get_position(socket_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -674,12 +676,12 @@ local rpc_health_station_on_battery_spawned = function(self, channel_id, level_u
    
     local temp_table ={}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "health_station_on_battery_spawned"
-    temp_table.health_station_unit_uuid = utilities.get_unit_uuid(health_station_unit)
-    temp_table.health_station_unit_position = utilities.get_position(health_station_unit)
-    temp_table.battery_unit_uuid = utilities.get_unit_uuid(battery_unit)
-    temp_table.battery_unit_position = utilities.get_position(battery_unit)
+    temp_table.health_station_unit_uuid = get_unit_uuid(health_station_unit)
+    temp_table.health_station_unit_position = get_position(health_station_unit)
+    temp_table.battery_unit_uuid = get_unit_uuid(battery_unit)
+    temp_table.battery_unit_position = get_position(battery_unit)
 
     output_table[#output_table+1] = temp_table
 
@@ -692,10 +694,10 @@ local rpc_health_station_sync_charges = function(self, channel_id, level_unit_id
 
     local temp_table ={}
     
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "health_station_sync_charges"
-    temp_table.health_station_unit_uuid = utilities.get_unit_uuid(health_station_unit)
-    temp_table.health_station_unit_position = utilities.get_position(health_station_unit)
+    temp_table.health_station_unit_uuid = get_unit_uuid(health_station_unit)
+    temp_table.health_station_unit_position = get_position(health_station_unit)
     temp_table.charge_amount = charge_amount
 
     output_table[#output_table+1] = temp_table
@@ -716,14 +718,14 @@ local rpc_health_station_hot_join = function (self, channel_id, level_unit_id, c
 	end
 
     local temp_table ={}
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "health_station_hot_join"
-    temp_table.health_station_unit_uuid = utilities.get_unit_uuid(health_station_unit)
-    temp_table.health_station_unit_position = utilities.get_position(health_station_unit)
-    temp_table.socket_unit_uuid = utilities.get_unit_uuid(socket_unit)
-    temp_table.socket_unit_position = utilities.get_position(socket_unit)
-    temp_table.battery_unit_uuid = utilities.get_unit_uuid(battery_unit)
-    temp_table.battery_unit_position = utilities.get_position(battery_unit)
+    temp_table.health_station_unit_uuid = get_unit_uuid(health_station_unit)
+    temp_table.health_station_unit_position = get_position(health_station_unit)
+    temp_table.socket_unit_uuid = get_unit_uuid(socket_unit)
+    temp_table.socket_unit_position = get_position(socket_unit)
+    temp_table.battery_unit_uuid = get_unit_uuid(battery_unit)
+    temp_table.battery_unit_position = get_position(battery_unit)
     temp_table.charge_amount = charge_amount
 
     output_table[#output_table+1] = temp_table
@@ -735,10 +737,10 @@ local rpc_servo_skull_do_pulse_fx = function (self, channel_id, game_object_id)
 	local interactee_unit = unit_spawner_manager:unit(game_object_id, false)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "servo_skull_do_pulse_fx"
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -749,10 +751,10 @@ local rpc_servo_skull_player_nearby = function (self, channel_id, game_object_id
 	local interactee_unit = unit_spawner_manager:unit(game_object_id, false)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "servo_skull_player_nearby"
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.unit_position = get_position(interactee_unit)
     temp_table.player_nearby = tostring(player_nearby)
 
     output_table[#output_table+1] = temp_table
@@ -764,10 +766,10 @@ local rpc_servo_skull_activator_set_visibility = function (self, channel_id, lev
 	local interactee_unit = unit_spawner_manager:unit(level_unit_id, true)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "servo_skull_activator_set_visibility"
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
     temp_table.visible = value
 
     output_table[#output_table+1] = temp_table
@@ -779,10 +781,10 @@ local rpc_servo_skull_set_scanning_active = function (self, channel_id, game_obj
 	local interactee_unit = unit_spawner_manager:unit(game_object_id, false)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "servo_skull_set_scanning_active"
-    temp_table.interactee_unit_uuid = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactee_unit_uuid = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
     temp_table.active = active
 
     output_table[#output_table+1] = temp_table
@@ -794,10 +796,10 @@ local rpc_minigame_hot_join = function (self, channel_id, unit_id, is_level_unit
 	local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "minigame_hot_join"
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
     temp_table.state = NetworkLookup.minigame_states[state_id]
 
     output_table[#output_table+1] = temp_table
@@ -812,12 +814,12 @@ local rpc_minigame_sync_start = function (self, channel_id, unit_id, is_level_un
     local interactor_unit = interactor_unit_id and unit_spawner_manager:unit(interactor_unit_id)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "minigame_sync_start"
-    temp_table.interactor_unit = utilities.get_unit_uuid(interactor_unit)
-    temp_table.interactor_unit_position = utilities.get_position(interactor_unit)
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactor_unit = get_unit_uuid(interactor_unit)
+    temp_table.interactor_unit_position = get_position(interactor_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -831,12 +833,12 @@ local rpc_minigame_sync_stop = function (self, channel_id, unit_id, is_level_uni
     local interactor_unit = interactor_unit_id and unit_spawner_manager:unit(interactor_unit_id)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "minigame_sync_stop"
-    temp_table.interactor_unit = utilities.get_unit_uuid(interactor_unit)
-    temp_table.interactor_unit_position = utilities.get_position(interactor_unit)
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactor_unit = get_unit_uuid(interactor_unit)
+    temp_table.interactor_unit_position = get_position(interactor_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -850,12 +852,12 @@ local rpc_minigame_sync_completed = function (self, channel_id, unit_id, is_leve
     local interactor_unit = interactor_unit_id and unit_spawner_manager:unit(interactor_unit_id)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "minigame_sync_completed"
-    temp_table.interactor_unit = utilities.get_unit_uuid(interactor_unit)
-    temp_table.interactor_unit_position = utilities.get_position(interactor_unit)
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactor_unit)
+    temp_table.interactor_unit = get_unit_uuid(interactor_unit)
+    temp_table.interactor_unit_position = get_position(interactor_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactor_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -866,10 +868,10 @@ local rpc_decoder_device_hot_join = function (self, channel_id, unit_id, unit_is
 	local interactee_unit = unit_spawner_manager:unit(unit_id, true)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "decoder_device_hot_join"
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
     temp_table.unit_is_enabled = unit_is_enabled
     temp_table.is_placed = is_placed
     temp_table.started_decode = started_decode
@@ -885,10 +887,10 @@ local rpc_decoder_device_enable_unit = function (self, channel_id, unit_id)
 	local interactee_unit = unit_spawner_manager:unit(unit_id, true)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "decoder_device_enable_unit"
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -902,12 +904,12 @@ local rpc_decoder_device_place_unit = function (self, channel_id, unit_id)
     local interactor_unit = interactor_unit_id and unit_spawner_manager:unit(interactor_unit_id)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "decoder_device_place_unit"
-    temp_table.interactor_unit = utilities.get_unit_uuid(interactor_unit)
-    temp_table.interactor_unit_position = utilities.get_position(interactor_unit)
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactor_unit = get_unit_uuid(interactor_unit)
+    temp_table.interactor_unit_position = get_position(interactor_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -921,12 +923,12 @@ local rpc_decoder_device_start_decode = function (self, channel_id, unit_id)
     local interactor_unit = interactor_unit_id and unit_spawner_manager:unit(interactor_unit_id)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "decoder_device_start_decode"
-    temp_table.interactor_unit = utilities.get_unit_uuid(interactor_unit)
-    temp_table.interactor_unit_position = utilities.get_position(interactor_unit)
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactor_unit = get_unit_uuid(interactor_unit)
+    temp_table.interactor_unit_position = get_position(interactor_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -940,12 +942,12 @@ local rpc_decoder_device_decode_interrupt = function (self, channel_id, unit_id)
     local interactor_unit = interactor_unit_id and unit_spawner_manager:unit(interactor_unit_id)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "decoder_device_decode_interrupt"
-    temp_table.interactor_unit = utilities.get_unit_uuid(interactor_unit)
-    temp_table.interactor_unit_position = utilities.get_position(interactor_unit)
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactor_unit = get_unit_uuid(interactor_unit)
+    temp_table.interactor_unit_position = get_position(interactor_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -959,12 +961,12 @@ local rpc_decoder_device_finished = function (self, channel_id, unit_id)
     local interactor_unit = interactor_unit_id and unit_spawner_manager:unit(interactor_unit_id)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "decoder_device_finished"
-    temp_table.interactor_unit = utilities.get_unit_uuid(interactor_unit)
-    temp_table.interactor_unit_position = utilities.get_position(interactor_unit)
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactor_unit = get_unit_uuid(interactor_unit)
+    temp_table.interactor_unit_position = get_position(interactor_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -978,12 +980,12 @@ local rpc_scanning_device_finished = function (self, channel_id, unit_id)
     local interactor_unit = interactor_unit_id and unit_spawner_manager:unit(interactor_unit_id)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "scanning_device_finished"
-    temp_table.interactor_unit = utilities.get_unit_uuid(interactor_unit)
-    temp_table.interactor_unit_position = utilities.get_position(interactor_unit)
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactor_unit = get_unit_uuid(interactor_unit)
+    temp_table.interactor_unit_position = get_position(interactor_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -994,10 +996,10 @@ local rpc_scanning_device_hot_join = function (self, channel_id, unit_id, past_s
     local interactee_unit = unit_spawner_manager:unit(unit_id, true)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "scanning_device_finished"
-    temp_table.interactee_unit = utilities.get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = utilities.get_position(interactee_unit)
+    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+    temp_table.interactee_unit_position = get_position(interactee_unit)
     temp_table.past_spline_start_position = past_spline_start_position and tostring(past_spline_start_position)
     temp_table.at_end_position = at_end_position and tostring(at_end_position)
     temp_table.reached_end_of_spline = reached_end_of_spline and tostring(reached_end_of_spline)
@@ -1020,12 +1022,12 @@ local rpc_set_smart_tag = function (self, channel_id, tag_id, template_name_id, 
 		target_unit = unit_spawner_manager:unit(target_level_index, true)
     end
     
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "set_smart_tag"
-    temp_table.tagger_unit_uuid = tagger_unit and utilities.get_unit_uuid(tagger_unit)
-    temp_table.tagger_unit_position = tagger_unit and utilities.get_position(tagger_unit)
-    temp_table.target_unit_uuid = target_unit and utilities.get_unit_uuid(target_unit)
-    temp_table.target_unit_position = target_unit and utilities.get_position(target_unit)
+    temp_table.tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
+    temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
+    temp_table.target_unit_uuid = target_unit and get_unit_uuid(target_unit)
+    temp_table.target_unit_position = target_unit and get_position(target_unit)
     temp_table.template_name = template_name
 
     output_table[#output_table+1] = temp_table
@@ -1058,19 +1060,19 @@ local rpc_set_smart_tag_hot_join = function (self, channel_id, tag_id, template_
 	for i = 1, #replier_array do
 		local replier_game_object_id = replier_array[i]
 		local replier_unit = unit_spawner_manager:unit(replier_game_object_id)
-        local replier_unit_uuid = utilities.get_unit_uuid(replier_unit)
+        local replier_unit_uuid = get_unit_uuid(replier_unit)
 		local reply_name_id = reply_name_id_array[i]
 		local reply_name = NetworkLookup.smart_tag_replies[reply_name_id]
 		replies[replier_unit_uuid] = reply_name
 	end
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "set_smart_tag_hot_join"
     temp_table.tag_id = tag_id
-    temp_table.tagger_unit_uuid = tagger_unit and utilities.get_unit_uuid(tagger_unit)
-    temp_table.tagger_unit_position = tagger_unit and utilities.get_position(tagger_unit)
-    temp_table.target_unit_uuid = target_unit and utilities.get_unit_uuid(target_unit)
-    temp_table.target_unit_position = target_unit and utilities.get_position(target_unit)
+    temp_table.tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
+    temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
+    temp_table.target_unit_uuid = target_unit and get_unit_uuid(target_unit)
+    temp_table.target_unit_position = target_unit and get_position(target_unit)
     temp_table.template_name = template_name
     temp_table.replies = replies
 
@@ -1093,13 +1095,13 @@ local rpc_remove_smart_tag = function (self, channel_id, tag_id, reason_id)
     local target_unit = active_smart_tag and active_smart_tag.target_unit
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "remove_smart_tag"
     temp_table.tag_id = tag_id
-    temp_table.tagger_unit_uuid = tagger_unit and utilities.get_unit_uuid(tagger_unit)
-    temp_table.tagger_unit_position = tagger_unit and utilities.get_position(tagger_unit)
-    temp_table.target_unit_uuid = target_unit and utilities.get_unit_uuid(target_unit)
-    temp_table.target_unit_position = target_unit and utilities.get_position(target_unit)
+    temp_table.tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
+    temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
+    temp_table.target_unit_uuid = target_unit and get_unit_uuid(target_unit)
+    temp_table.target_unit_position = target_unit and get_position(target_unit)
     temp_table.template_name = active_smart_tag and active_smart_tag.template_name
     temp_table.reason = remove_tags_reason_lookup[reason_id]
 
@@ -1118,16 +1120,16 @@ local rpc_smart_tag_reply = function (self, channel_id, tag_id, replier_game_obj
     local target_unit = active_smart_tag and active_smart_tag.target_unit
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
+    temp_table.time = get_gameplay_time()
     temp_table.event = "smart_tag_reply"
     temp_table.tag_id = tag_id
-    temp_table.tagger_unit_uuid = tagger_unit and utilities.get_unit_uuid(tagger_unit)
-    temp_table.tagger_unit_position = utilities.get_position(tagger_unit)
-    temp_table.target_unit_uuid = target_unit and utilities.get_unit_uuid(target_unit)
-    temp_table.target_unit_position = utilities.get_position(target_unit)
+    temp_table.tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
+    temp_table.tagger_unit_position = get_position(tagger_unit)
+    temp_table.target_unit_uuid = target_unit and get_unit_uuid(target_unit)
+    temp_table.target_unit_position = get_position(target_unit)
     temp_table.template_name = active_smart_tag and active_smart_tag.template_name
-    temp_table.replier_unit_uuid = utilities.get_unit_uuid(replier_unit)
-    temp_table.replier_unit_position = utilities.get_position(replier_unit)
+    temp_table.replier_unit_uuid = get_unit_uuid(replier_unit)
+    temp_table.replier_unit_position = get_position(replier_unit)
 
     output_table[#output_table+1] = temp_table
 end
@@ -1138,103 +1140,58 @@ local PUME_update = function (self, unit, dt, t)
     local character_state_component = self._character_state_read_component
     local disabled_character_state_component = unit_data_extension:read_component("disabled_character_state")
     local state_name = character_state_component.state_name
-    local unit_uuid = utilities.get_unit_uuid(unit)
+    local unit_uuid = get_unit_uuid(unit)
 
     if active_player_states[unit_uuid] ~= state_name then
         local temp_table = {}
 
-        temp_table.time = mod.utilities.get_gameplay_time()
+        temp_table.time = get_gameplay_time()
         temp_table.player_unit_uuid = unit_uuid
-        temp_table.player_unit_position = utilities.get_position(unit)
+        temp_table.player_unit_position = get_position(unit)
         temp_table.state_name = state_name
         temp_table.previous_state_name = active_player_states[unit_uuid]
         if disabled_character_state_component and disabled_character_state_component.disabling_unit then
             local disabling_unit = disabled_character_state_component.disabling_unit
-            temp_table.disabling_unit_uuid = utilities.get_unit_uuid(disabling_unit)
-            temp_table.disabling_unit_position = utilities.get_position(disabling_unit)
+            temp_table.disabling_unit_uuid = get_unit_uuid(disabling_unit)
+            temp_table.disabling_unit_position = get_position(disabling_unit)
         end
         
         output_table[#output_table+1] = temp_table
         active_player_states[unit_uuid] = state_name
     end
 
-    local output_table = data_locations.CombatAbility()
-    local previous_frame_action_table = mod.cache.previous_frame_action
-    local previous_frame_action = previous_frame_action_table[unit_uuid]
-    local combat_ability_action = self._combat_ability_action_read_component
-    local template_name = combat_ability_action.template_name
+    local weapon_action_component = unit_data_extension:read_component("weapon_action")
+    local template_name = weapon_action_component.template_name
 
-    
-    local current_action_name = combat_ability_action.current_action_name
-    local previous_action_name = combat_ability_action.previous_action_name
+    -- local current_action_name = weapon_action_component.current_action_name
+    -- local previous_frame_name_test = test_cache[unit_uuid]
+    -- if previous_frame_name_test ~= current_action_name then
+    --     print("-------")
+    --     print("template_name: "..tostring(template_name))
+    --     print("current_action_name: "..tostring(current_action_name))
+    --     test_cache[unit_uuid] = current_action_name
+    -- end
 
-    if template_name ~= "none" then
-        if previous_frame_action ~= current_action_name then
-            local lookup = combat_ability_lookup[template_name]
-            local use_ability_charge_action = lookup.use_ability_charge_action
-            if current_action_name == "none" and  previous_action_name == use_ability_charge_action then
-                local display_name = lookup.display_name
-                if template_name == "veteran_combat_ability" then
-                    local buff_extension = self._buff_extension
-                    local veteran_combat_ability_stance_active = buff_extension:has_keyword(buff_keywords.veteran_combat_ability_stance)
-                    if veteran_combat_ability_stance_active then
-                        display_name = "Executioner's Stance"
-                    end
-                end
+    if template_name == "psyker_smite" or template_name == "psyker_chain_lightning" then
+        local current_action_name = weapon_action_component.current_action_name
+        local player_psyker_grenade_abilities = mod.cache.player_psyker_grenade_abilities
+        local last_frame_action_name = player_psyker_grenade_abilities[unit_uuid]
+
+        if last_frame_action_name ~= current_action_name then
+            if current_action_name == "action_use_power" or current_action_name == "action_spread_charged" then
+                local output_table = data_locations.PlayerAbilities()
                 local temp_table = {}
+
                 temp_table.player_unit_uuid = unit_uuid
-                temp_table.player_unit_position = utilities.get_position(unit)
-                temp_table.combat_ability_display_name = display_name
-                temp_table.time = mod.utilities.get_gameplay_time()
+                temp_table.ability_type = "grenade_ability"
+                temp_table.player_unit_position = get_position(unit)
+                temp_table.charge_delta = -1
+                temp_table.time = get_gameplay_time()
 
                 output_table[#output_table+1] = temp_table
             end
+            player_psyker_grenade_abilities[unit_uuid] = current_action_name
         end
-        previous_frame_action_table[unit_uuid] = current_action_name
-    end
-
-    local force_field_system = self._force_field_system
-    if force_field_system then
-        local active_force_fields = mod.cache.force_fields
-        local number_of_active_force_fields = force_field_system._extensions.ForceFieldExtension
-        local previous_number_of_active_force_fields = active_force_fields[unit_uuid] or 0
-        if number_of_active_force_fields > previous_number_of_active_force_fields then
-            local _, unit_extension = next(force_field_system._unit_to_extension_map)
-            local specialization_extension = unit_extension.specialization_extension
-            local shield_type
-            if specialization_extension._active_special_rules.psyker_sphere_shield then
-                shield_type = "Telekine Dome"
-            else
-                shield_type = "Telekine Shield"
-            end
-            local temp_table = {}
-
-            temp_table.player_unit_uuid = unit_uuid
-            temp_table.player_unit_position = utilities.get_position(unit)
-            temp_table.combat_ability_display_name = shield_type
-            temp_table.time = mod.utilities.get_gameplay_time()
-
-            output_table[#output_table+1] = temp_table
-        end
-        active_force_fields[unit_uuid] = number_of_active_force_fields
-    end
-
-    local weapon_action_extension = unit_data_extension:read_component("weapon_action")
-    local current_action_name = weapon_action_extension and weapon_action_extension.current_action_name
-    local template_name = weapon_action_extension and weapon_action_extension.template_name
-    local relic_lookup = mod.cache.zealot_relic
-    if relic_lookup[unit_uuid] == nil and template_name == "zealot_relic" and current_action_name == "action_wield" then
-        local temp_table = {}
-
-        temp_table.player_unit_uuid = unit_uuid
-        temp_table.player_unit_position = utilities.get_position(unit)
-        temp_table.combat_ability_display_name = "Chorus of Spiritual Fortitude"
-        temp_table.time = mod.utilities.get_gameplay_time()
-
-        output_table[#output_table+1] = temp_table
-        relic_lookup[unit_uuid] = template_name
-    elseif relic_lookup[unit_uuid] ~= nil and template_name ~= "zealot_relic" then
-        relic_lookup[unit_uuid] = nil
     end
 end
 local rpc_trigger_timed_mood = function (self, channel_id, go_id, mood_type_id)
@@ -1244,9 +1201,9 @@ local rpc_trigger_timed_mood = function (self, channel_id, go_id, mood_type_id)
 	local mood_type = NetworkLookup.moods_types[mood_type_id]
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
-    temp_table.player_unit_uuid = utilities.get_unit_uuid(unit)
-    temp_table.player_unit_position = utilities.get_position(unit)
+    temp_table.time = get_gameplay_time()
+    temp_table.player_unit_uuid = get_unit_uuid(unit)
+    temp_table.player_unit_position = get_position(unit)
     temp_table.mood_type = mood_type
 
     output_table[#output_table+1] = temp_table
@@ -1259,9 +1216,9 @@ local rpc_minion_set_dead = function (self, channel_id, unit_id, attack_directio
 	local herding_template_name = herding_template_id_or_nil and NetworkLookup.herding_templates[herding_template_id_or_nil]
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
-    temp_table.unit_uuid = utilities.get_unit_uuid(unit)
-    temp_table.unit_position = utilities.get_position(unit)
+    temp_table.time = get_gameplay_time()
+    temp_table.unit_uuid = get_unit_uuid(unit)
+    temp_table.unit_position = get_position(unit)
     temp_table.hit_zone_name = hit_zone_name
     temp_table.damage_profile_name = damage_profile_name
     temp_table.herding_template_name = herding_template_name
@@ -1272,13 +1229,46 @@ local rpc_server_reported_unit_suppression = function (self, channel_id, suppres
     local unit = Managers.state.unit_spawner:unit(suppressed_unit_id)
     local temp_table = {}
 
-    temp_table.time = mod.utilities.get_gameplay_time()
-    temp_table.unit_uuid = utilities.get_unit_uuid(unit)
-    temp_table.unit_position = utilities.get_position(unit)
+    temp_table.time = get_gameplay_time()
+    temp_table.unit_uuid = get_unit_uuid(unit)
+    temp_table.unit_position = get_position(unit)
     temp_table.is_suppressed = is_suppressed
     output_table[#output_table+1] = temp_table
 end
+local PlayerAbilityExtensionUpdate = function(self, unit, dt, t)
+    for _, ability_type in ipairs(ability_types) do
+        local enabled = self:ability_enabled(ability_type)
+        if enabled then
+            local player_unit_uuid = get_unit_uuid(unit)
+            local player_ability_num_charges = mod.cache.player_ability_num_charges
+            local lookup_string = ability_type.."_"..player_unit_uuid
+            local previous_num_charges = player_ability_num_charges[lookup_string] or 0
+            local ability_components = self._ability_components or self._components
+            local component = ability_components[ability_type]
+            local current_num_charges = component.num_charges
 
+            if previous_num_charges ~= current_num_charges then
+
+                -- print("-------")
+                -- print("ability_type: "..tostring(ability_type))
+                -- print("previous_num_charges: "..tostring(previous_num_charges))
+                -- print("current_num_charges: "..tostring(current_num_charges))
+
+                local output_table = data_locations.PlayerAbilities()
+                local temp_table = {}
+
+                temp_table.player_unit_uuid = player_unit_uuid
+                temp_table.ability_type = ability_type
+                temp_table.player_unit_position = get_position(unit)
+                temp_table.charge_delta = current_num_charges - previous_num_charges
+                temp_table.time = get_gameplay_time()
+
+                output_table[#output_table+1] = temp_table
+                player_ability_num_charges[lookup_string] = current_num_charges
+            end
+        end
+    end
+end
 
 --Datasource template array--
 datasource_templates = {
@@ -1566,9 +1556,24 @@ datasource_templates = {
             },
         },
     },
-    {   name = "CombatAbility",
+    {   name = "PlayerAbilities",
         data_structure = {},
-        hook_templates = {},
+        hook_templates = {
+            {
+                hook_class = CLASS.PlayerUnitAbilityExtension,
+                hook_functions = 
+                {
+                    update = PlayerAbilityExtensionUpdate,
+                },
+            },
+            {
+                hook_class = CLASS.PlayerHuskAbilityExtension,
+                hook_functions = 
+                {
+                    update = PlayerAbilityExtensionUpdate,
+                },
+            },
+        },
     },
     {   name = "MinionDeathManager",
         data_structure = {},

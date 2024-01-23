@@ -100,8 +100,9 @@ end
 
 --Function to decide to create a new session, or resume a old session due to a crash--
 session_manager.resume_or_create_session = function()
-    local session_id = PDI.data.session_data.info and PDI.data.session_data.info.session_id
-    if session_id == generate_session_id() then
+    local last_session_id = PDI.data.session_data.info and PDI.data.session_data.info.session_id
+    local current_session_id = generate_session_id()
+    if last_session_id == current_session_id and last_session_id ~= "local" then
         local datasources = PDI.data.session_data.datasources
         local auto_save_data = PDI.save_manager.get_loaded_auto_save_data()
         if auto_save_data then
@@ -114,40 +115,34 @@ session_manager.resume_or_create_session = function()
         PDI.data.session_data = session_manager.new()
     end
     prepare_session(PDI.data.session_data)
+
     session_manager.save_current_session()
+
+    if current_session_id == "local" then
+        local local_player = Managers.player:local_player(1)
+        local local_player_name = local_player:name()
+        local local_player_unit = local_player and local_player.player_unit
+        local local_player_unit_uuid = local_player_unit and PDI.utilities.get_unit_uuid(local_player_unit)
+        local player_profiles_datasource = PDI.data.session_data.datasources.PlayerProfiles
+        local unit_spawner_manager_datasource = PDI.data.session_data.datasources.UnitSpawnerManager
+        local local_player_profile = PDI.utilities.copy(local_player._profile)
+        player_profiles_datasource[local_player_unit_uuid] = local_player_profile
+
+        local temp_table = {}
+
+        temp_table.unit_template_name = "player_character"
+        temp_table.unit_name = local_player_name
+        temp_table.time = 0
+
+        unit_spawner_manager_datasource[local_player_unit_uuid] = temp_table
+    end
 end
-
--- session_manager.new_session_check = function()
---     local last_session_id = PDI.data.session_data.info and PDI.data.session_data.info.session_id
---     local current_session_id = generate_session_id()
-
---     return last_session_id ~= current_session_id
--- end
-
--- session_manager.create_session = function()
---     PDI.data.session_data = session_manager.new()
---     prepare_session(PDI.data.session_data)
---     session_manager.save_current_session()
--- end
-
--- session_manager.resume_session = function()
---     PDI.save_manager.load_auto_save()
---     :next(
---         function()
---             session_manager.save_current_session()
---         end
---     )
---     session_manager.update_current_session_info({resumed = true})
---     prepare_session(PDI.data.session_data)
--- end
 
 --Get the currently loaded session id--
 session_manager.get_loaded_session_id = function()
     local session_id = PDI.data.session_data.info and PDI.data.session_data.info.session_id
     return session_id
 end
-
-
 
 return session_manager
 
