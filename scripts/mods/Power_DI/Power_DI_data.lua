@@ -41,7 +41,7 @@ return {
                         tooltip = "auto_save_interval_tooltip",
                         type = "numeric",
                         default_value = 60,
-                        range = {0, 120},
+                        range = {10, 120},
                         unit_text = "seconds",
                         decimals_number = 0
                     }
