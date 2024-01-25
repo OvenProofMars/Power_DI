@@ -3,8 +3,8 @@ local DMF = get_mod("DMF")
 local utilities = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\utilities]])
 local Component = require("scripts/utilities/component")
 local SmartTag = require("scripts/extension_systems/smart_tag/smart_tag")
-local BuffSettings = require("scripts/settings/buff/buff_settings")
-local buff_keywords = BuffSettings.keywords
+--local BuffSettings = require("scripts/settings/buff/buff_settings")
+--local buff_keywords = BuffSettings.keywords
 local remove_tags_reason_lookup = table.mirror_array_inplace(table.keys(SmartTag.REMOVE_TAG_REASONS))
 local combat_ability_lookup = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\templates\custom_lookup_table_templates\combat_abilities]])
 local datasource_templates = {}
@@ -1597,6 +1597,10 @@ datasource_templates = {
             },
         },
     },
+    {   name = "Players",
+    data_structure = {},
+    hook_templates = {},
+},
 }
 
 local output = {

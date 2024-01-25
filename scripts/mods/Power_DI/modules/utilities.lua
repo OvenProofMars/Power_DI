@@ -1,11 +1,13 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
+local MD5 = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\libraries\md5]])
 local PDI
 
 --The async save functions only support the following data types--
 local allowed_types_for_saving = {"string","boolean","number","Vector3","Vector3Box","Matrix4x4","Matrix4x4Box",}
 
 local utilities = {}
+
 
 utilities.init = function(input_table)
     PDI = input_table
@@ -62,6 +64,28 @@ utilities.clean_table_for_saving = function(input_table)
                 ct(v)
             elseif type(v) == "Vector3" then
                 input_table[k] = utilities.vector_to_string(v)
+            elseif not table.array_contains(allowed_types_for_saving, type(v)) then
+                input_table[k] = nil
+            end
+        end
+    end
+    ct(input_table)
+end
+
+utilities.clean_table_for_saving_2 = function(input_table)
+    if not input_table then
+        return
+    end
+    local t_index = {}
+    local function ct(input_table)
+        if not input_table then
+            return
+        end
+        for k, v in pairs(input_table) do
+            if type(v) == "table" and not t_index[v] then
+                t_index[v] = k
+                --setmetatable(v, nil)
+                ct(v)
             elseif not table.array_contains(allowed_types_for_saving, type(v)) then
                 input_table[k] = nil
             end
@@ -171,4 +195,61 @@ utilities.is_array = function(input_table)
     end
     return true
 end
+
+--Function to hash a table, uses MD5--
+utilities.hash = function(input_table)
+    local json_string = cjson.encode(input_table)
+    local hash = MD5.sumhexa(json_string)
+    return hash
+end
+
+--Function to recreate the meta table for a master item--
+utilities.set_master_item_meta_table = function(item_instance)
+    -- local item_instance = {
+    --     __gear = gear,
+    --     __gear_id = gear_id,
+    --     __master_item = master_item,
+    --     __master_ver = master_version,
+    --     __is_preview_item = false,
+    -- }
+
+    setmetatable(item_instance, {
+        __index = function (t, field_name)
+            local master_ver = rawget(item_instance, "__master_ver")
+
+            if field_name == "gear_id" then
+                return rawget(item_instance, "__gear_id")
+            end
+
+            if field_name == "gear" then
+                return rawget(item_instance, "__gear")
+            end
+
+            local master_item = rawget(item_instance, "__master_item")
+
+            if not master_item then
+                return nil
+            end
+
+            local field_value = master_item[field_name]
+
+            if field_name == "rarity" and field_value == -1 then
+                return nil
+            end
+
+            return field_value
+        end,
+        __newindex = function (t, field_name, value)
+
+        end,
+        __tostring = function (t)
+            local master_item = rawget(item_instance, "__master_item")
+
+            return string.format("master_item: [%s] gear_id: [%s]", tostring(master_item and master_item.name), tostring(rawget(item_instance, "__gear_id")))
+        end
+    })
+
+    return item_instance
+end
+
 return utilities

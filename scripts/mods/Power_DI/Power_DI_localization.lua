@@ -14,6 +14,18 @@ return {
 	debug_dump_tooltip = {
 		en = "Dump data for debugging",
 	},
+	clear_user_reports_title = {
+		en = "Clear user report templates",
+	},
+	clear_user_reports_tooltip = {
+		en = "Will clear all user created and edited reports, will require restart for them to disapear from the ui",
+	},
+	testing_title = {
+		en = "Development testing",
+	},
+	testing_tooltip = {
+		en = "For development purposes, shouldn't do anything, but don't use just in case I accidentally left some code there ^^",
+	},
 	auto_save_title = {
 		en = "Auto save",
 	},

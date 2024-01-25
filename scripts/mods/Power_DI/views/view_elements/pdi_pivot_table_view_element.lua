@@ -1,6 +1,8 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 
+--local MasterItems = require("scripts/backend/master_items")
+
 local ScriptWorld = require("scripts/foundation/utilities/script_world")
 local ViewElementInputLegend = require("scripts/ui/view_elements/view_element_input_legend/view_element_input_legend")
 local UIWidget = require("scripts/managers/ui/ui_widget")
@@ -40,6 +42,15 @@ PdiPivotTableViewElement = class("PdiPivotTableViewElement", "PdiBaseViewElement
 
 local function get_text_size(input_text, font_name, font_size)
     return UIRenderer.text_size(ui_renderer_instance, input_text, font_name, font_size)
+end
+local function get_max_font_size(input_text, font_name, max_width)
+    local output_font_size = font_size*1.5
+    local text_size = UIRenderer.text_size(ui_renderer_instance, input_text, font_name, output_font_size)
+    while text_size > max_width do
+        output_font_size = output_font_size - 0.1
+        text_size = UIRenderer.text_size(ui_renderer_instance, input_text, font_name, output_font_size)
+    end
+    return output_font_size
 end
 local function create_report_size_table(self, report, report_size, number_of_columns, level_offset, font_name, font_size)
 
@@ -89,7 +100,7 @@ local function create_report_size_table(self, report, report_size, number_of_col
 
     local unit_size = (report_size[1] - (max_row_width*1.1)) / ((number_of_columns*4)+2.5)
 
-    local column_width = unit_size * 4
+    local column_width = (unit_size * 16)/max_column_count
     local column_hight = report_size[2]*0.1
 
     local row_width = max_row_width
@@ -960,6 +971,19 @@ local function get_item_templates(self)
                     }
                 },
             },
+            {   pass_type = "hotspot",
+                style_id = "hotspot",
+                content_id = "hotspot",
+                content = {
+                    on_hover_sound = UISoundEvents.default_mouse_hover,
+                    on_complete_sound = UISoundEvents.default_click
+                },
+                style = {
+                    vertical_alignment = "center",
+                    horizontal_alignment = "center",
+                    visible = false,
+                }
+            },
             {   pass_type = "texture",
                 style_id = "divider",
                 value = "content/ui/materials/dividers/faded_line_01",
@@ -970,6 +994,45 @@ local function get_item_templates(self)
                     size = {self.sizes.value_item_size[1], sizes.divider_hight},
                     offset = {0,sizes.divider_hight,0}
                 }
+            },
+            {   pass_type = "texture",
+                style_id = "class_icon",
+                value_id = "class_icon",
+                value = "content/ui/materials/icons/classes/veteran",
+                style = {
+                    vertical_alignment = "center",
+                    horizontal_alignment = "center",
+                    color = Color.terminal_text_body(255, true),
+                    size = {self.sizes.value_item_size[2], self.sizes.value_item_size[2]},
+                    offset = {0,0,0},
+                    visible = false
+                }
+            },
+            {   pass_type = "texture",
+                style_id = "inspect_icon",
+                value_id = "inspect_icon",
+                value = "content/ui/materials/icons/crafting/extract_trait",
+                style = {
+                    vertical_alignment = "center",
+                    horizontal_alignment = "center",
+                    color = Color.terminal_text_body(255, true),
+                    size = {self.sizes.value_item_size[2], self.sizes.value_item_size[2]},
+                    offset = {0,0,0},
+                },
+                visibility_function = function (content)
+                    return content.is_player and content.hotspot.is_hover or false
+                end
+            },
+            {   pass_type = "rect",
+                style_id = "hover",
+                style = {
+                    vertical_alignment = "center",
+                    horizontal_alignment = "center",
+                    color = Color.citadel_death_guard_green(50, true)
+                },
+                visibility_function = function (content, style)
+                    return content.is_player and content.hotspot.is_hover or false
+                end
             },
         },
     }
@@ -1029,14 +1092,61 @@ local function generate_widgets(self)
     local column_item_template = self.item_templates.column
     local report = self.report
 
-    local function generate_column_widgets(self, input_table)
+    local player_profiles = PDI.data.session_data.datasources.PlayerProfiles
+
+    local function generate_column_widgets(self, input_table, is_player_column)
         for index, column in ipairs(input_table) do
-            local item_definition = UIWidget.create_definition(column_item_template, "column_item", {text = column.name})
-            data.column.widgets[index] = self:_create_widget("column_widget_"..index, item_definition)
-            local children = column.children
-            if children then
-                generate_column_widgets(self, children)
+
+            local item_definition = UIWidget.create_definition(column_item_template, "column_item")
+            local widget = self:_create_widget("column_widget_"..index, item_definition)
+
+            local player_profile
+            local display_text
+
+            if is_player_column then
+                for player_unit_uuid, profile in pairs(player_profiles) do
+                    if profile.character_id == column.name then
+                        player_profile = table.clone(profile)
+                    end
+                end
             end
+
+            if player_profile then
+                display_text = player_profile.name
+                local class_icon = player_profile.archetype.archetype_icon_large
+                widget.content.is_player = true
+                widget.content.class_icon = class_icon
+                widget.style.class_icon.visible = true
+                local display_text_size = get_text_size(display_text, font_name, font_size*1.5)
+                local column_width = self.sizes.column_item_size[1]
+                local icon_width = self.sizes.value_item_size[2]
+                local max_text_size = column_width - (icon_width * 2)
+                if display_text_size > max_text_size then
+                    local override_font_size = get_max_font_size(display_text, font_name, max_text_size)
+                    display_text_size = get_text_size(display_text, font_name, override_font_size)
+                    widget.style.text.font_size = override_font_size
+                end
+                local x_offset = (0.5 * display_text_size) + (0.5 * self.sizes.value_item_size[2])
+                widget.style.class_icon.offset[1] = -1 * x_offset
+                widget.style.inspect_icon.offset[1] = x_offset
+                widget.content.hotspot.pressed_callback = callback(view_manager.view_player_profile, player_profile)
+                widget.style.hotspot.visible = true
+
+                local column_hotspot_visibility_function = function()
+                    local column_count = self.sizes.column_count or 0
+                    local scroll_index = self.horizontal_scroll_index or 0
+                    return scroll_index < index and (scroll_index + 5) > index
+                end
+                widget.passes[2].visibility_function = column_hotspot_visibility_function
+            else
+                display_text = column.name
+            end
+            widget.content.text = display_text
+            data.column.widgets[index] = widget
+            -- local children = column.children
+            -- if children then
+            --     generate_column_widgets(self, children)
+            -- end
         end
     end
     local function generate_value_widgets(self, input_table, parent_row_widget)
@@ -1115,9 +1225,15 @@ local function generate_widgets(self)
             data.column.banding_widgets[#data.column.banding_widgets+1] = widget
         end
     end
-
+    
     data.row.root_widgets = generate_row_widgets(self, report.values_as_rows or {})
-    generate_column_widgets(self, report.columns or {})
+    local column_field = report.template.columns[1]
+    local dataset_name = report.template.dataset_name
+    local dataset_template = PDI.dataset_manager.get_dataset_template(dataset_name)
+    local dataset_field_type = dataset_template.legend[column_field]
+    
+    local is_player_column = dataset_field_type == "player"
+    generate_column_widgets(self, report.columns or {}, is_player_column)
     generate_column_banding_widget(self)
 
     local template = self.report.template

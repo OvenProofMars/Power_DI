@@ -17,9 +17,6 @@ local function coroutine_wrapper(self,fn)
     end
     return coroutine_function
 end
-
-
-
 --Coroutine to clone a datasource to a dataset--
 local function clone_datasource_coroutine (self, datasource_name)
     PDI.debug("clone_datasource_coroutine","start")

@@ -31,7 +31,8 @@ local attack_reports = function(data)
                         local attacker_template_name = attacker_lookup.unit_template_name
                         if attacker_template_name == "player_character" then
                             local player_profile = PlayerProfiles[attacking_unit_uuid]
-                            v.attacker_name = attacker_name
+                            v.attacker_player = player_profile and player_profile.character_id
+                            v.attacker_name = player_profile and player_profile.name
                             v.attacker_attack_type = "Player"
                             v.attacker_faction = "Imperium"
                             v.attacker_type = "Player"
@@ -58,11 +59,12 @@ local attack_reports = function(data)
 
                         if defender_template_name == "player_character" then
                             local player_profile = PlayerProfiles[defending_unit_uuid]
+                            v.defender_player = player_profile and player_profile.character_id
+                            v.defender_name = player_profile and player_profile.name
                             v.defender_attack_type = "Player"
                             v.defender_faction = "Imperium"
                             v.defender_type = "Player"
                             v.defender_class = player_profile and player_profile.archetype.name
-                            v.defender_name = defender_name
                             v.defender_armor_type = "Player"
                             v.defender_max_health = defender_max_health
                         else
@@ -115,15 +117,26 @@ local attack_reports = function(data)
 end
 
 local player_status = function(data)
-    local UnitSpawnerManager = data.datasource_proxies.UnitSpawnerManager
+    local PlayerProfiles = {}
     local player_state_categories = data.lookup_proxies.player_state_categories
     data:append_dataset("PlayerUnitStatus")
     :next(
         function()
+            return data:iterate_datasource("PlayerProfiles",
+            function(k,v)
+                PlayerProfiles[k] = v
+            end
+        )
+        end
+    )
+    :next(
+        function()
             return data:iterate_dataset(
                 function(k,v)
-                    local player_lookup = UnitSpawnerManager[v.player_unit_uuid]
-                    v.player_name = player_lookup.unit_name
+                    local player_profile_lookup = PlayerProfiles[v.player_unit_uuid]
+                    v.player_name = player_profile_lookup and player_profile_lookup.name
+                    v.player = player_profile_lookup and player_profile_lookup.character_id
+                    
                     local state_name = v.state_name
                     v.state_category = player_state_categories[state_name] or "Other"
                     v.state_name = string.gsub(state_name,"_", " ")
@@ -141,29 +154,46 @@ local player_status = function(data)
 end
 
 local player_interactions = function(data)
+    local PlayerProfiles = {}
     local UnitSpawnerManager = data.datasource_proxies.UnitSpawnerManager
     data:append_dataset("InteracteeSystem")
+    :next(
+        function()
+            return data:iterate_datasource("PlayerProfiles",
+            function(k,v)
+                PlayerProfiles[k] = v
+            end
+        )
+        end
+    )
     :next(function()
         return data:iterate_dataset(
             function(k,v)
-                local interactor_lookup = UnitSpawnerManager[v.interactor_unit_uuid]
+                local interactor_profile_lookup = PlayerProfiles[v.interactor_unit_uuid]
                 local interaction_type = v.interaction_type and string.gsub(v.interaction_type,"_"," ")
-                if interactor_lookup then
-                    v.interactor_name = interactor_lookup.unit_name
-                else
-                    v.interactor_name = "nil"
-                end
-                v.interactor_unit_uuid = nil
-                v.interactor_unit_position = nil
-                local interactee_lookup = UnitSpawnerManager[v.interactee_unit_uuid]
+                v.interactor_name = interactor_profile_lookup and interactor_profile_lookup.name
+                v.interactor_player = interactor_profile_lookup and interactor_profile_lookup.character_id
+
+                local interactee_unit_uuid = v.interactee_unit_uuid
+                local interactee_lookup = UnitSpawnerManager[interactee_unit_uuid]
                 if interactee_lookup then
-                    local unit_name = interactee_lookup.unit_name
-                    v.interactee_name = unit_name and string.gsub(unit_name,"_"," ")
+                    local interactee_player_profile_lookup = PlayerProfiles[interactee_unit_uuid]
+                    if interactee_player_profile_lookup then
+                        v.interactee_name = interactee_player_profile_lookup.name
+                        v.interactee_player = interactee_player_profile_lookup.character_id
+                    else
+                        local unit_name = interactee_lookup.unit_name
+                        v.interactee_name = unit_name and string.gsub(unit_name,"_"," ")
+                    end
                 else
                     v.interactee_name = interaction_type or "Level unit"
                 end
-                v.interactee_unit_position = nil
                 v.interaction_type = interaction_type
+
+                v.interactor_unit_uuid = nil
+                v.interactor_unit_position = nil
+                v.interactor_unit_uuid = nil
+                v.interactee_unit_position = nil
             end
         )
     end
@@ -176,18 +206,25 @@ local player_interactions = function(data)
 end
 
 local tagging = function(data)
+    local PlayerProfiles = {}
     local UnitSpawnerManager = data.datasource_proxies.UnitSpawnerManager
     local minion_categories = data.lookup_proxies.minion_categories
     data:append_dataset("SmartTagSystem")
+    :next(
+        function()
+            return data:iterate_datasource("PlayerProfiles",
+            function(k,v)
+                PlayerProfiles[k] = v
+            end
+        )
+        end
+    )
     :next(function()
         return data:iterate_dataset(
             function(k,v)
-                local tagger_lookup = UnitSpawnerManager[v.tagger_unit_uuid]
-                if tagger_lookup then
-                    v.player_name = tagger_lookup.unit_name
-                else
-                    v.player_name = "nil"
-                end
+                local tagger_profile_lookup = PlayerProfiles[v.tagger_unit_uuid]
+                v.player_name = tagger_profile_lookup and tagger_profile_lookup.name
+                v.player = tagger_profile_lookup and tagger_profile_lookup.character_id
                 
                 v.tagger_unit_uuid = nil
                 v.tagger_unit_position = nil
@@ -224,8 +261,6 @@ local tagging = function(data)
                 if template_name then
                     v.tag_type = string.gsub(template_name,"_"," ")
                     v.template_name = nil
-                else
-                    v.tag_type = "nil"
                 end
 
                 local reason = v.reason
@@ -244,20 +279,28 @@ local tagging = function(data)
 end
 
 local player_suppression = function(data)
-    local UnitSpawnerManager = data.datasource_proxies.UnitSpawnerManager
+    local PlayerProfiles = {}
     data:append_dataset("PlayerUnitMoodExtension")
+    :next(
+        function()
+            return data:iterate_datasource("PlayerProfiles",
+            function(k,v)
+                PlayerProfiles[k] = v
+            end
+        )
+        end
+    )
     :next(function()
         return data:iterate_dataset(
             function(k,v)
-                local player_lookup = UnitSpawnerManager[v.player_unit_uuid]
-                if player_lookup then
-                    v.player_name = player_lookup.unit_name
-                else
-                    v.player_name = "nil"
-                end
-                v.player_unit_position = nil
+                local player_profile_lookup = PlayerProfiles[v.player_unit_uuid]
+                v.player_name = player_profile_lookup and player_profile_lookup.unit_name
+                v.player = player_profile_lookup and player_profile_lookup.character_id
+                
                 local mood_type = string.gsub(v.mood_type,"_"," ")
                 v.suppression_type = mood_type
+                v.player_unit_uuid = nil
+                v.player_unit_position = nil
                 v.mood_type = nil
             end
         )
@@ -271,18 +314,26 @@ local player_suppression = function(data)
 end
 
 local blocked_attacks = function(data)
+    local PlayerProfiles = {}
     local UnitSpawnerManager = data.datasource_proxies.UnitSpawnerManager
     local minion_categories = data.lookup_proxies.minion_categories
     data:append_dataset("PlayerBlockedAttacks")
+    :next(
+        function()
+            return data:iterate_datasource("PlayerProfiles",
+            function(k,v)
+                PlayerProfiles[k] = v
+            end
+        )
+        end
+    )
     :next(function()
         return data:iterate_dataset(
             function(k,v)
-                local player_lookup = UnitSpawnerManager[v.player_unit_uuid]
-                if player_lookup then
-                    v.player_name = player_lookup.unit_name
-                else
-                    v.player_name = "nil"
-                end
+                local player_profile_lookup = PlayerProfiles[v.player_unit_uuid]
+                v.player_name = player_profile_lookup and player_profile_lookup.unit_name
+                v.player = player_profile_lookup and player_profile_lookup.character_id
+
                 local enemy_lookup = UnitSpawnerManager[v.attacking_unit_uuid]
                 if enemy_lookup then
                     local enemy_name = enemy_lookup.unit_name
@@ -297,9 +348,8 @@ local blocked_attacks = function(data)
                     else
                         v.enemy_name = enemy_name
                     end
-                else
-                    v.enemy_name = "nil"
                 end
+                v.player_unit_uuid = nil
                 v.player_unit_position = nil
                 v.attacking_unit_position = nil
             end
@@ -314,22 +364,31 @@ local blocked_attacks = function(data)
 end
 
 local slots = function(data)
-    local UnitSpawnerManager = data.datasource_proxies.UnitSpawnerManager
+    local PlayerProfiles = {}
     data:append_dataset("VisualLoadoutSystem")
+    :next(
+        function()
+            return data:iterate_datasource("PlayerProfiles",
+            function(k,v)
+                PlayerProfiles[k] = v
+            end
+        )
+        end
+    )
     :next(function()
         return data:iterate_dataset(
             function(k,v)
-                local player_lookup = UnitSpawnerManager[v.player_unit_uuid]
-                if player_lookup then
-                    v.player_name = player_lookup.unit_name
-                else
-                    v.player_name = "nil"
-                end
-                v.player_unit_position = nil
+                local player_profile_lookup = PlayerProfiles[v.player_unit_uuid]
+                v.player_name = player_profile_lookup and player_profile_lookup.unit_name
+                v.player = player_profile_lookup and player_profile_lookup.character_id
+
                 local event = v.event
                 v.event = event and string.gsub(event,"_"," ")
                 local slot_name = v.slot_name
                 v.slot_name = slot_name and string.gsub(slot_name,"_"," ")
+
+                v.player_unit_uuid = nil
+                v.player_unit_position = nil
             end
         )
     end
@@ -342,16 +401,25 @@ local slots = function(data)
 end
 
 local player_abilities = function(data)
-    local UnitSpawnerManager = data.datasource_proxies.UnitSpawnerManager
+    local PlayerProfiles = {}
     local player_ability_types_lookup = {combat_ability = "Combat ability", grenade_ability = "Blitz ability"}
     data:append_dataset("PlayerAbilities")
+    :next(
+        function()
+            return data:iterate_datasource("PlayerProfiles",
+            function(k,v)
+                PlayerProfiles[k] = v
+            end
+        )
+        end
+    )
     :next(function()
         return data:iterate_dataset(
             function(k,v)
-                local player_lookup = UnitSpawnerManager[v.player_unit_uuid]
-                if player_lookup then
-                    v.player_name = player_lookup.unit_name
-                end
+                local player_profile_lookup = PlayerProfiles[v.player_unit_uuid]
+                v.player_name = player_profile_lookup and player_profile_lookup.unit_name
+                v.player = player_profile_lookup and player_profile_lookup.character_id
+
                 local event_type
                 if v.charge_delta > 0 then
                     event_type = "Charge gained"
@@ -375,6 +443,7 @@ local player_abilities = function(data)
 end
 
 local player_buffs = function(data)
+    local PlayerProfiles = {}
     local item_slot_names = {"slot_primary", "slot_secondary", "slot_attachment_1", "slot_attachment_2", "slot_attachment_3"}
     local item_types_lookup = {WEAPON_MELEE = "Melee weapon", WEAPON_RANGED = "Ranged weapon", GADGET = "Curio"}
     local player_items = {}
@@ -389,6 +458,8 @@ local player_buffs = function(data)
         function()
             return data:iterate_datasource("PlayerProfiles",
                 function(k,v)
+                    PlayerProfiles[k] = v
+
                     local loadout = v.loadout
                     player_items[k] = {}
 
@@ -469,11 +540,9 @@ local player_buffs = function(data)
             function(k,v)
 
                 local player_unit = v.unit_uuid
-                local player_unit_lookup = UnitSpawnerManager[player_unit]
-
-                if player_unit_lookup then
-                    v.player_name = player_unit_lookup.unit_name
-                end
+                local player_profile_lookup = PlayerProfiles[player_unit]
+                v.player_name = player_profile_lookup and player_profile_lookup.unit_name
+                v.player = player_profile_lookup and player_profile_lookup.character_id
 
                 local template_id = v.buff_template_id
                 local template_name = template_id and buff_templates[template_id]
@@ -510,10 +579,15 @@ local player_buffs = function(data)
                     source_item_name = "N.a."
                     source_name = talent.display_name
                     source_icon = talent.icon
-                else
-                    source_category = "Other"
-                    source_sub_category = "Other"
+                elseif buff_category == "talents" then
+                    source_category = "Talent"
+                    source_sub_category = "Talent"
                     source_item_name = "N.a."
+                    source_name = "Unknown"
+                else
+                    source_category = "Generic"
+                    source_sub_category = "Generic"
+                    source_item_name = "Unknown"
                     source_name = "Unknown"
                     source_icon = "Unknown"
                 end
@@ -553,6 +627,8 @@ dataset_templates = {
             "PlayerProfiles",
         },
         legend = {
+            attacker_player = "player",
+            defender_player = "player",
             damage_efficiency = "string",
             weakspot_hit = "number",
             defender_faction = "string",
@@ -581,14 +657,16 @@ dataset_templates = {
     },
     player_status = {
         name = "player_status",
+        player = "player",
         label = "Player status",
         dataset_function = player_status,
         required_datasources = {
             "PlayerUnitStatus",
-            "UnitSpawnerManager",
+            "PlayerProfiles",
         },
         legend = {
             player_name = "string",
+            player = "player",
             state_category = "string",
             state_name = "string",
             previous_state_name = "string",
@@ -602,10 +680,13 @@ dataset_templates = {
         required_datasources = {
             "InteracteeSystem",
             "UnitSpawnerManager",
+            "PlayerProfiles",
         },
         legend = {
             interactor_name = "string",
             interactee_name = "string",
+            interactor_player = "player",
+            interactee_player = "player",
             interaction_type = "string",
             event = "string",
             result = "string",
@@ -619,9 +700,11 @@ dataset_templates = {
         required_datasources = {
             "SmartTagSystem",
             "UnitSpawnerManager",
+            "PlayerProfiles",
         },
         legend = {
             player_name = "string",
+            player = "player",
             target_name = "string",
             target_type = "string",
             target_class = "string",
@@ -638,10 +721,11 @@ dataset_templates = {
         dataset_function = player_suppression,
         required_datasources = {
             "PlayerUnitMoodExtension",
-            "UnitSpawnerManager",
+            "PlayerProfiles",
         },
         legend = {
             player_name = "string",
+            player = "player",
             suppression_type = "string",
             time = "number",
         }
@@ -653,9 +737,11 @@ dataset_templates = {
         required_datasources = {
             "PlayerBlockedAttacks",
             "UnitSpawnerManager",
+            "PlayerProfiles",
         },
         legend = {
             player_name = "string",
+            player = "player",
             enemy_name = "string",
             enemy_attack_type = "string",
             enemy_faction = "string",
@@ -672,10 +758,11 @@ dataset_templates = {
         dataset_function = slots,
         required_datasources = {
             "VisualLoadoutSystem",
-            "UnitSpawnerManager",
+            "PlayerProfiles",
         },
         legend = {
             player_name = "string",
+            player = "player",
             event = "string",
             slot_name = "string",
             time = "number",
@@ -687,10 +774,11 @@ dataset_templates = {
         dataset_function = player_abilities,
         required_datasources = {
             "PlayerAbilities",
-            "UnitSpawnerManager",
+            "PlayerProfiles",
         },
         legend = {
             player_name = "string",
+            player = "player",
             ability_type = "string",
             charge_delta = "number",
             event_type = "string",
@@ -708,6 +796,7 @@ dataset_templates = {
         },
         legend = {
             player_name = "string",
+            player = "player",
             template_name = "string",
             buff_category = "string",
             class_name = "string",

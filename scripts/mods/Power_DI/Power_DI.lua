@@ -2,7 +2,7 @@ local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 local PDI = {}
 local MasterItems = require("scripts/backend/master_items")
-mod.version = "0.7.1"
+mod.version = "0.8"
 mod.cache = {}
 PDI.promise = require("scripts/foundation/utilities/promise")
 PDI.utilities = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\utilities]])
@@ -65,10 +65,49 @@ PDI.lookup_manager.init(PDI)
 PDI.view_manager.init(PDI)
 PDI.session_manager.init(PDI)
 
+local function get_players_test()
+    if not PDI.utilities.in_game() or not PDI.utilities.has_gameplay_timer() then
+        return
+    end
+    local players_datasource = PDI.data.session_data.datasources.Players
+    local player_manager = Managers.player
+    local players = player_manager and player_manager:players()
+    if not players then
+        return
+    end
+
+    for _, player in pairs(players) do
+        local player_unit = player.player_unit
+        if player_unit then
+            local player_unit_uuid = PDI.utilities.get_unit_uuid(player_unit)
+            if not players_datasource[player_unit_uuid] then
+                local temp_player = {}
+                local peer_id = player._peer_id
+                local channel_id = Managers.connection:peer_to_channel(peer_id)
+                temp_player._unique_id = player._unique_id
+                temp_player._account_id = player._account_id
+                temp_player._session_id = player._session_id
+                temp_player._slot = player._slot
+                temp_player._local_player_id = player._local_player_id
+                temp_player._debug_name = player._debug_name
+                temp_player.viewport_name = player.viewport_name
+                temp_player._peer_id = peer_id
+                temp_player._channel_id = player:channel_id()
+                temp_player._telemetry_subject = table.clone(player._telemetry_subject)
+                temp_player._profile = DMF.deepcopy(player._profile)
+
+                PDI.utilities.clean_table_for_saving_2(temp_player)
+                players_datasource[player_unit_uuid] = temp_player
+            end
+        end
+    end
+end
+
 --Main update loop--
 function mod.update(main_dt)
     PDI.save_manager.update()
     PDI.coroutine_manager.update()
+    get_players_test()
 end
 
 --Trigger for updating settings--
@@ -119,12 +158,21 @@ function mod.open_pdi_view()
     PDI.view_manager.open_main_view()
 end
 
+local test_toggle = false
+
 --Dump data for debugging--
 function mod.debug_dump()
     local datetime_string = os.date('%d_%m_%y_%H_%M_%S')
     DMF:dtf(PDI.data, "PDI_data_dump_"..datetime_string, 10)
     mod:notify("Data dump successful")
-    -- PDI.data.save_data.report_templates = {}
-    -- PDI.save_manager.save("save_data", PDI.data.save_data)
-    -- :next(function()mod:echo("clear successful")end)
+end
+--Function to clear all user report templates--
+function mod.clear_user_reports()
+    PDI.data.save_data.report_templates = {}
+    PDI.save_manager.save("save_data", PDI.data.save_data)
+    :next(function()mod:echo("User report templates cleared successfully, requires restart to show")end)
+end
+
+--Testing function--
+function mod.testing()
 end

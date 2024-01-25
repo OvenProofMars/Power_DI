@@ -128,6 +128,8 @@ local function save_button_callback(self)
         report_template.values[#report_template.values+1] = widget.content.value_settings
     end
 
+    view_manager.set_selected_report_name(report_template.name)
+
     PDI.report_manager.add_user_report(report_template)
 
     PDI.save_manager.save("save_data", PDI.data.save_data)
@@ -199,7 +201,17 @@ local function save_button_change_function(content, style)
         content.disabled = true
     end
 end
-local function add_button_change_function(content, style)
+local function add_column_button_change_function(content, style)
+    local fields_grid = data.fields.grid
+    local columns_grid = data.columns.grid
+    local columns_grid_widgets = columns_grid._widgets
+    if fields_grid:selected_grid_index() and #columns_grid_widgets == 0 then
+        content.disabled = false
+    else
+        content.disabled = true
+    end
+end
+local function add_row_button_change_function(content, style)
     local fields_grid = data.fields.grid
     if fields_grid:selected_grid_index() then
         content.disabled = false
@@ -1743,7 +1755,7 @@ local function get_definitions(self)
                 },
             }, "columns_mask"),
             columns_scrollbar = UIWidget.create_definition(ScrollbarPassTemplates.metal_scrollbar, "columns_scrollbar"),
-            columns_add_button = create_custom_button_definition(self, "columns_add_button", "Add selected field", callback(add_column_callback, self),add_button_change_function),
+            columns_add_button = create_custom_button_definition(self, "columns_add_button", "Add selected field", callback(add_column_callback, self),add_column_button_change_function),
             rows_frame = UIWidget.create_definition({
                 {   pass_type = "texture",
                     style_id = "frame",
@@ -1829,7 +1841,7 @@ local function get_definitions(self)
                 },
             }, "rows_mask"),
             rows_scrollbar = UIWidget.create_definition(ScrollbarPassTemplates.metal_scrollbar, "rows_scrollbar"),
-            rows_add_button = create_custom_button_definition(self, "rows_add_button", "Add selected field", callback(add_row_callback, self),add_button_change_function),
+            rows_add_button = create_custom_button_definition(self, "rows_add_button", "Add selected field", callback(add_row_callback, self),add_row_button_change_function),
             values_frame = UIWidget.create_definition({
                 {   pass_type = "texture",
                     style_id = "frame",

@@ -9,7 +9,7 @@ report_templates = {
         label = "Attack report",
         dataset_name = "attack_reports",
         report_type = "pivot_table",
-        columns = {"attacker_name"},
+        columns = {"attacker_player"},
         rows = {"damage_category", "defender_type", "defender_class"},
         values = {
             {
@@ -70,7 +70,7 @@ report_templates = {
             },
         },
         filters = {
-            "attacker_type = \"Player\" and damage > 0 and attacker_name ~ nil and defender_type ~ nil"
+            "attacker_type = \"Player\" and damage > 0 and attacker_player ~ nil and defender_type ~ nil"
         },
     },
     player_defense_report = {
@@ -78,7 +78,7 @@ report_templates = {
         label = "Defense report",
         dataset_name = "attack_reports",
         report_type = "pivot_table",
-        columns = {"defender_name"},
+        columns = {"defender_player"},
         rows = {"attacker_type", "attacker_class"},
         values = {
             {
@@ -90,7 +90,7 @@ report_templates = {
             },
         },
         filters = {
-            "defender_type = \"Player\" and damage>0 and attacker_class ~ nil and defender_name ~ nil"
+            "defender_type = \"Player\" and damage>0 and attacker_class ~ nil and defender_player ~ nil"
         },
     },
     player_status_report = {
@@ -98,7 +98,7 @@ report_templates = {
         label = "Player status report",
         dataset_name = "player_status",
         report_type = "pivot_table",
-        columns = {"player_name"},
+        columns = {"player"},
         rows = {"state_category", "state_name",},
         values = {
             {
@@ -110,7 +110,7 @@ report_templates = {
             },
         },
         filters = {
-            "player_name ~ nil"
+            "player ~ nil"
         },
     },
     player_interactions_report = {
@@ -118,7 +118,7 @@ report_templates = {
         label = "Interactions report",
         dataset_name = "player_interactions",
         report_type = "pivot_table",
-        columns = {"interactor_name"},
+        columns = {"interactor_player"},
         rows = {"interaction_type", "interactee_name"},
         values = {
             {
@@ -130,7 +130,7 @@ report_templates = {
             },
         },
         filters = {
-            "event = \"interaction_stopped\" and result = \"success\" and interaction_type ~ \"default\""
+            "event = \"interaction_stopped\" and result = \"success\" and interaction_type ~ \"default\" and interactor_player ~ nil"
         },
     },
     player_tagging_report = {
@@ -138,7 +138,7 @@ report_templates = {
         label = "Tagging report",
         dataset_name = "tagging",
         report_type = "pivot_table",
-        columns = {"player_name"},
+        columns = {"player"},
         rows = {"tag_type", "target_type", "target_class", "target_name"},
         values = {
             {
@@ -150,7 +150,7 @@ report_templates = {
             },
         },
         filters = {
-            "event = \"set smart tag\" and player_name ~ \"nil\""
+            "event = \"set smart tag\" and player ~ nil"
         },
     },
     player_suppression_report = {
@@ -158,90 +158,90 @@ report_templates = {
         label = "Suppression report",
         dataset_name = "player_suppression",
         report_type = "pivot_table",
-        columns = {"player_name"},
+        columns = {"player"},
         rows = {"suppression_type"},
         values = {
             {
-                field_name = "player_name",
+                field_name = "player",
                 type = "count",
                 label = "Suppression",
                 visible = true,
                 format = "number"
             },
         },
-        filters = {},
+        filters = {"player ~ nil"},
     },
     player_blocked_report = {
         name = "Block report",
         label = "Block report",
         dataset_name = "blocked_attacks",
         report_type = "pivot_table",
-        columns = {"player_name"},
+        columns = {"player"},
         rows = {"enemy_type", "enemy_class", "enemy_name"},
         values = {
             {
-                field_name = "player_name",
+                field_name = "player",
                 type = "count",
                 label = "Blocks",
                 visible = true,
                 format = "number"
             },
         },
-        filters = {},
+        filters = {"player ~ nil"},
     },
     slots_report = {
         name = "Slots report",
         label = "Slots report",
         dataset_name = "slot_events",
         report_type = "pivot_table",
-        columns = {"player_name"},
+        columns = {"player"},
         rows = {"slot_name", "event"},
         values = {
             {
-                field_name = "player_name",
+                field_name = "player",
                 type = "count",
                 label = "Slots",
                 visible = true,
                 format = "number"
             },
         },
-        filters = {},
+        filters = {"player ~ nil"},
     },
     player_abilities_report = {
         name = "Player abilities report",
         label = "Player abilities report",
         dataset_name = "player_abilities",
         report_type = "pivot_table",
-        columns = {"player_name"},
+        columns = {"player"},
         rows = {"ability_type"},
         values = {
             {
-                field_name = "player_name",
+                field_name = "player",
                 type = "count",
                 label = "Player abilities",
                 visible = true,
                 format = "number"
             },
         },
-        filters = {"event_type = \"Charge used\""},
+        filters = {"event_type = \"Charge used\" and player ~ nil"},
     },
     player_buffs_report = {
         name = "Player buffs report",
         label = "Player buffs report",
         dataset_name = "player_buffs",
         report_type = "pivot_table",
-        columns = {"player_name"},
-        rows = {"source_category", "source_item_name", "source_sub_category", "source_name", "event", "template_name"},
+        columns = {"player"},
+        rows = {"source_category", "source_name", "event", "template_name"},
         values = {
             {
-                field_name = "player_name",
+                field_name = "player",
                 type = "count",
                 label = "Buffs",
                 visible = true,
                 format = "number"
             },
         },
-        filters = {},
+        filters = {"player ~ nil"},
     },
 }
 

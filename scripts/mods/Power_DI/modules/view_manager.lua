@@ -92,7 +92,7 @@ view_manager.init = function (input_table)
     end
 end
 view_manager.open_main_view = function()
-    if not UIManager:chat_using_input() and not UIManager:view_instance("pdi_main_view") and not UIManager:view_active("title_view") then
+    if not UIManager:chat_using_input() and not UIManager:view_instance("pdi_main_view") and not UIManager:view_active("title_view") and not UIManager:view_active("loading_view") then
         Managers.ui:open_view("pdi_main_view", 10,nil,nil,nil, PDI)
     elseif Managers.ui:view_instance("pdi_main_view") then
         Managers.ui:close_view("pdi_main_view")
@@ -213,6 +213,7 @@ end
 view_manager.init_data_in_game = function(self, session_id)
 
     selected_session_id = session_id
+    selected_report_name = "Attack report"
 
     local report_name = selected_report_name
     local report_template = PDI.report_manager.get_report_template(report_name)
@@ -314,6 +315,33 @@ view_manager.open_edit_view = function(self, report_template)
     context.report_template = report_template
 
     main_view_instance:_add_element(PdiEditViewElement, "PdiEditViewElement", 1, context)
+end
+view_manager.view_player_profile = function(player_profile)
+    
+    for _, value in pairs(player_profile.loadout) do
+        PDI.utilities.set_master_item_meta_table(value)
+    end
+
+    local local_player = Managers.player:local_player(1)
+    local local_player_peer_id = local_player:peer_id()
+    local local_player_account_id = local_player:account_id()
+    local data_service_social = Managers.data_service.social
+    local player_info = data_service_social:get_player_info_by_account_id(local_player_account_id)
+    
+    player_info.local_player_id = function()
+        return 1
+    end
+    player_info.peer_id = function()
+        return local_player_peer_id
+    end
+    player_info.profile = function()
+        return player_profile
+    end
+
+    Managers.ui:open_view("inventory_background_view", nil, nil, nil, nil, {
+        is_readonly = true,
+        player = player_info
+    })
 end
 
 return view_manager

@@ -635,10 +635,21 @@ PdiMainViewElement.init = function (self, parent, draw_layer, start_scale, conte
         local session_selected_callback = view_manager.session_selected_callback
         session_dropdown_widget = self._create_dropdown_widget(self, "sessions_dropdown_widget", "session_dropdown", options_array, 8, session_selected_callback)
         self._widgets[#self._widgets+1] = session_dropdown_widget
-        if options_array[1] then
-            local session_id = options_array[1].id
-            session_dropdown_widget.content.selected_index = 1
-            view_manager.session_selected_callback(self, session_id)
+        if #options_array > 0 then
+            local selected_session_id = view_manager.get_selected_session_id()
+            local selected_session_index
+            if selected_session_id then
+                for index, option in ipairs(options_array) do
+                    if option.id == selected_session_id then
+                        selected_session_index = index
+                        break
+                    end
+                end
+            end
+            selected_session_index = selected_session_index or 1
+            selected_session_id = selected_session_id or options_array[1].id
+            session_dropdown_widget.content.selected_index = selected_session_index
+            view_manager.session_selected_callback(self, selected_session_id)
         end
         set_session_dropdown_custom_style(self, session_dropdown_widget)
     end

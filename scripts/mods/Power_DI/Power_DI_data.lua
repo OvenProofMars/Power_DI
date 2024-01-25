@@ -28,6 +28,26 @@ return {
                 function_name = "debug_dump"
             },
             {
+                setting_id = "clear_user_reports",
+                title = "clear_user_reports_title",
+                tooltip = "clear_user_reports_tooltip",
+                type = "keybind",
+                default_value = {},
+                keybind_trigger = "pressed",
+                keybind_type = "function_call",
+                function_name = "clear_user_reports"
+            },
+            {
+                setting_id = "testing",
+                title = "testing_title",
+                tooltip = "testing_tooltip",
+                type = "keybind",
+                default_value = {},
+                keybind_trigger = "pressed",
+                keybind_type = "function_call",
+                function_name = "testing"
+            },
+            {
                 setting_id = "auto_save",
                 title = "auto_save_title",
                 tooltip = "auto_save_tooltip",
