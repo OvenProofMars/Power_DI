@@ -15,7 +15,7 @@ end
 
 --Function to create a uuid--
 utilities.uuid = function(optional_template)
-    local template = optional_template or 'xxxxxxxxx'
+    local template = optional_template or 'xxxxxxxxxx'
     return string.gsub(template, '[xy]', function (c)
         local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb)
         return string.format('%x', v)
@@ -250,6 +250,18 @@ utilities.set_master_item_meta_table = function(item_instance)
     })
 
     return item_instance
+end
+
+--Function to handle localization--
+utilities.localize = function(input_string)
+    local prefix = string.sub(input_string,1,4)
+    if prefix == "loc_" then
+        return Localize(input_string)
+    elseif prefix == "mloc" then
+        return mod:localize(input_string)
+    else
+        return input_string
+    end
 end
 
 return utilities

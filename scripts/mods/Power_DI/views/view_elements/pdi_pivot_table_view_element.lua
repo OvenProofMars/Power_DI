@@ -1312,8 +1312,9 @@ end
 PdiPivotTableViewElement.on_resolution_modified = function (self, scale)
 	PdiPivotTableViewElement.super.on_resolution_modified(self, scale)
 end
-
+local test_toggle = true
 PdiPivotTableViewElement.update = function (self, dt, t, input_service)
+
         for _, value in pairs(data) do
             local grid  = value.grid
             if grid then
@@ -1353,6 +1354,11 @@ PdiPivotTableViewElement.draw = function (self, dt, t, ui_renderer, render_setti
 end
 
 PdiPivotTableViewElement._draw_widgets = function (self, dt, t, input_service, ui_renderer, render_settings)
+    if test_toggle then
+        DMF:dtf(render_settings,"render_settings_PdiPivotTableViewElement",15)
+        test_toggle = false
+    end
+    
     for _, widget in ipairs(data.column.banding_widgets) do
         UIWidget.draw(widget, ui_renderer)
     end

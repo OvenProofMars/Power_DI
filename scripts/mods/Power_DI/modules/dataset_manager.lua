@@ -5,7 +5,7 @@ local dataset_manager = {}
 
 dataset_manager.registered_datasets = {}
 local shared_data = {}
-local function_set, must_yield, is_array
+local function_set, must_yield, is_array, force_dataset_generation
 
 --Wrap a function with a the coroutine yield check--
 local function coroutine_wrapper(self,fn)
@@ -332,6 +332,11 @@ dataset_manager.register_dataset = function(dataset_template)
                 error("data source with the name \""..v.."\" not found")
             end
         end
+
+        local dataset_function = dataset_template.dataset_function
+        dataset_template.dataset_function = string.dump(dataset_function)
+        dataset_template.hash = PDI.utilities.hash(dataset_template)
+        dataset_template.dataset_function = dataset_function
         dataset_manager.registered_datasets[dataset_name] = dataset_template
         return true
     end
@@ -350,6 +355,7 @@ end
 
 --Function to prepare the session data table for datasets--
 dataset_manager.prepare_session = function (session)
+    session.dataset_template_hash_lookup = session.dataset_template_hash_lookup or {}
     session.datasets = session.datasets or {}
     for dataset_name, dataset_template in pairs(dataset_manager.registered_datasets) do
         session.datasets[dataset_name] = session.datasets[dataset_name] or {}
@@ -362,23 +368,61 @@ dataset_manager.get_dataset_template = function(dataset_name)
     return dataset_manager.registered_datasets[dataset_name]
 end
 
+-- dataset_manager.check_dataset_template_hash = function(dataset_name, hash)
+--     local dataset_template = dataset_manager.registered_datasets[dataset_name]
+--     local dataset_template_hash = dataset_template.hash
+--     return dataset_template_hash == hash
+-- end
+dataset_manager.check_dataset_template_hash = function(dataset_template)
+    local dataset_name = dataset_template.name
+    local dataset_template_hash = dataset_template.hash
+    local dataset_hash_lookup = PDI.data.session_data.dataset_template_hash_lookup
+    local dataset_hash =  dataset_hash_lookup and dataset_hash_lookup[dataset_name]
+    return dataset_hash and dataset_template_hash == dataset_hash
+end
+
 --Generate a dataset, uses coroutines--
-dataset_manager.generate_dataset = function(template)
+dataset_manager.generate_dataset = function(template, force)
     PDI.debug("generate_dataset","start")
-    local promise  = PDI.promise:new()
-    local shared_data = shared_data[template.name]
-    shared_data.promise = promise
-    shared_data.dataset = {}
-    template.dataset_function(shared_data)
-    return promise
+    force_dataset_generation = force
+    local dataset_name = template.name
+    local hash_check
+    if force then
+        hash_check = false
+    else
+        hash_check = dataset_manager.check_dataset_template_hash(template)
+    end
+
+    if hash_check then
+        local dataset = PDI.data.session_data.datasets[dataset_name]
+        return PDI.promise.resolved({dataset, true})
+    else
+        local promise  = PDI.promise:new()
+        local shared_data = shared_data[template.name]
+        shared_data.promise = promise
+        shared_data.dataset = {}
+        template.dataset_function(shared_data)
+        return promise
+    end
 end
 
 --Dataset creation helper functions, these functions are available to the dataset creation functions--
 
 --Function that need to be called by the dataset creation function to resolve the promise--
 dataset_manager.dataset_complete = function(self)
-    PDI.data.session_data.datasets[self.name] = self.dataset
-    self.promise:resolve()
+    local dataset_name = self.name
+    local dataset_template = dataset_manager.registered_datasets[dataset_name]
+    local dataset_template_hash = dataset_template.hash
+
+    if force_dataset_generation then
+        PDI.data.session_data.dataset_template_hash_lookup[dataset_name] = nil
+        force_dataset_generation = nil
+    else
+        PDI.data.session_data.dataset_template_hash_lookup[dataset_name] = dataset_template_hash
+    end
+
+    PDI.data.session_data.datasets[dataset_name] = self.dataset
+    self.promise:resolve({self.dataset, false})
     PDI.debug("generate_dataset","end")
 end
 

@@ -13,9 +13,9 @@ local function iterate_queue()
     if item then
         local status, output = coroutine.resume(item.co)
         if status == true then
-            if output == nil then
+            if output ~= coroutine then
                 table.remove(queue, 1)
-                item.promise:resolve(item.output)
+                item.promise:resolve(output)
             end
         elseif status == false then
             table.remove(queue, 1)
@@ -24,7 +24,6 @@ local function iterate_queue()
                 stacktrace = debug.traceback(item.co)
             }
             PDI.debug("Coroutine", error_table)
-            PDI.view_manager.set_error(error_table)
             item.promise:reject(error_table)
         end
     end

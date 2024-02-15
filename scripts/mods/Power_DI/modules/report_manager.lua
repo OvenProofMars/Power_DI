@@ -1,6 +1,6 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
-local PDI
+local PDI, user_reports
 local report_manager = {}
 report_manager.registered_reports = {}
 local legend_cache
@@ -120,6 +120,8 @@ local function generate_pivot_table_report_coroutine(template)
     PDI.debug("generate_pivot_table_report_coroutine", "start")
 
     local filter_function = generate_filter_function(template)
+    local dataset_template = PDI.dataset_manager.get_dataset_template(template.dataset_name)
+    local column_type = dataset_template.legend[template.columns[1]]
     local dataset = PDI.data.session_data.datasets[template.dataset_name]
     local report_output = {}
     report_output.data = {}
@@ -285,7 +287,9 @@ local function generate_pivot_table_report_coroutine(template)
                 local index = #output_table+1
                 output_table[index] = {}
                 local output_column_table = output_table[index]
+                
                 output_column_table.name = column_name
+                output_column_table.type = column_type
 
                 if column_table.child_columns then
                     output_column_table.children = {}
@@ -354,8 +358,9 @@ local function generate_pivot_table_report_coroutine(template)
         generate_values_structure(report_output.data, output_table, report_output.columns, field_name)
     end
     PDI.debug("generate_pivot_table_report_coroutine", "values structure end")
-    PDI.data.session_data.reports[template.name] = report_output
+    PDI.data.session_data.reports[template.id] = report_output
     PDI.debug("generate_pivot_table_report_coroutine", "end")
+    return report_output
 end
 
 --These function still need to be created--
@@ -406,27 +411,49 @@ end
 
 --Function to add a custom report to the user's save data--
 report_manager.add_user_report = function(report_template)
-    local save_data = PDI.data.save_data
-    save_data.report_templates = save_data.report_templates or {}
-    save_data.report_templates[report_template.name] = report_template
-    mod.reports.register_report(report_template)
+    local uuid = PDI.utilities.uuid()
+    report_template.id = uuid
+    user_reports[uuid] = report_template
+    PDI.save_manager.save_user_data()
 end
 
---Function to register all user's custom reports--
-report_manager.register_save_data_reports = function()
-    local save_data = PDI.data.save_data
-    save_data.report_templates = save_data.report_templates or {}
-    for _, report_template in pairs(save_data.report_templates) do
-        mod.reports.register_report(report_template)      
+report_manager.get_user_reports = function()
+    if user_reports then
+        return user_reports
     end
+    user_reports = PDI.data.save_data.report_templates
+    if not user_reports then
+        PDI.data.save_data.report_templates = {}
+        user_reports = PDI.data.save_data.report_templates
+    end
+    if not next(user_reports) then
+        for _, report_template in pairs(report_manager.registered_reports) do
+            local uuid = PDI.utilities.uuid()
+            local user_report_template = table.clone(report_template)
+            if string.sub(report_template.name,1,5) == "mloc_" then
+                user_report_template.name = mod:localize(user_report_template.name)
+            end
+            user_report_template.id = uuid
+            user_report_template.template_name = report_template.name
+            user_reports[uuid] = user_report_template
+        end
+        PDI.save_manager.save_user_data()
+    end
+    return user_reports
+end
+
+--Function to get a report template by name--
+report_manager.get_report_template = function(report_name)
+    return report_manager.registered_reports[report_name]
 end
 
 --Function to prepare the session data for report data--
 report_manager.prepare_session = function(session)
+    session.report_template_hash_lookup = session.report_template_hash_lookup or {}
     session.reports = session.reports or {}
-    for report_name, _ in pairs(report_manager.registered_reports) do
-        session.reports[report_name] = session.reports[report_name] or {}
-    end
+    -- for report_id, _ in pairs(user_reports) do
+    --     session.reports[report_id] = session.reports[report_id] or {}
+    -- end
 end
 
 --Function to create a legend of the values of the fields in a dataset, currently not used--
@@ -434,18 +461,72 @@ report_manager.generate_legend_cache = function(template)
     return PDI.coroutine_manager.new(generate_legend_cache_coroutine, template)
 end
 
+report_manager.check_report_template_hash = function(report_template)
+    local report_id = report_template.id
+    local report_template_hash = PDI.utilities.hash(report_template)
+    local report_hash_lookup = PDI.data.session_data.report_template_hash_lookup
+    local report_hash =  report_hash_lookup and report_hash_lookup[report_id]
+
+    return report_hash and report_hash == report_template_hash
+end
+
 --Function to generate a report, returns a promise, uses coroutines--
-report_manager.generate_report = function(template)
-    if template.report_type == "pivot_table" then
-        return PDI.coroutine_manager.new(generate_pivot_table_report_coroutine, template)
+report_manager.generate_report = function(template, force)
+    local dataset_manager = PDI.dataset_manager
+    local report_id = template.id
+    local dataset_hash_check
+    local report_hash_check
+    local hash_check
+
+    if force then
+        hash_check = false
     else
-        error("unknown report type")
+        local dataset_name = template.dataset_name
+        local dataset_template = dataset_manager.get_dataset_template(dataset_name)
+        dataset_hash_check = dataset_manager.check_dataset_template_hash(dataset_template)
+        report_hash_check = report_manager.check_report_template_hash(template)
+        hash_check = dataset_hash_check and report_hash_check
+    end
+
+    if hash_check then
+        local report = PDI.data.session_data.reports[report_id]
+        return PDI.promise.resolved({report, true})
+    else
+        local dataset_name = template.dataset_name
+        local promise = PDI.promise:new()
+        local dataset_template = dataset_manager.get_dataset_template(dataset_name)
+        dataset_manager.generate_dataset(dataset_template, force)
+        :next(
+            function()
+                return PDI.coroutine_manager.new(generate_pivot_table_report_coroutine, template)
+            end,
+            function(err)
+                promise:reject(err)
+            end
+        )
+        :next(
+            function(data)
+                if data then
+                    local hash = PDI.utilities.hash(template)
+                    local report_hash_lookup = PDI.data.session_data.report_template_hash_lookup
+
+                    if force then
+                        report_hash_lookup[report_id] = nil
+                    else
+                        report_hash_lookup[report_id] = hash
+                    end
+                    
+                    promise:resolve({data, false})
+                end
+            end,
+            function(err)
+                promise:reject(err)
+            end
+        )
+        return promise
     end
 end
 
---Function to get a report template by name--
-report_manager.get_report_template = function(report_name)
-    return report_manager.registered_reports[report_name]
-end
+
 
 return report_manager

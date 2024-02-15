@@ -84,6 +84,18 @@ return {
                 type = "checkbox",
                 default_value = false,
             },
+            {
+                setting_id = "date_format",
+                title = "date_format_title",
+                tooltip = "date_format_tooltip",
+                type = "dropdown",
+                options = {
+                    {text = "DD_MM_YYYY",   value = "%d/%m/%Y"},
+                    {text = "MM_DD_YYYY",   value = "%m/%d/%Y"},
+                    {text = "YYYY_MM_DD",   value = "%Y/%m/%d"},
+                  },
+                default_value = "%d/%m/%Y",
+            },
 		}
 	}
 }

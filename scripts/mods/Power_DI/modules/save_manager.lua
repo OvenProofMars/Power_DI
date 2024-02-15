@@ -77,6 +77,14 @@ save_manager.save = function(file_or_table_name, table_data)
     return promise
 end
 
+save_manager.save_user_data = function()
+    return save_manager.save("save_data", PDI.data.save_data)
+end
+
+save_manager.save_session_data = function()
+    return save_manager.save("session_data", PDI.data.session_data)
+end
+
 --Function to load a file from disk, returns a promise--
 save_manager.load = function(file_or_table_name)
     local filename
@@ -226,6 +234,7 @@ save_manager.init = function(input_table)
     :next(
         function(data)
             PDI.data.session_data = data
+            PDI.session_manager.prepare_session(data)
         end,
         function(err)
             PDI.data.session_data = PDI.session_manager.new()

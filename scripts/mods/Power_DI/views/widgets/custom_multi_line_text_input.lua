@@ -11,6 +11,8 @@ local _utf8_sub_string = Utf8.sub_string
 
 local input_service = Managers.input:get_input_service("View")
 
+local font_color = Color.terminal_text_body(200, true)
+
 local function _find_next_word(text, caret_position)
 	caret_position = Utf8.find(text, "%s", caret_position)
 	caret_position = caret_position or _utf8_string_length(text)
@@ -487,7 +489,7 @@ local CustomMultiLineTextInput = {
 		style_id = "background",
 		pass_type = "rect",
 		style = {
-			color = Color.terminal_grid_background(200, true)
+			color = Color.terminal_grid_background(50, true)
 		}
 	},
 	{
@@ -498,7 +500,7 @@ local CustomMultiLineTextInput = {
 		style = {
 			font_type= "proxima_nova_bold" ,
 			line_spacing= 1.2,
-			text_color= {255,255,242,230},
+			text_color= font_color,
 			offset= {4,4,1},
 			text_vertical_alignment= "top",
 			text_hotizontal_alignment = "left",
@@ -512,19 +514,10 @@ local CustomMultiLineTextInput = {
 		pass_type = "rect",
 		style = {
 
-			color = Color.terminal_text_header(255, true),
-			offset = {
-				0,
-				0,
-				2
-			},
-			size = {
-				2
-			},
-			size_addition = {
-				0,
-				0
-			}
+			color = font_color,
+			offset = {0,0,2},
+			size = {2},
+			size_addition = {0,0}
 		},
 		visibility_function = _input_active_visibility_function,
 		change_function = function (pass_content, style_data, animations, dt)

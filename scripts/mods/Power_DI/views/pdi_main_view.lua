@@ -407,19 +407,8 @@ local function get_definitions(self)
     }
     return definitions
 end
--- PdiMainView.init_elements = function(self)
---     local context = {}
---     context.PDI = PDI
---     context.offscreen_renderers = self.ui_offscreen_renderers
---     context.settings = {
---         font_name = font_name,
---         font_size = font_size,
---         block_size = sizes.block,
---         anchor_position = self._ui_scenegraph.main_view_element_anchor.world_position,
---     }
---     self:_add_element(PdiMainViewElement, "PdiMainViewElement", 1, context)
--- end
 PdiMainView.cb_shading_callback = function (self, world, shading_env, viewport, default_shading_environment_name)
+    print("SHADING CALLBACK")
 	local gamma = Application.user_setting("gamma") or 0
 
 	ShadingEnvironment.set_scalar(shading_env, "exposure_compensation", ShadingEnvironment.scalar(shading_env, "exposure_compensation") + gamma)

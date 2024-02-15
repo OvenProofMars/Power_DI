@@ -618,8 +618,8 @@ end
 
 dataset_templates = {
     attack_reports = {
-        name = "attack_reports",
-        label = "Attack reports",
+        name = "mloc_dataset_attack_reports",
+        --label = "Attack reports",
         dataset_function = attack_reports,
         required_datasources = {
             "AttackReportManager",
@@ -656,9 +656,8 @@ dataset_templates = {
         },
     },
     player_status = {
-        name = "player_status",
-        player = "player",
-        label = "Player status",
+        name = "mloc_dataset_player_status",
+        --label = "Player status",
         dataset_function = player_status,
         required_datasources = {
             "PlayerUnitStatus",
@@ -674,8 +673,8 @@ dataset_templates = {
         },
     },
     player_interactions = {
-        name = "player_interactions",
-        label = "Player interactions",
+        name = "mloc_dataset_player_interactions",
+        --label = "Player interactions",
         dataset_function = player_interactions,
         required_datasources = {
             "InteracteeSystem",
@@ -694,7 +693,7 @@ dataset_templates = {
         }
     },
     tagging = {
-        name = "tagging",
+        name = "mloc_dataset_tagging",
         label = "Tagging",
         dataset_function = tagging,
         required_datasources = {
@@ -716,8 +715,8 @@ dataset_templates = {
         }
     },
     player_suppression = {
-        name = "player_suppression",
-        label = "Suppression",
+        name = "mloc_dataset_player_supression",
+        --label = "Suppression",
         dataset_function = player_suppression,
         required_datasources = {
             "PlayerUnitMoodExtension",
@@ -731,8 +730,8 @@ dataset_templates = {
         }
     },
     blocked_attacks = {
-        name = "blocked_attacks",
-        label = "Blocked",
+        name = "mloc_dataset_blocked_attacks",
+        --label = "Blocked",
         dataset_function = blocked_attacks,
         required_datasources = {
             "PlayerBlockedAttacks",
@@ -753,8 +752,8 @@ dataset_templates = {
         }
     },
     slot_events = {
-        name = "slot_events",
-        label = "Slots",
+        name = "mloc_dataset_slot_events",
+        --label = "Slots",
         dataset_function = slots,
         required_datasources = {
             "VisualLoadoutSystem",
@@ -769,8 +768,8 @@ dataset_templates = {
         }
     },
     player_abilities = {
-        name = "player_abilities",
-        label = "Player abilities",
+        name = "mloc_dataset_player_abilities",
+        --label = "Player abilities",
         dataset_function = player_abilities,
         required_datasources = {
             "PlayerAbilities",
@@ -786,8 +785,8 @@ dataset_templates = {
         }
     },
     player_buffs = {
-        name = "player_buffs",
-        label = "Player buffs",
+        name = "mloc_dataset_player_buffs",
+        --label = "Player buffs",
         dataset_function = player_buffs,
         required_datasources = {
             "PlayerBuffExtension",

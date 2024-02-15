@@ -11,7 +11,7 @@ local function generate_session_id()
 end
 
 --Function to prepare a session for use with datasets and reports--
-local function prepare_session(session)
+session_manager.prepare_session = function(session)
     PDI.dataset_manager.prepare_session(session)
     PDI.report_manager.prepare_session(session)
 end
@@ -39,12 +39,19 @@ session_manager.new = function()
 
     if backend_mission_id then
         data_service_manager.mission_board:fetch_mission(backend_mission_id)
-        :next(function(mission_data)session.info.mission_data = mission_data.mission end)
+        :next(
+            function(mission_data)
+                session_manager.update_current_session_info({["mission_data"] = mission_data.mission})
+                session_manager.save_all_data()
+                --session.info.mission_data = mission_data.mission
+                --PDI.save_manager.save("save_data", PDI.data.save_data)
+            end
+        )
     end
 
     session.info.difficulty = state_manager.difficulty and state_manager.difficulty:get_difficulty() or nil
-    session.info.date = os.date("%d/%m/%Y")
-    session.info.start_time = os.date("%X")
+    --session.info.date = os.date("%d/%m/%Y")
+    session.info.start_time = os.time()
     session.info.resumed = false
 
     if session_id ~= "local" then
@@ -58,7 +65,7 @@ session_manager.new = function()
 end
 
 --Function to save the current session data to disk--
-session_manager.save_current_session = function ()
+session_manager.save_all_data = function ()
     local session_id = PDI.data.session_data.info.session_id
     if session_id == "local" then
         return
@@ -77,11 +84,16 @@ session_manager.load_session = function(session_id)
     :next(
         function(data)
             PDI.data.session_data = data
-            prepare_session(data)
+            session_manager.prepare_session(data)
             promise:resolve(data)
         end
     )
     return promise
+end
+
+--Function to save the current session, mirror from save manager, returns a promise--
+session_manager.save_session = function()
+    return PDI.save_manager.save_session_data()
 end
 
 --Updates the current session info in the save data table--
@@ -114,9 +126,9 @@ session_manager.resume_or_create_session = function()
     else
         PDI.data.session_data = session_manager.new()
     end
-    prepare_session(PDI.data.session_data)
+    session_manager.prepare_session(PDI.data.session_data)
 
-    session_manager.save_current_session()
+    session_manager.save_all_data()
 
     if current_session_id == "local" then
         local local_player = Managers.player:local_player(1)

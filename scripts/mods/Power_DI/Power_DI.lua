@@ -14,7 +14,8 @@ PDI.datasource_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\
 PDI.dataset_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\dataset_manager]])
 PDI.report_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\report_manager]])
 PDI.lookup_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\lookup_manager]])
-PDI.view_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\view_manager]])
+--PDI.view_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\view_manager]])
+PDI.ui_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\ui_manager]])
 
 local debug = mod:get("debug_mode")
 --Function to set debug mode--
@@ -41,7 +42,8 @@ local setting_functions = {
     max_cycles = PDI.coroutine_manager.set_max_cycles,
     debug_mode = PDI.set_debug_mode,
     auto_save =  PDI.save_manager.set_auto_save,
-    auto_save_interval =  PDI.save_manager.set_auto_save_interval
+    auto_save_interval =  PDI.save_manager.set_auto_save_interval,
+    date_format = PDI.ui_manager.set_date_format,
 }
 
 --Create main data table--
@@ -49,21 +51,25 @@ PDI.data = {}
 
 --Initialize components--
 PDI.utilities.init(PDI)
+PDI.save_manager.init(PDI)
+:next(
+    function()
+        mod:notify("Save files loaded")
+        --PDI.report_manager.register_save_data_reports()
+
+        
+    end
+)
 PDI.api_manager.init(PDI)
 PDI.coroutine_manager.init(PDI)
 PDI.datasource_manager.init(PDI)
 PDI.dataset_manager.init(PDI)
 PDI.report_manager.init(PDI)
-PDI.save_manager.init(PDI)
-:next(
-    function()
-        mod:notify("Save files loaded")
-        PDI.report_manager.register_save_data_reports()
-    end
-)
 PDI.lookup_manager.init(PDI)
-PDI.view_manager.init(PDI)
 PDI.session_manager.init(PDI)
+PDI.ui_manager.init(PDI)
+--PDI.view_manager.init(PDI)
+
 
 local function get_players_test()
     if not PDI.utilities.in_game() or not PDI.utilities.has_gameplay_timer() then
@@ -104,10 +110,9 @@ local function get_players_test()
 end
 
 --Main update loop--
-function mod.update(main_dt)
+function mod.update(dt)
     PDI.save_manager.update()
     PDI.coroutine_manager.update()
-    get_players_test()
 end
 
 --Trigger for updating settings--
@@ -133,16 +138,18 @@ function mod.on_game_state_changed(status, state_name)
         mod:enable_all_hooks()
     elseif state_name == "GameplayStateRun" and status == "exit" and PDI.utilities.in_game() then
         mod:disable_all_hooks()
-        PDI.session_manager.save_current_session()
+        PDI.session_manager.save_all_data()
         PDI.save_manager.clear_auto_save_cache()
     elseif state_name == "StateGameScore" and status == "enter" then
-        local end_time = os.date("%X")
+        local end_time = os.time()
         PDI.session_manager.update_current_session_info({["end_time"] = end_time})
-        PDI.session_manager.save_current_session()
+        PDI.session_manager.save_all_data()
         PDI.save_manager.clear_auto_save_cache()
 	end
     if PDI.data.session_data and PDI.utilities.in_game() then
-        PDI.data.session_data.info.status = Managers.state.game_mode:game_mode_state()
+        local game_mode_state = Managers.state.game_mode:game_mode_state()
+        PDI.session_manager.update_current_session_info({["status"] = game_mode_state})
+        --PDI.data.session_data.info.status = Managers.state.game_mode:game_mode_state()
     end
     previous_state_name = state_name
 end
@@ -155,7 +162,8 @@ end)
 
 --Open the main PDI view--
 function mod.open_pdi_view()
-    PDI.view_manager.open_main_view()
+    --PDI.view_manager.open_main_view()
+    PDI.ui_manager.open_view()
 end
 
 local test_toggle = false
@@ -163,7 +171,7 @@ local test_toggle = false
 --Dump data for debugging--
 function mod.debug_dump()
     local datetime_string = os.date('%d_%m_%y_%H_%M_%S')
-    DMF:dtf(PDI.data, "PDI_data_dump_"..datetime_string, 10)
+    DMF:dtf(PDI.data, "PDI_data_dump_"..datetime_string, 20)
     mod:notify("Data dump successful")
 end
 --Function to clear all user report templates--
@@ -175,4 +183,9 @@ end
 
 --Testing function--
 function mod.testing()
+    local ui_data = {
+        scenegraphs_data = mod.scenegraphs_data,
+        renderers = mod.renderers
+    }
+    DMF:dtf(ui_data, "ui_data", 20)
 end

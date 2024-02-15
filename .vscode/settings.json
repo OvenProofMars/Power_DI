@@ -19,7 +19,8 @@
         "Utf8",
         "Clipboard",
         "Keyboard",
-        "Log"
+        "Log",
+        "RESOLUTION_LOOKUP"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field"

@@ -337,6 +337,9 @@ view_manager.view_player_profile = function(player_profile)
     player_info.profile = function()
         return player_profile
     end
+    player_info.name = function()
+        return player_profile.name
+    end
 
     Managers.ui:open_view("inventory_background_view", nil, nil, nil, nil, {
         is_readonly = true,
