@@ -45,7 +45,7 @@ local padding = 10
 
 local date_format = mod:get("date_format")
 
-local view_name = "pdi_main_view_2"
+local view_name = "pdi_main_view"
 
 local packages_array = {
     "packages/ui/views/mission_board_view/mission_board_view",
@@ -437,7 +437,7 @@ local function create_renderers()
         local renderer_template = renderer_templates[renderer_name]
         local ui_manager = Managers.ui
         local class_name = "PDI"
-        local view_name = "pdi_main_view_2"
+        local view_name = "pdi_main_view"
         local timer_name = "ui"
         local renderer_template_name = renderer_template.name
         local renderer_name = class_name..".."..renderer_template_name
@@ -477,7 +477,7 @@ local function create_background_renderer()
     local renderer_template = renderer_templates["background_renderer"]
     local ui_manager = Managers.ui
     local class_name = "PDI"
-    local view_name = "pdi_main_view_2"
+    local view_name = "pdi_main_view"
     local timer_name = "ui"
     local renderer_template_name = renderer_template.name
     local renderer_name = class_name..".."..renderer_template_name
@@ -3199,10 +3199,10 @@ end
 --Function to toggle the view
 ui_manager.toggle_view = function()
     set_render_settings()
-    if UIManager:view_instance("pdi_main_view_2") then
-        Managers.ui:close_view("pdi_main_view_2")
+    if UIManager:view_instance("pdi_main_view") then
+        Managers.ui:close_view("pdi_main_view")
     elseif restricted_views_check() and not UIManager:chat_using_input() then
-        Managers.ui:open_view("pdi_main_view_2", nil,nil,nil,nil, PDI)
+        Managers.ui:open_view("pdi_main_view", nil,nil,nil,nil, PDI)
     end
 end
 --Function to handle starting the UI

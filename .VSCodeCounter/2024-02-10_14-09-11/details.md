@@ -47,7 +47,7 @@ Total : 43 files,  16595 codes, 745 comments, 1528 blanks, all 18868 lines
 | [scripts/mods/Power_DI/templates/view_templates.lua](/scripts/mods/Power_DI/templates/view_templates.lua) | Lua | 70 | 1 | 2 | 73 |
 | [scripts/mods/Power_DI/views/pdi_base_view.lua](/scripts/mods/Power_DI/views/pdi_base_view.lua) | Lua | 206 | 0 | 36 | 242 |
 | [scripts/mods/Power_DI/views/pdi_main_view.lua](/scripts/mods/Power_DI/views/pdi_main_view.lua) | Lua | 564 | 2 | 38 | 604 |
-| [scripts/mods/Power_DI/views/pdi_main_view_2.lua](/scripts/mods/Power_DI/views/pdi_main_view_2.lua) | Lua | 38 | 0 | 6 | 44 |
+| [scripts/mods/Power_DI/views/pdi_main_view.lua](/scripts/mods/Power_DI/views/pdi_main_view.lua) | Lua | 38 | 0 | 6 | 44 |
 | [scripts/mods/Power_DI/views/view_elements/pdi_base_view_element.lua](/scripts/mods/Power_DI/views/view_elements/pdi_base_view_element.lua) | Lua | 206 | 0 | 41 | 247 |
 | [scripts/mods/Power_DI/views/view_elements/pdi_edit_view_element.lua](/scripts/mods/Power_DI/views/view_elements/pdi_edit_view_element.lua) | Lua | 2,421 | 26 | 149 | 2,596 |
 | [scripts/mods/Power_DI/views/view_elements/pdi_main_view_element.lua](/scripts/mods/Power_DI/views/view_elements/pdi_main_view_element.lua) | Lua | 648 | 6 | 39 | 693 |

@@ -14,7 +14,6 @@ PDI.datasource_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\
 PDI.dataset_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\dataset_manager]])
 PDI.report_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\report_manager]])
 PDI.lookup_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\lookup_manager]])
---PDI.view_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\view_manager]])
 PDI.ui_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\ui_manager]])
 
 local debug = mod:get("debug_mode")
@@ -54,10 +53,7 @@ PDI.utilities.init(PDI)
 PDI.save_manager.init(PDI)
 :next(
     function()
-        mod:notify("Save files loaded")
-        --PDI.report_manager.register_save_data_reports()
-
-        
+        mod:notify("PDI: Save files loaded")        
     end
 )
 PDI.api_manager.init(PDI)
@@ -68,46 +64,6 @@ PDI.report_manager.init(PDI)
 PDI.lookup_manager.init(PDI)
 PDI.session_manager.init(PDI)
 PDI.ui_manager.init(PDI)
---PDI.view_manager.init(PDI)
-
-
-local function get_players_test()
-    if not PDI.utilities.in_game() or not PDI.utilities.has_gameplay_timer() then
-        return
-    end
-    local players_datasource = PDI.data.session_data.datasources.Players
-    local player_manager = Managers.player
-    local players = player_manager and player_manager:players()
-    if not players then
-        return
-    end
-
-    for _, player in pairs(players) do
-        local player_unit = player.player_unit
-        if player_unit then
-            local player_unit_uuid = PDI.utilities.get_unit_uuid(player_unit)
-            if not players_datasource[player_unit_uuid] then
-                local temp_player = {}
-                local peer_id = player._peer_id
-                local channel_id = Managers.connection:peer_to_channel(peer_id)
-                temp_player._unique_id = player._unique_id
-                temp_player._account_id = player._account_id
-                temp_player._session_id = player._session_id
-                temp_player._slot = player._slot
-                temp_player._local_player_id = player._local_player_id
-                temp_player._debug_name = player._debug_name
-                temp_player.viewport_name = player.viewport_name
-                temp_player._peer_id = peer_id
-                temp_player._channel_id = player:channel_id()
-                temp_player._telemetry_subject = table.clone(player._telemetry_subject)
-                temp_player._profile = DMF.deepcopy(player._profile)
-
-                PDI.utilities.clean_table_for_saving_2(temp_player)
-                players_datasource[player_unit_uuid] = temp_player
-            end
-        end
-    end
-end
 
 --Main update loop--
 function mod.update(dt)
@@ -160,7 +116,7 @@ mod:hook_safe(CLASS.GameModeManager, "rpc_game_mode_end_conditions_met", functio
     PDI.session_manager.update_current_session_info({["outcome"] = outcome})
 end)
 
---Open the main PDI view--
+--Toggle the PDI UI--
 function mod.open_pdi_view()
     PDI.ui_manager.toggle_view()
 end
@@ -180,9 +136,5 @@ end
 
 --Testing function--
 function mod.testing()
-    local ui_data = {
-        scenegraphs_data = mod.scenegraphs_data,
-        renderers = mod.renderers
-    }
-    DMF:dtf(ui_data, "ui_data", 20)
+
 end
