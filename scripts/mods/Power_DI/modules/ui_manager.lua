@@ -3212,8 +3212,6 @@ ui_manager.open_ui = function(instance)
     in_game = PDI.utilities.in_game()
     main_view_instance = instance
 
-    print("INGAME: "..tostring(in_game))
-
     user_reports = PDI.report_manager.get_user_reports()
 
     local session = PDI.data.session_data
@@ -5196,14 +5194,16 @@ ui_manager.setup_pivot_table = function()
         local item_template, player_profile
         local max_item_width
         if is_player then
-            is_player_column = true
+            if not type(is_player_column) then
+                is_player_column = true
+            end
             local player_profiles = PDI.data.session_data.datasources.PlayerProfiles
             for player_unit_uuid, profile in pairs(player_profiles) do
                 if profile.character_id == column_name then
                     player_profile = table.clone(profile)
                 end
             end
-            column_name = player_profile.name
+            column_name = player_profile and player_profile.name or column_name
             item_template = get_player_columns_item_template()
             max_item_width = scenegraph.columns_item_player_name.size[1] - 0.5*(scenegraph.columns_item_player_name.size[2]) - sizes.padding
             local columns_font_size, column_name_text_width = adjusted_font_size(column_name, font_size*2, font_type, max_item_width)
@@ -5212,19 +5212,23 @@ ui_manager.setup_pivot_table = function()
             item_template.passes[1].style.default_font_size = columns_font_size
             item_template.passes[1].change_function = callback(player_item_change_fuction, index)
             item_template.passes[2].style.offset[1] = -0.5 * (column_name_text_width + sizes.pt_columns_item_player_icon[1])
-            item_template.passes[2].value = player_profile.archetype.archetype_icon_large
-            
-            local view_profile_callback = callback(ui_manager.view_player_profile, player_profile)
+            item_template.passes[2].value = player_profile and player_profile.archetype.archetype_icon_large
 
-            item_template.passes[3].change_function = callback(on_clicked_callback_hotspot_change_function,view_profile_callback)
+            if not player_profile then
+                item_template.passes[2].style.visible = false
+            end
+            
+            if player_profile then
+                local view_profile_callback = callback(ui_manager.view_player_profile, player_profile)
+                item_template.passes[3].change_function = callback(on_clicked_callback_hotspot_change_function,view_profile_callback)
+            end
 
         else
-            local columns_font_size, column_name_text_width = adjusted_font_size(column_name, font_size*2, font_type, max_item_width)
             item_template = get_columns_item_template()
             max_item_width = scenegraph.columns_item.size[1]- sizes.padding
             item_template.passes[1].value = column_name
-            item_template.passes[1].style.font_size = columns_font_size
-            item_template.passes[1].style.default_font_size = columns_font_size
+            item_template.passes[1].style.font_size = font_size * 2
+            item_template.passes[1].style.default_font_size = font_size * 2
         end
         item_template.name = column_name
         column_widget_templates[#column_widget_templates+1] = item_template
@@ -5614,8 +5618,6 @@ ui_manager.setup_edit_report_settings = function()
             content.disabled = true
         end
     end
-
-    local dump_toggle = true
 
     local function delete_button_logic_function(pass, ui_renderer, ui_style, content, position, size)
         local hotspot = content.hotspot
@@ -6541,20 +6543,12 @@ ui_manager.setup_edit_pivot_table = function()
         local current_grid_name = content.current_grid_name
 
         if current_grid_name then
-            print("STILL HAS GRID")
-            error("STILL HAS GRID")
             return
         end
-
         if current_renderer_name ~= "default_renderer" then
-            print("NOT DEFAULT RENDERER")
-            error("NOT DEFAULT RENDERER")
             return
         end
-
         if not current_renderer_index then
-            print("NO RENDERER INDEX")
-            error("NO RENDERER INDEX")
             return
         end
 
@@ -7550,7 +7544,7 @@ ui_manager.setup_edit_pivot_table = function()
     
         local data_filter_input_widget = scenegraphs_data.edit_pivot_table.widgets_by_name.data_filter_input
         local data_filter_input_widget_content = data_filter_input_widget.content
-        local filter_string = template.filters[1]
+        local filter_string = template.filters[1] or ""
         local new_caret_position = Utf8.string_length(filter_string)+1
         data_filter_input_widget_content.input_text = filter_string
         data_filter_input_widget_content.caret_position = new_caret_position

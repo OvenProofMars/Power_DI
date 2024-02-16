@@ -2,7 +2,7 @@ local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 
 local PdiPivotTableViewElement = require([[Power_DI\scripts\mods\Power_DI\views\view_elements\pdi_pivot_table_view_element]])
-local PdiMainViewElement = require([[Power_DI\scripts\mods\Power_DI\views\view_elements\pdi_main_view_element]])
+local PdiMainView_DEPRICATEDElement = require([[Power_DI\scripts\mods\Power_DI\views\view_elements\pdi_main_view_element]])
 
 local ScriptWorld = require("scripts/foundation/utilities/script_world")
 local ViewElementInputLegend = require("scripts/ui/view_elements/view_element_input_legend/view_element_input_legend")
@@ -20,7 +20,7 @@ local WorldRenderUtils = require("scripts/utilities/world_render")
 
 local UIScenegraph = require("scripts/managers/ui/ui_scenegraph")
 
-PdiMainView = class("PdiMainView", "PdiBaseView")
+PdiMainView_DEPRICATED = class("PdiMainView_DEPRICATED", "PdiBaseView")
 
 local edit_mode = true
 
@@ -407,7 +407,7 @@ local function get_definitions(self)
     }
     return definitions
 end
-PdiMainView.cb_shading_callback = function (self, world, shading_env, viewport, default_shading_environment_name)
+PdiMainView_DEPRICATED.cb_shading_callback = function (self, world, shading_env, viewport, default_shading_environment_name)
     print("SHADING CALLBACK")
 	local gamma = Application.user_setting("gamma") or 0
 
@@ -434,7 +434,7 @@ PdiMainView.cb_shading_callback = function (self, world, shading_env, viewport, 
 		ShadingEnvironment.set_scalar(shading_env, "grey_scale_enabled", 0)
 	end
 end
-PdiMainView._setup_background_gui = function (self)
+PdiMainView_DEPRICATED._setup_background_gui = function (self)
 	local ui_manager = Managers.ui
 	local class_name = self.__class_name
 	local timer_name = "ui"
@@ -457,7 +457,7 @@ PdiMainView._setup_background_gui = function (self)
 
 	WorldRenderUtils.enable_world_fullscreen_blur(world_name, viewport_name, max_value)
 end
-PdiMainView._setup_default_gui = function (self)
+PdiMainView_DEPRICATED._setup_default_gui = function (self)
 	local ui_manager = Managers.ui
 	local class_name = self.__class_name
 	local timer_name = "ui"
@@ -475,7 +475,7 @@ PdiMainView._setup_default_gui = function (self)
 	self._viewport_name = viewport_name
 	self._ui_default_renderer = ui_manager:create_renderer(class_name .. "_ui_default_renderer", self._world)
 end
-PdiMainView._destroy_background = function (self)
+PdiMainView_DEPRICATED._destroy_background = function (self)
 	if self._ui_background_renderer then
 		self._ui_background_renderer = nil
 
@@ -491,7 +491,7 @@ PdiMainView._destroy_background = function (self)
 		self._background_world = nil
 	end
 end
-PdiMainView._destroy_default_gui = function (self)
+PdiMainView_DEPRICATED._destroy_default_gui = function (self)
 	if self._ui_default_renderer then
 		self._ui_default_renderer = nil
 
@@ -508,7 +508,7 @@ PdiMainView._destroy_default_gui = function (self)
 	end
 end
 
-PdiMainView.init = function(self, settings, context)
+PdiMainView_DEPRICATED.init = function(self, settings, context)
     PDI = context
     view_manager = PDI.view_manager
 
@@ -521,17 +521,17 @@ PdiMainView.init = function(self, settings, context)
     view_manager.load_packages()
     
     local definitions = get_definitions(self)
-	PdiMainView.super.init(self, definitions, settings)
+	PdiMainView_DEPRICATED.super.init(self, definitions, settings)
 end
-PdiMainView.on_enter = function(self)
+PdiMainView_DEPRICATED.on_enter = function(self)
     self:_setup_default_gui()
     self:_setup_background_gui()
     self:_generate_ui_offscreen_renderers(3)
     self:_setup_input_legend()
     view_manager.init_main_view_elements(self)
-	PdiMainView.super.on_enter(self)
+	PdiMainView_DEPRICATED.super.on_enter(self)
 end
-PdiMainView._setup_input_legend = function(self)
+PdiMainView_DEPRICATED._setup_input_legend = function(self)
 	self._input_legend_element = self:_add_element(ViewElementInputLegend, "input_legend", 10)
 	local legend_inputs = self._definitions.legend_inputs
 
@@ -549,10 +549,10 @@ PdiMainView._setup_input_legend = function(self)
 		)
 	end
 end
-PdiMainView._on_back_pressed = function(self)
+PdiMainView_DEPRICATED._on_back_pressed = function(self)
 	Managers.ui:close_view(self.view_name)
 end
-PdiMainView._destroy_renderer = function(self)
+PdiMainView_DEPRICATED._destroy_renderer = function(self)
 	if self._offscreen_renderer then
 		self._offscreen_renderer = nil
 	end
@@ -567,10 +567,10 @@ PdiMainView._destroy_renderer = function(self)
 		world_data = nil
 	end
 end
-PdiMainView.update = function(self, dt, t, input_service)
-	return PdiMainView.super.update(self, dt, t, input_service)
+PdiMainView_DEPRICATED.update = function(self, dt, t, input_service)
+	return PdiMainView_DEPRICATED.super.update(self, dt, t, input_service)
 end
-PdiMainView.draw = function (self, dt, t, input_service, layer)
+PdiMainView_DEPRICATED.draw = function (self, dt, t, input_service, layer)
 
     if not view_manager.packages_loaded() then
         return
@@ -589,15 +589,15 @@ PdiMainView.draw = function (self, dt, t, input_service, layer)
 	UIRenderer.end_pass(ui_renderer)
 	self:_draw_elements(dt, t, ui_renderer, render_settings, input_service)
 end
-PdiMainView._draw_widgets = function(self, dt, t, input_service, ui_renderer, render_settings)
-	PdiMainView.super._draw_widgets(self, dt, t, input_service, ui_renderer, render_settings)
+PdiMainView_DEPRICATED._draw_widgets = function(self, dt, t, input_service, ui_renderer, render_settings)
+	PdiMainView_DEPRICATED.super._draw_widgets(self, dt, t, input_service, ui_renderer, render_settings)
 end
-PdiMainView.on_exit = function(self)
-	PdiMainView.super.on_exit(self)
+PdiMainView_DEPRICATED.on_exit = function(self)
+	PdiMainView_DEPRICATED.super.on_exit(self)
     self:_destroy_background()
     self:_destroy_default_gui()
     self:_destroy_ui_offscreen_renderers()
 	self:_destroy_renderer()
 end
 
-return PdiMainView
+return PdiMainView_DEPRICATED
