@@ -415,6 +415,12 @@ report_manager.add_user_report = function(report_template)
     report_template.id = uuid
     user_reports[uuid] = report_template
     PDI.save_manager.save_user_data()
+    return uuid
+end
+
+report_manager.delete_user_report = function(report_id)
+    user_reports[report_id] = nil
+    PDI.save_manager.save_user_data()
 end
 
 report_manager.get_user_reports = function()
@@ -444,7 +450,7 @@ end
 
 --Function to get a report template by name--
 report_manager.get_report_template = function(report_name)
-    return report_manager.registered_reports[report_name]
+    return table.clone(report_manager.registered_reports[report_name])
 end
 
 --Function to prepare the session data for report data--

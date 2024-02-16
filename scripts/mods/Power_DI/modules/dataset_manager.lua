@@ -365,7 +365,7 @@ end
 
 --Returns a dataset template by name--
 dataset_manager.get_dataset_template = function(dataset_name)
-    return dataset_manager.registered_datasets[dataset_name]
+    return table.clone(dataset_manager.registered_datasets[dataset_name])
 end
 
 -- dataset_manager.check_dataset_template_hash = function(dataset_name, hash)

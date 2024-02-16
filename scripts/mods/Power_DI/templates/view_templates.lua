@@ -36,19 +36,19 @@ local view_templates = {
         },
     },
     pdi_main_view_2 = {
+        display_name = "loc_eye_color_sienna_desc", -- Only used for debug
         view_name = "pdi_main_view_2",
         view_settings = {
             init_view_function = function(ingame_ui_context)
                 return true
             end,
             state_bound = true,
-            display_name = "loc_eye_color_sienna_desc", -- Only used for debug
             path = [[Power_DI\scripts\mods\Power_DI\views\pdi_main_view_2]],
-            package = "packages/ui/views/mission_board_view/mission_board_view",
+            --package = "packages/ui/views/mission_board_view/mission_board_view",
             class = "PdiMainView2",
-            disable_game_world = false,
+            --disable_game_world = false,
             load_always = true,
-            load_in_hub = true,
+            --load_in_hub = true,
             --game_world_blur = 2,
             enter_sound_events = {
                 UISoundEvents.system_menu_enter,
@@ -67,7 +67,21 @@ local view_templates = {
             close_transition_time = 5,
             transition_time = 5,
         },
-    }
+    },
+    -- pdi_main_view_2 = {
+	-- 	display_name = "loc_talents_view_display_name",
+	-- 	state_bound = true,
+	-- 	use_transition_ui = false,
+    --     view_settings = {},
+	-- 	path = [[Power_DI\scripts\mods\Power_DI\views\pdi_main_view_2]],
+	-- 	package = "packages/ui/views/talents_view/talents_view",
+	-- 	class = "PdiMainView2",
+	-- 	load_in_hub = true,
+	-- 	game_world_blur = 4.1,
+	-- 	wwise_states = {
+	-- 		options = WwiseGameSyncSettings.state_groups.options.ingame_menu
+	-- 	}
+	-- },
 }
 
 return view_templates

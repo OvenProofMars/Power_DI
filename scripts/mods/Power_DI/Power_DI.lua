@@ -162,11 +162,8 @@ end)
 
 --Open the main PDI view--
 function mod.open_pdi_view()
-    --PDI.view_manager.open_main_view()
-    PDI.ui_manager.open_view()
+    PDI.ui_manager.toggle_view()
 end
-
-local test_toggle = false
 
 --Dump data for debugging--
 function mod.debug_dump()

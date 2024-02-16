@@ -23,7 +23,7 @@ local input_manager = Managers.input
 local input_service = input_manager and input_manager:get_input_service("View")
 
 local UIManager = Managers.ui
-local PDI, render_settings, sizes, packages_loaded, main_view_instance, selected_session_id, load_session, loaded_session, selected_report_id, load_report, loaded_report, user_reports, loading, load_edit, edit_mode_cache, error_message, in_game, focussed_hotspot, localize
+local PDI, render_settings, sizes, packages_loaded, main_view_instance, selected_session_id, load_session, loaded_session, selected_report_id, load_report, loaded_report, user_reports, loading, load_edit, edit_mode_cache, error_message, in_game, focussed_hotspot, localize, delete_animation_progress
 local ui_manager = {}
 
 local renderers = {}
@@ -38,6 +38,8 @@ local circumstance_color = {200,238,186,74}
 local terminal_green_color = Color.terminal_text_body(200, true)
 local gold_color = {200,238,186,74}
 local disabled_color = {200,150,150,150}
+local delete_color = {255,255,75,75}
+local delete_color_background = {150,200,50,20}
 local gold_highlight_color = {255,238,186,74}
 local padding = 10
 
@@ -45,110 +47,23 @@ local date_format = mod:get("date_format")
 
 local view_name = "pdi_main_view_2"
 
--- local packages_array = {
---     "packages/ui/views/crafting_view/crafting_view",
---     "packages/ui/views/news_view/news_view",
---     "packages/ui/views/achievements_view/achievements_view",
---     "packages/ui/views/options_view/options_view",
--- }
-
 local packages_array = {
-    "packages/ui/views/account_profile_view/account_profile_view",
-    "packages/ui/views/achievements_view/achievements_view",
-    "packages/ui/views/barber_vendor_background_view/barber_vendor_background_view",
-    "packages/ui/views/body_shop_view/body_shop_view",
-    "packages/ui/views/character_appearance_view/character_appearance_view",
-    "packages/ui/views/class_selection_view/class_selection_view",
-    "packages/ui/views/contracts_background_view/contracts_background_view",
-    "packages/ui/views/contracts_view/contracts_view",
-    "packages/ui/views/cosmetics_inspect_view/cosmetics_inspect_view",
-    "packages/ui/views/credits_vendor_background_view/credits_vendor_background_view",
-    "packages/ui/views/credits_vendor_view/credits_vendor_view",
-    "packages/ui/views/credits_view/credits_view",
-    "packages/ui/views/custom_settings_view/custom_settings_view",
-    "packages/ui/views/debug_view/debug_view",
-    "packages/ui/views/end_player_view/end_player_view",
-    "packages/ui/views/end_view/end_view",
-    "packages/ui/views/inbox_view/inbox_view",
-    "packages/ui/views/inventory_background_view/inventory_background_view",
-    "packages/ui/views/inventory_cosmetics_view/inventory_cosmetics_view",
-    "packages/ui/views/inventory_view/inventory_view",
-    "packages/ui/views/inventory_weapon_cosmetics_view/inventory_weapon_cosmetics_view",
-    "packages/ui/views/inventory_weapon_details_view/inventory_weapon_details_view",
-    "packages/ui/views/inventory_weapons_view/inventory_weapons_view",
-    "packages/ui/views/loading_view/loading_view",
-    "packages/ui/views/lobby_view/lobby_view",
-    "packages/ui/views/main_menu_background_view/main_menu_background_view",
-    "packages/ui/views/main_menu_view/main_menu_view",
-    "packages/ui/views/marks_goods_vendor_view/marks_goods_vendor_view",
-    "packages/ui/views/marks_vendor_view/marks_vendor_view",
     "packages/ui/views/mission_board_view/mission_board_view",
-    "packages/ui/views/mission_intro_view/mission_intro_view",
-    "packages/ui/views/mission_voting_view/mission_voting_view",
-    "packages/ui/views/news_view/news_view",
-    "packages/ui/views/options_view/options_view",
-    "packages/ui/views/player_character_options_view/player_character_options_view",
-    "packages/ui/views/scanner_display_view/scanner_display_view",
-    "packages/ui/views/social_menu_roster_view/social_menu_roster_view",
-    "packages/ui/views/social_menu_view/social_menu_view",
-    "packages/ui/views/splash_view/splash_view",
-    "packages/ui/views/story_mission_background_view/story_mission_background_view",
-    "packages/ui/views/system_view/system_view",
-    "packages/ui/views/talent_builder_view/talent_builder_view",
-    "packages/ui/views/talents_career_choice_view/talents_career_choice_view",
-    "packages/ui/views/title_view/title_view",
-    "packages/ui/views/training_grounds_options_view/training_grounds_options_view",
-    "packages/ui/views/training_grounds_view/training_grounds_view",
-    "packages/ui/views/video_view/video_view",
-    "packages/ui/hud/wield_info/wield_info",
-    "packages/ui/hud/team_player_panel/team_player_panel",
-    "packages/ui/hud/boss_health/boss_health",
-    "packages/ui/hud/player_ability/player_ability",
-    "packages/ui/hud/player_weapon/player_weapon",
-    "packages/ui/hud/damage_indicator/damage_indicator",
-    "packages/ui/hud/blocking/blocking",
-    "packages/ui/hud/overcharge/overcharge",
-    "packages/ui/hud/tactical_overlay/tactical_overlay",
-    "packages/ui/hud/crosshair/crosshair",
-    "packages/ui/hud/smart_tagging/smart_tagging",
-    "packages/ui/hud/mission_objective_feed/mission_objective_feed",
-    "packages/ui/hud/mission_objective_popup/mission_objective_popup",
-    "packages/ui/hud/area_notification_popup/area_notification_popup",
-    "packages/ui/hud/mission_speaker_popup/mission_speaker_popup",
-    "packages/ui/hud/player_buffs/player_buffs",
-    "packages/ui/hud/world_markers/world_markers",
-    "packages/ui/hud/interaction/interaction",
-    "packages/ui/hud/prologue_tutorial_info_box/prologue_tutorial_info_box",
-    "packages/ui/ui_signin_assets",
-    "packages/ui/views/store_view/store_view",
-    "packages/ui/views/talents_view/ogryn",
     "packages/ui/views/crafting_view/crafting_view",
-    "packages/ui/views/cosmetics_vendor_view/cosmetics_vendor_view",
-    "packages/ui/constant_elements/popup_handler/popup_handler",
-    "packages/ui/constant_elements/notification_feed/notification_feed",
-    "packages/ui/hud/crosshair/crosshair",
-    "packages/ui/hud/mission_objective_feed/mission_objective_feed",
-    "packages/ui/views/story_mission_lore_view/story_mission_lore_view",
-    "packages/ui/views/story_mission_play_view/story_mission_play_view",
-    "packages/ui/views/credits_goods_vendor_view/credits_goods_vendor_view",
-    "packages/ui/views/crafting_upgrade_item_view/crafting_upgrade_item_view",
-    "packages/ui/views/crafting_replace_perk_view/crafting_replace_perk_view",
-    "packages/ui/views/crafting_extract_trait_view/crafting_extract_trait_view",
-    "packages/ui/views/cosmetics_vendor_background_view/cosmetics_vendor_background_view",
-    "packages/ui/hud/team_player_panel/team_player_panel",
-    "packages/ui/hud/crosshair/crosshair",
-    "packages/ui/views/talents_view/veteran",
-    "packages/ui/views/crafting_modify_view/crafting_modify_view",
-    "packages/ui/views/crafting_modify_options_view/crafting_modify_options_view",
-    "packages/ui/views/talents_view/zealot",
-    "packages/ui/hud/mission_speaker_popup/mission_speaker_popup",
-    "packages/ui/hud/spactator_text/spactator_text",
-    "packages/ui/views/crafting_replace_trait_view/crafting_replace_trait_view",
-    "packages/ui/views/store_item_detail_view/store_item_detail_view",
-    "packages/ui/views/talents_view/psyker",
-    "packages/ui/hud/emote_wheel/emote_wheel",
+    "packages/ui/views/store_view/store_view",
+    "packages/ui/hud/mission_objective_popup/mission_objective_popup",
+    "packages/ui/hud/interaction/interaction",
 }
 
+local edit_pivot_table_functions = {}
+local renderer_name_lookup = {
+    default = "default_renderer",
+    column = "offscreen_renderer_1",
+    rows = "offscreen_renderer_2",
+    values = "offscreen_renderer_3",
+}
+
+--Function to check if widgets are visible when scrolling horizontally
 local function is_widget_visible_horizontal (self, widget, extra_margin)
 	if self._horizontal_scrollbar_active then
 		local scroll_progress = self._horizontal_scrollbar_widget.content.value or 0
@@ -157,7 +72,6 @@ local function is_widget_visible_horizontal (self, widget, extra_margin)
         local area_size_x = self._area_size[1]
 		local scroll_length = math.max(total_grid_length - area_size_x, 0)
 		local scrolled_length = scroll_length * scroll_progress
-		--local draw_length = self._area_size[axis]
 		local draw_start_length = scrolled_length
 		local draw_end_length = draw_start_length + area_size_x
 		local content = widget.content
@@ -176,6 +90,7 @@ local function is_widget_visible_horizontal (self, widget, extra_margin)
 
 	return true
 end
+--Function to get a modified scrollbar template
 local function get_custom_scrollbar_template()
     local template = table.clone(ScrollbarPassTemplates.terminal_scrollbar)
 
@@ -185,6 +100,7 @@ local function get_custom_scrollbar_template()
 
     return template
 end
+--Function to get the custom horizontal scrollbar template
 local function get_custom_horizontal_scrollbar_template()
 
     local function horizontal_scrollbar_logic_function(pass, ui_renderer, ui_style, content, position, size)
@@ -318,7 +234,6 @@ local function get_custom_horizontal_scrollbar_template()
                 vertical_alignment = "top",
                 horizontal_alignment = "left",
                 angle = math.rad(90),
-                --pivot = {5,5},
                 size = {0,0},
                 offset = {0,0,3},
                 color = Color.terminal_frame(255, true)
@@ -358,6 +273,7 @@ local function get_custom_horizontal_scrollbar_template()
 
     return scrollbar_template
 end
+--Function to get a modified text input template
 local function get_custom_text_input_template()
     local function text_input_hotspot_change_function(hotspot_content, style)
         local content = hotspot_content.parent
@@ -407,6 +323,7 @@ local function get_custom_text_input_template()
 
     return template
 end
+--Function to get the options for dropdown widgets
 local function get_dropdown_options(dropdown_name)
     local function convert_array_to_options(input_array)
         local options = {}
@@ -456,35 +373,37 @@ local function get_dropdown_options(dropdown_name)
             display_name = mod:localize("mloc_edit_item_format_number")
         },
         {
-            id = "percent",
+            id = "percentage",
             display_name = mod:localize("mloc_edit_item_format_percent")
         },
     }
 
     options_lookup.boolean = {
         {
-            id = "true",
+            id = true,
             display_name = mod:localize("mloc_true")
         },
         {
-            id = "false",
+            id = false,
             display_name = mod:localize("mloc_false")
         },
     }
 
     return options_lookup[dropdown_name]
 end
+--Function that sets/updates the render settings
 local function set_render_settings()
     render_settings = {
         world_target_position = false,
         color_intensity_multiplier = 1,
-        start_layer = 110,
+        start_layer = 900,
         scale = RESOLUTION_LOOKUP.scale,
         inverse_scale = RESOLUTION_LOOKUP.inverse_scale,
         material_flags = 0,
         alpha_multiplier = 1
     }
 end
+--Function to register the main view
 local function register_views()
     for _, view_template in pairs(view_templates) do
         local path = view_template.view_settings.path
@@ -492,12 +411,14 @@ local function register_views()
         mod:register_view(view_template)
     end
 end
+--Function to load all necessary packages
 local function load_packages()
     packages_loaded = false
     for _, package_name in ipairs(packages_array) do
         Managers.package:load(package_name, "PDI")
     end
 end
+--Function to check if all packages have been loaded
 local function update_packages_loaded()
     if packages_loaded then
         return packages_loaded
@@ -510,6 +431,7 @@ local function update_packages_loaded()
     packages_loaded = true
     return packages_loaded
 end
+--Function to create the different renderers needed for rendering widgets
 local function create_renderers()
     for _, renderer_name in pairs(renderer_order) do
         local renderer_template = renderer_templates[renderer_name]
@@ -547,10 +469,11 @@ local function create_renderers()
         renderers[renderer_template_name] = temp_table
     end
 end
+--Function to create the renderer for the background blur effect
 local function create_background_renderer()
-    if UIManager:view_instance("main_menu_view") then
-        return
-    end
+    -- if UIManager:view_instance("main_menu_view") then
+    --     return
+    -- end
     local renderer_template = renderer_templates["background_renderer"]
     local ui_manager = Managers.ui
     local class_name = "PDI"
@@ -587,6 +510,7 @@ local function create_background_renderer()
 
     WorldRenderUtils.enable_world_fullscreen_blur(world_name, viewport_name, 0.75)
 end
+--Function to destroy all renderers used for drawing widgets
 local function destroy_renderers()
     for _, renderer_name in pairs(renderer_order) do
         local renderer_settings = renderers[renderer_name]
@@ -609,6 +533,7 @@ local function destroy_renderers()
         renderer_settings.world_name = nil
     end
 end
+--Function to destroy the renderer used for the background blur effect
 local function destroy_background_renderer()
  
     local renderer_settings = renderers.background_renderer
@@ -637,16 +562,16 @@ local function destroy_background_renderer()
     renderer_settings.world = nil
     renderer_settings.world_name = nil
 end
+--Function to check if the user pressed back/esc
 local function check_back_pressed()
     if not main_view_instance or Managers.ui:active_top_view() ~= view_name then
         return
     end
 
     if input_service:get("back_released") then
-        ui_manager.close_view()
+        ui_manager.toggle_view()
     end
 end
-
 --Function that generates a table with sizes for the UI--
 local function generate_default_sizes()
     local sizes = {}
@@ -705,7 +630,7 @@ local function generate_default_sizes()
     sizes.pt_values_item = {sizes.pt_columns_item[1],sizes.header_3_height}
     return sizes
 end
-
+--Function to generate block sizes, NEEDS TO BE REPLACED BY THE NEWER VERSION
 local function get_block_size(columns, rows, padding_level, subtract_width, subtract_height)
     subtract_width = subtract_width or 0
     subtract_height = subtract_height or 0 
@@ -723,7 +648,7 @@ local function get_block_size(columns, rows, padding_level, subtract_width, subt
     
     return {x_dimension,y_dimension}
 end
-
+--Function to generate block sizes, update version
 local function get_block_size_NEW(area_size, columns, rows, padding_level)
     padding_level = padding_level or 0
     local area_x = area_size[1]
@@ -739,7 +664,7 @@ local function get_block_size_NEW(area_size, columns, rows, padding_level)
     
     return {x_dimension,y_dimension}
 end
-
+--Function to generate the widgets
 local function generate_widgets(templates)
     local widgets = {}
     local widgets_by_name = {}
@@ -757,6 +682,7 @@ local function generate_widgets(templates)
     end
     return widgets, widgets_by_name
 end
+--Function to generate a dropdown widget
 local function generate_dropdown_widget(scenegraph_name, scenegraph_id, options, max_visible_options, on_changed_callback, nothing_selected_text, add_to_renderer)
     local function clamp_string_length(input_string, max_length, font_name, font_size)
         local ui_renderer_instance = Managers.ui:ui_constant_elements():ui_renderer()
@@ -891,11 +817,6 @@ local function generate_dropdown_widget(scenegraph_name, scenegraph_id, options,
             focussed_hotspot = nil
         end
 
-        -- if entry.disabled then
-        --     return
-        -- end
-
-        --local input_service = Managers.input:get_input_service("View")
         local style = widget.style      
         local options_by_id = content.options_by_id
         local options = content.options
@@ -974,14 +895,13 @@ local function generate_dropdown_widget(scenegraph_name, scenegraph_id, options,
 
     return widget
 end
-
+--Function to destroy all widgets
 local function destroy_all_widgets()
     for renderer_name, renderer_settings in pairs(renderers) do
         renderer_settings.scenegraphs = {}
     end
 end
-
---Function to generate the scenegraphs--
+--Function to generate the scenegraphs for all the different UI components
 local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
     local scenegraph_templates = {}
     scenegraph_templates.main_window = {
@@ -1248,6 +1168,13 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
             size = sizes.report_inner,
             position = {0,0},
         },
+        error_message= {
+            parent = "report_space_inner",
+            vertical_alignment = "top",
+            horizontal_alignment = "left",
+            size = {sizes.report_inner[1] - sizes.padding,0.5*sizes.report_inner[2]},
+            position = {sizes.padding,0},
+        },
         report_title_outer = {
             parent = "report_space_inner",
             vertical_alignment = "top",
@@ -1355,17 +1282,17 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
         },
         reports_inner = {
             parent = "reports_outer",
-            vertical_alignment = "center",
-            horizontal_alignment = "center",
-            size = {get_block_size(5,2,2)[1], get_block_size(5,2,2)[2] - sizes.header_3_height - sizes.padding_half},
-            position = {0,0,0}
+            vertical_alignment = "top",
+            horizontal_alignment = "left",
+            size = {get_block_size(5,2,2)[1], get_block_size(5,2,2)[2] - sizes.header_2_height},
+            position = {sizes.padding_half,sizes.padding_half,0}
         },
         reports_scrollbar = {
-            parent = "reports_inner",
+            parent = "reports_outer",
             vertical_alignment = "center",
             horizontal_alignment = "right",
             size = {sizes.scrollbar_width,get_block_size(5,2,2)[2] - sizes.header_3_height - sizes.padding_half},
-            position = {1,0,0}
+            position = {-0.5*sizes.padding_half,0,0}
         },
         reports_pivot = {
             parent = "reports_inner",
@@ -1466,7 +1393,6 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
             position = {0,sizes.main_footer[2]+sizes.padding_half,0}
         },
     }
-
     scenegraph_templates.report_rows_order = {
         screen = {
             scale = "fit",
@@ -1738,13 +1664,6 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
             size = sizes.pt_values_item,
             position = {0,0},
         },
-        -- values_item = {
-        --     parent = "values_pivot",
-        --     vertical_alignment = "top",
-        --     horizontal_alignment = "left",
-        --     size = {sizes.pt_values_item[1],0},
-        --     position = {0,0},
-        -- },
     }
 
     local block_size = get_block_size_NEW(sizes.workspace_inner, 4, 1, 1)
@@ -2355,6 +2274,7 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
     }
     return scenegraph
 end
+--Function to destroy a scenegraph
 local function destroy_scenegraph(scenegraph_name)
     local scenegraph_settings = scenegraphs_data[scenegraph_name]
     if not scenegraph_settings then
@@ -2367,7 +2287,10 @@ local function destroy_scenegraph(scenegraph_name)
     end
     scenegraphs_data[scenegraph_name] = nil
 end
+--Function to facilitate transitions between UI components
 local function destroy_scenegraphs_for_transition_to(scenegraph_name)
+    focussed_hotspot = nil
+    error_message = nil
     local scenegraph_array_lookup = {}
     scenegraph_array_lookup.reports = {"sessions", "edit_report_settings", "edit_pivot_table"}
     scenegraph_array_lookup.sessions = {"reports", "report_rows_order", "pivot_table"}
@@ -2379,6 +2302,7 @@ local function destroy_scenegraphs_for_transition_to(scenegraph_name)
         destroy_scenegraph(scenegraph_name)
     end
 end
+--Function to create a grid
 local function generate_grid(grid_name, scenegraph_name, widgets, widgets_by_name, grid_scenegraph_id, grid_direction, grid_padding_size, optional_scrollbar_name, pivot_scenegraph_id, optional_scroll_area_scenegraph_id)
     
     local scenegraph_data = scenegraphs_data[scenegraph_name]
@@ -2402,38 +2326,15 @@ local function generate_grid(grid_name, scenegraph_name, widgets, widgets_by_nam
 
     return grid
 end
-
--- local function item_standard_change_function (content, style)
---     local hotspot = content.hotspot or content.parent.hotspot
---     if not hotspot then
---         return
---     end
---     local is_hover = hotspot.is_hover
---     local is_selected  = hotspot.is_selected
---     if is_selected and is_hover then
---         style.color = gold_highlight_color
---         style.text_color = gold_highlight_color
---         style.font_size = font_size * 1.25
---     elseif is_selected then
---         style.color = gold_color
---         style.text_color = gold_color
---         style.font_size = font_size
---     elseif  is_hover then
---         style.color = Color.terminal_corner_hover(255, true)
---         style.text_color = Color.terminal_corner_hover(255, true)
---         style.font_size = font_size * 1.25
---     else
---         style.color = terminal_green_color
---         style.text_color = font_color
---         style.font_size = font_size
---     end
--- end
+--Function for handeling the color/size changes of passes when hovering etc, used by most normal passes
 local function item_standard_change_function (content, style)
     if focussed_hotspot then
         return
     end
 
-    local hotspot = content.parent and content.parent.hotspot or content.hotspot
+    local content = content.parent or content
+
+    local hotspot = content.hotspot
     if not hotspot or focussed_hotspot then
         return
     end
@@ -2451,8 +2352,13 @@ local function item_standard_change_function (content, style)
 
     local is_hover = hotspot.is_hover
     local is_selected  = hotspot.is_selected
-    
-    if is_selected and is_hover then
+    local deleting_active = content.deleting_active
+
+    if deleting_active then
+        style.color = delete_color
+        style.text_color = delete_color
+        style.font_size = default_font_size and default_font_size * 1.25               
+    elseif is_selected and is_hover then
         style.color = gold_highlight_color
         style.text_color = gold_highlight_color
         style.font_size = default_font_size and default_font_size * 1.25
@@ -2470,6 +2376,7 @@ local function item_standard_change_function (content, style)
         style.font_size = default_font_size
     end
 end
+--Function for handeling the changes for the dragable items
 local function item_drag_change_function (content, style)
     if focussed_hotspot then
         return
@@ -2503,6 +2410,7 @@ local function item_drag_change_function (content, style)
         style.font_size = default_font_size
     end
 end
+--Function for handeling changes, which doesn't change the font size, used by a few passes
 local function item_no_font_size_change_function (content, style)
     if focussed_hotspot then
         return
@@ -2528,6 +2436,7 @@ local function item_no_font_size_change_function (content, style)
         style.text_color = font_color
     end
 end
+--Function for handeling changes, but only changes the alpha
 local function item_alpha_change_function (content, style)
     if focussed_hotspot then
         return
@@ -2549,14 +2458,13 @@ local function item_alpha_change_function (content, style)
     style.font_size = is_hover and hover_font_size or default_font_size
 
 end
+--Function for handeling changes for the gradient passes
 local function item_gradient_standard_change_function(content, style)
     if focussed_hotspot then
         return
     end
 
-    local hotspot = content.hotspot
-    local is_hover = hotspot.is_hover
-    local is_selected  = hotspot.is_selected
+
 
     local is_disabled = content.disabled
 
@@ -2564,8 +2472,14 @@ local function item_gradient_standard_change_function(content, style)
         return
     end
 
+    local hotspot = content.hotspot
+    local is_hover = hotspot.is_hover
+    local is_selected  = hotspot.is_selected
+    local deleting_active = content.deleting_active
 
-    if is_selected and is_hover then
+    if deleting_active then
+        style.color = delete_color
+    elseif is_selected and is_hover then
         style.color = Color.terminal_background_gradient_selected(255, true)
     elseif is_selected then
         style.color = Color.terminal_background_gradient_selected(150, true)
@@ -2575,6 +2489,7 @@ local function item_gradient_standard_change_function(content, style)
         style.color = Color.terminal_background_gradient(0, true)
     end
 end
+--Function for handeling changes for the gradient passes of dragable items
 local function item_gradient_drag_change_function(content, style)
     if focussed_hotspot then
         return
@@ -2594,6 +2509,7 @@ local function item_gradient_drag_change_function(content, style)
         style.color = Color.terminal_background_gradient(0, true)
     end
 end
+--Function to update all grids
 local function update_grids(dt, t)
     for scenegraph_name, scenegraph_data in pairs(scenegraphs_data) do
         local scenegraph_grids = scenegraph_data.grids
@@ -2606,12 +2522,18 @@ local function update_grids(dt, t)
                 local is_visible_vertical = grid:is_widget_visible(widget)
                 local is_visible_horizontal = is_widget_visible_horizontal(grid, widget)
 
-                widget.visible = true --= is_visible_vertical and is_visible_horizontal
+                local is_visible = is_visible_vertical and is_visible_horizontal
+
+                if grid_name == "values" then
+                    widget.content.hotspot.visible = is_visible
+                else
+                    widget.visible = is_visible
+                end
             end
         end
     end
 end
-
+--Function to create a temporary report template
 local function generate_temp_report_template()
     local temp_report_template = table.clone(user_reports[selected_report_id])
     local grid_settings = scenegraphs_data.report_rows_order.grids.report_rows_order
@@ -2624,7 +2546,7 @@ local function generate_temp_report_template()
     temp_report_template.rows = temp_rows
     return temp_report_template
 end
-
+--Function that handles loading and transitioning
 local function handle_changes()
     if load_session then
         load_session = false
@@ -2633,7 +2555,6 @@ local function handle_changes()
             return
         end
 
-        local sessions_manager = PDI.session_manager
         loaded_session = nil
         loaded_report = nil
         error_message = nil
@@ -2645,7 +2566,7 @@ local function handle_changes()
                 ui_manager.setup_reports()
             end,
             function(err)
-                PDI.debug("handle_changes", err)
+                PDI.debug("handle_changes_load_session", err)
             end
         )
     elseif load_report then
@@ -2664,46 +2585,70 @@ local function handle_changes()
                 local hash_check = data[2]
 
                 loaded_report = report
-                if hash_check then
+
+                if hash_check or selected_session_id == "local" then
                     return PDI.promise.resolved()
                 end
                 return PDI.session_manager.save_session()
             end,
             function(err)
-                PDI.debug("handle_changes", err)
+                PDI.debug("handle_changes_load_report_1", err)
                 error_message = err
                 loading = false
             end
         )
         :next(
             function()
+                if edit_mode_cache then
+                    return
+                end
                 ui_manager.setup_pivot_table()
                 loading = false
             end
         )
-        :catch(function(err) PDI.debug("handle_changes", err) end)
+        :catch(function(err) 
+            PDI.debug("handle_changes_load_report_2", err) 
+            error_message = err
+            loading = false
+        end)
     elseif load_edit then
         edit_mode_cache = {}
         edit_mode_cache.mode = load_edit
+        
+        ui_manager.setup_edit_report_settings()
+        if load_edit == "edit" and selected_report_id then
+            local template = table.clone(user_reports[selected_report_id])
+            edit_mode_cache.template = template
+            ui_manager.setup_edit_pivot_table()
+            edit_pivot_table_functions.create_dataset_field_widgets(template.dataset_name)edit_pivot_table_functions.load_report_template_to_edit(template)
+        end
         load_edit = nil
-        ui_manager.setup_edit_report_settings()        
     end
 end
-
+--Function that handles the edit mode
 local function handle_edit_mode()
     if not edit_mode_cache then
         return
     end
 
-    local setting_changed = edit_mode_cache.setting_changed
-
-    if setting_changed then
-        destroy_scenegraph("edit_pivot_table")
+    if edit_mode_cache.exit then
+        edit_mode_cache = nil
+        ui_manager.setup_reports()
+        return
     end
 
-    if not edit_mode_cache.minimal_settings or setting_changed then
-        local scenegraph_settings = scenegraphs_data.edit_report_settings
-        local widgets_by_name = scenegraph_settings.widgets_by_name
+    if edit_mode_cache.delete_report then
+        PDI.report_manager.delete_user_report(selected_report_id)
+        selected_report_id = nil
+        edit_mode_cache = nil
+        ui_manager.setup_reports()
+        return
+    end
+
+    local edit_report_settings_scenegraph_settings = scenegraphs_data.edit_report_settings
+    local widgets_by_name = edit_report_settings_scenegraph_settings.widgets_by_name
+
+    local function settings_check()
         local template_input_widget = widgets_by_name.template_input
         local template_input_content = template_input_widget.content
         local template_input_selected_index = template_input_content.selected_index
@@ -2714,14 +2659,217 @@ local function handle_edit_mode()
         local report_type_input_content = report_type_input_widget.content
         local report_type_input_selected_index = report_type_input_content.selected_index
 
-        if template_input_selected_index and dataset_input_selected_index and report_type_input_selected_index then
-            edit_mode_cache.minimal_settings = true
-            edit_mode_cache.setting_changed = false
-            ui_manager.setup_edit_pivot_table()
+        return template_input_selected_index and dataset_input_selected_index and report_type_input_selected_index and true
+    end
+
+    local function handle_new()
+        local setting_changed = edit_mode_cache.setting_changed
+
+        if setting_changed then
+            destroy_scenegraph("edit_pivot_table")
+        end
+    
+        if not edit_mode_cache.minimal_settings or setting_changed then
+            if settings_check() then
+                local dataset_input_widget = widgets_by_name.dataset_input
+                local dataset_input_content = dataset_input_widget.content
+                local dataset_input_selected_index = dataset_input_content.selected_index
+
+                local template_input_widget = widgets_by_name.template_input
+                local template_input_content = template_input_widget.content
+                local template_input_selected_index = template_input_content.selected_index
+
+                edit_mode_cache.minimal_settings = true
+                edit_mode_cache.setting_changed = false
+                ui_manager.setup_edit_pivot_table()
+                local dataset_name = dataset_input_widget.content.options[dataset_input_selected_index].id
+                edit_pivot_table_functions.create_dataset_field_widgets(dataset_name)
+
+                if template_input_selected_index == 1 then
+                    return
+                end
+                local name_input_widget = widgets_by_name.name_input
+                local name_input_content = name_input_widget.content
+                local name_input_text = name_input_content.input_text
+                local template_name = template_input_widget.content.options[template_input_selected_index].id
+                local template = PDI.report_manager.get_report_template(template_name)
+                local template_name = template.name
+                template.name = name_input_text or ""
+                template.template_name = template_name
+                edit_pivot_table_functions.load_report_template_to_edit(template)
+            end
         end
     end
-end
 
+    local function save_logic()
+        if not settings_check() then
+            edit_mode_cache.save_check = nil
+            return
+        end
+
+        local report_name_input_widget = widgets_by_name.name_input
+        local report_name = report_name_input_widget.content.input_text
+
+        if not report_name or report_name == "" then
+            edit_mode_cache.save_check = nil
+            return
+        end
+        local edit_pivot_table_scenegraph_settings = scenegraphs_data.edit_pivot_table
+        local edit_pivot_table_grids = edit_pivot_table_scenegraph_settings.grids
+
+        local column_grid_settings = edit_pivot_table_grids.column
+        local column_grid_widgets = column_grid_settings.widgets
+
+        if #column_grid_widgets == 0 then
+            edit_mode_cache.save_check = nil
+            return
+        end
+
+        local rows_grid_settings = edit_pivot_table_grids.rows
+        local rows_grid_widgets = rows_grid_settings.widgets
+
+        if #rows_grid_widgets == 0 then
+            edit_mode_cache.save_check = nil
+            return
+        end
+
+        local values_grid_settings = edit_pivot_table_grids.values
+        local values_grid_widgets = values_grid_settings.widgets
+
+        if #values_grid_widgets == 0 then
+            edit_mode_cache.save_check = nil
+            return
+        end
+
+        for _, value_widget in ipairs(values_grid_widgets) do
+            local value_template = value_widget.content.value_template
+            local label = value_template.label
+            if not label or label == "" then
+                edit_mode_cache.save_check = nil
+                return
+            end
+            local value_type = value_template.type
+            if not value_type then
+                edit_mode_cache.save_check = nil
+                return
+            end
+            if value_type == "calculated_field" then
+                local function_string = value_template.function_string
+                if not function_string or function_string == "" then
+                    edit_mode_cache.save_check = nil
+                    return
+                end
+            else
+                local field_name = value_template.field_name
+                if not field_name or field_name == "" then
+                    edit_mode_cache.save_check = nil
+                    return
+                end
+            end
+            local format = value_template.format
+            if not format then
+                edit_mode_cache.save_check = nil
+                return
+            end
+            local visible = value_template.visible
+            if not type(visible) then
+                edit_mode_cache.save_check = nil
+                return
+            end
+        end
+
+        edit_mode_cache.save_check = true
+    end
+
+    local function get_empty_report_template()
+        local empty_report_template = {
+            columns = {},
+            rows = {},
+            values = {},
+            filters = {},
+        }
+        return empty_report_template
+    end
+
+    local function generate_report_template()
+        local report_template = get_empty_report_template()
+
+        local name_input_widget = widgets_by_name.name_input
+        local name_input_content = name_input_widget.content
+        local report_name = name_input_content.input_text
+
+        local template_input_widget = widgets_by_name.template_input
+        local template_input_content = template_input_widget.content
+        local template_input_selected_index = template_input_content.selected_index
+        local template_name = template_input_content.options[template_input_selected_index].id
+        local dataset_input_widget = widgets_by_name.dataset_input
+        local dataset_input_content = dataset_input_widget.content
+        local dataset_input_selected_index = dataset_input_content.selected_index
+        local dataset_name = dataset_input_content.options[dataset_input_selected_index].id
+        local report_type_input_widget = widgets_by_name.report_type_input
+        local report_type_input_content = report_type_input_widget.content
+        local report_type_input_selected_index = report_type_input_content.selected_index
+        local report_type_name = report_type_input_content.options[report_type_input_selected_index].id
+
+        report_template.name = report_name
+        report_template.template_name = template_name
+        report_template.dataset_name = dataset_name
+        report_template.report_type = report_type_name
+
+        local scenegraph_settings = scenegraphs_data.edit_pivot_table
+        local grids = scenegraph_settings.grids
+        local column_widget = grids.column.widgets[1]
+        
+        report_template.columns[1] = column_widget.name
+
+        local rows_widgets = grids.rows.widgets
+        local rows = report_template.rows
+        for _, rows_widget in ipairs(rows_widgets) do
+            rows[#rows+1] = rows_widget.name
+        end
+
+        local values_widgets = grids.values.widgets
+        local values = report_template.values
+
+        for _, value_widget in ipairs(values_widgets) do
+            local value_template = value_widget.content.value_template
+            values[#values+1] = value_template
+        end
+
+        local data_filter_input_widget = scenegraph_settings.widgets_by_name.data_filter_input
+        local data_filter_string = data_filter_input_widget.content.input_text
+        report_template.filters[1] = data_filter_string
+
+        return report_template
+    end
+
+    local mode = edit_mode_cache.mode
+
+    if edit_mode_cache.save_report then
+        edit_mode_cache.save_report = nil
+        local report_template = generate_report_template()
+
+        if mode == "edit" then
+            report_template.id = selected_report_id
+            user_reports[selected_report_id] = report_template
+            PDI.save_manager.save_user_data()
+        else
+            local report_id = PDI.report_manager.add_user_report(report_template)
+            selected_report_id = report_id
+        end
+
+        edit_mode_cache = nil
+        ui_manager.setup_reports()
+        return
+    end
+
+    if mode == "new" then
+        handle_new()
+    end
+
+    save_logic()
+end
+--Function that returns the maximum font size so a text fits
 local function adjusted_font_size(input_text, input_font_size, font_type, max_width)
     local renderer_instance = renderers.default_renderer.renderer
     local output_font_size = input_font_size
@@ -2732,11 +2880,12 @@ local function adjusted_font_size(input_text, input_font_size, font_type, max_wi
     end
     return output_font_size, text_size
 end
+--Function that returns the size of a text when rendered
 local function get_text_size(input_text, font_size, font_type)
     local renderer_instance = renderers.default_renderer.renderer
     return UIRenderer.text_size(renderer_instance, input_text, font_type, font_size)
 end
-
+--Function that updates the font size of all text passes that would exceed the width of the scenegraph item
 local function update_font_sizes(widgets, scenegraph_name)
     local scenegraph = scenegraphs_data[scenegraph_name].scenegraph
     for _, widget in pairs(widgets) do
@@ -2768,14 +2917,15 @@ local function update_font_sizes(widgets, scenegraph_name)
         end
     end
 end
-
+--Function to create on click events
 local function on_clicked_callback_hotspot_change_function (callback_function, content, style)
     local is_disabled = content.disabled
 
-    if is_disabled or focussed_hotspot then
+    if is_disabled or focussed_hotspot and focussed_hotspot ~= content then
         return
     end
 
+    local is_hover = content.is_hover
     local last_frame_press_active = content.last_frame_press_active
 
     if not last_frame_press_active then
@@ -2790,15 +2940,13 @@ local function on_clicked_callback_hotspot_change_function (callback_function, c
         return
     end
 
-    local is_hover =  content.is_hover
-    
     if is_hover then
         callback_function(content, style)
     end
 
     content.last_frame_press_active = nil
 end
-
+--function to change the grid index of a widget
 local function change_grid_index(widget, grid, offset)
     local current_grid_index = widget.content.current_grid_index
     local new_grid_index = current_grid_index + offset
@@ -2815,7 +2963,7 @@ local function change_grid_index(widget, grid, offset)
         widget.content.current_grid_index = index
     end
 end
-
+--function to generate a custom horizontal option selection widget 
 local function generate_horizontal_options_widget(scenegraph_name, scenegraph_id, options, on_changed_callback, add_to_renderer)
     local function get_option_passes()
         local passes = {
@@ -2894,7 +3042,7 @@ local function generate_horizontal_options_widget(scenegraph_name, scenegraph_id
         end
 
         local content = content.parent or content
-        local hotspot_content_id = "hotspot_"..option_id
+        local hotspot_content_id = "hotspot_"..tostring(option_id)
         local hotspot = content[hotspot_content_id]
 
         local default_font_size = style.default_font_size   
@@ -2925,7 +3073,7 @@ local function generate_horizontal_options_widget(scenegraph_name, scenegraph_id
         end
 
         local content = content.parent or content
-        local hotspot_content_id = "hotspot_"..option_id
+        local hotspot_content_id = "hotspot_"..tostring(option_id)
         local hotspot = content[hotspot_content_id]
 
         local is_hover = hotspot.is_hover
@@ -2948,8 +3096,8 @@ local function generate_horizontal_options_widget(scenegraph_name, scenegraph_id
         local option_id = option.id
         local option_display_name = option.display_name
         local option_passes = get_option_passes()
-        option_passes[1].content_id = "hotspot_"..option_id
-        option_passes[1].style_id = "hotspot_"..option_id
+        option_passes[1].content_id = "hotspot_"..tostring(option_id)
+        option_passes[1].style_id = "hotspot_"..tostring(option_id)
         local hotspot_function_callback = callback(hotspot_function, option_id)
         option_passes[1].change_function = callback(on_clicked_callback_hotspot_change_function, hotspot_function_callback)
         option_passes[1].style.size = {option_size_x, option_size_y}
@@ -2983,14 +3131,15 @@ local function generate_horizontal_options_widget(scenegraph_name, scenegraph_id
     return widget
 end
 
+--Function to initialize the manager
 ui_manager.init = function (input_table)
     PDI = input_table
     localize = PDI.utilities.localize
     sizes = generate_default_sizes()
     register_views()
     load_packages()
-    --create_renderers()
 end
+--Update function
 ui_manager.update = function(dt, t)
     if not update_packages_loaded() then
         return
@@ -2999,8 +3148,12 @@ ui_manager.update = function(dt, t)
     handle_changes()
     handle_edit_mode()
     update_grids(dt, t)
-    --draw_widgets(dt, t)
+    
+    if delete_animation_progress then
+        delete_animation_progress = delete_animation_progress - dt
+    end
 end
+--Function to draw all widgets
 ui_manager.draw_widgets = function(dt, t)
     if not main_view_instance or not packages_loaded then
         return
@@ -3029,43 +3182,61 @@ ui_manager.draw_widgets = function(dt, t)
         end
     end
 end
-ui_manager.open_view = function()
-    if not UIManager:chat_using_input() and not UIManager:view_instance("pdi_main_view_2") and not UIManager:view_active("title_view") and not UIManager:view_active("loading_view") then
-        set_render_settings()
-        Managers.ui:open_view("pdi_main_view_2", 10,nil,nil,nil, PDI)
-    elseif Managers.ui:view_instance("pdi_main_view_2") then
+--Function to check if it's possible to open the view
+local function restricted_views_check()
+    local restricted_views = {
+        "title_view",
+        "loading_view",
+        "inventory_view",
+    }
+    for _, view_name in ipairs(restricted_views) do
+        if UIManager:view_active(view_name) then
+            return false
+        end
+    end
+    return true
+end
+--Function to toggle the view
+ui_manager.toggle_view = function()
+    set_render_settings()
+    if UIManager:view_instance("pdi_main_view_2") then
         Managers.ui:close_view("pdi_main_view_2")
+    elseif restricted_views_check() and not UIManager:chat_using_input() then
+        Managers.ui:open_view("pdi_main_view_2", nil,nil,nil,nil, PDI)
     end
 end
-ui_manager.close_view = function()
-    Managers.ui:close_view("pdi_main_view_2")
-end
+--Function to handle starting the UI
 ui_manager.open_ui = function(instance)
     create_renderers()
     create_background_renderer()
     in_game = PDI.utilities.in_game()
     main_view_instance = instance
-    --main_view_instance.destroy_renderers = destroy_renderers
+
+    print("INGAME: "..tostring(in_game))
 
     user_reports = PDI.report_manager.get_user_reports()
 
-    if not selected_session_id then
-        loaded_session = PDI.data.session_data
-        selected_session_id = loaded_session.info.session_id
-    end
+    local session = PDI.data.session_data
+    loaded_session = session
+    selected_session_id = session.info.session_id
 
-    ui_manager.setup_main_window()
-    ui_manager.setup_reports()
-    --ui_manager.edit_report_settings()
-    mod.scenegraphs_data = scenegraphs_data
-    mod.renderers = renderers
+    if selected_session_id == "local" and not in_game then
+        local sessions_index = PDI.data.save_data.sessions_index
+        selected_session_id = sessions_index[#sessions_index]
+        load_session = true
+    else
+        ui_manager.setup_main_window()
+        ui_manager.setup_reports()
+    end
 end
+--Function to handle closing the UI
 ui_manager.close_ui = function()
     main_view_instance = nil
     destroy_all_widgets()
     destroy_renderers()
     destroy_background_renderer()
 end
+--Function to view a player's profile
 ui_manager.view_player_profile = function(player_profile)
     
     for _, value in pairs(player_profile.loadout) do
@@ -3096,133 +3267,12 @@ ui_manager.view_player_profile = function(player_profile)
         player = player_info
     })
 end
+--Function to set the date format uses by the UI
 ui_manager.set_date_format = function(value)
     date_format = value
 end
+--Function that sets up the main window
 ui_manager.setup_main_window = function()
-
-    -- local function drag_test_function(pass, ui_renderer, ui_style, content, position, size)
-    --     local hotspot = content.hotspot
-    --     local on_pressed = hotspot.on_pressed
-    --     local on_released = input_service:get("left_released")
-    --     local left_hold = input_service:get("left_hold")
-    --     local cursor = input_service:get("cursor")
-    --     local last_frame_cursor = content.last_frame_cursor
-    --     local cursor_start = content.cursor_start
-
-    --     local widget = scenegraphs_data.main_window.widgets_by_name.drag_test
-
-    --     --content.cursor_start = on_pressed and cursor or content.cursor_start
-    --     --content.drag_active = on_pressed or content.drag_active and not on_released
-
-    --     content.drag_active = on_pressed or content.drag_active and left_hold
-    --     local drag_active = content.drag_active
-
-    --     if drag_active then
-    --         if last_frame_cursor then
-    --             local inverse_scale = render_settings.inverse_scale
-    --             local x_addition = (cursor[1] - last_frame_cursor[1])*inverse_scale
-    --             local y_addition = (cursor[2] - last_frame_cursor[2])*inverse_scale
-    --             widget.offset[1] = widget.offset[1] + x_addition
-    --             widget.offset[2] = widget.offset[2] + y_addition
-    --         end
-    --         content.last_frame_cursor = Vector3.to_array(cursor)
-    --     else
-    --         --content.cursor_start = nil
-    --         content.last_frame_cursor = nil
-    --     end
-
-
-    -- end
-
-    -- local test_toggle = true
-
-    -- local scrollbar_size = {500,10}
-    -- local scroll_visible_area = {750,500}
-    -- local scroll_total_area = {1000,500}
-    -- local thumb_size = {scrollbar_size[1] * (scroll_visible_area[1]/scroll_total_area[1]), scrollbar_size[2]}
-    -- local default_thumb_x_offset = -0.5 * (scrollbar_size[1] - thumb_size[1])
-
-    -- local function horizontal_scroll_test_function(pass, ui_renderer, ui_style, content, position, size)
-    --     --local left_released = input_service:get("left_released")
-
-    --     local hotspot = content.hotspot
-    --     local on_pressed = hotspot.on_pressed
-    --     local left_hold = input_service:get("left_hold")
-    --     local cursor_x = input_service:get("cursor")[1]
-    --     local thumb_x = ui_style.parent.thumb.offset[1]
-
-    --     if on_pressed then
-    --         content.cursor_x_start= cursor_x
-    --         content.thumb_x_start = thumb_x
-    --     end
-
-    --     local drag_active = on_pressed or content.drag_active and left_hold
-    --     content.drag_active = drag_active
-
-    --     if drag_active then
-    --     local cursor_x_start = content.cursor_x_start
-    --     local thumb_x_start = content.thumb_x_start
-    --     local inverse_scale = render_settings.inverse_scale
-    --     local cursor_x_offset = (cursor_x - cursor_x_start) * inverse_scale
-
-    --     local scrollbar_width = content.size_table[1]
-    --     local thumb_style = ui_style.parent.thumb
-    --     local thumb_x_size = thumb_style.size[2]
-    --     local max_offset = 0.5 * (scrollbar_width - thumb_x_size)
-
-    --     local thumb_offset_x_new = math.clamp(thumb_x_start + cursor_x_offset,-1*max_offset, max_offset)
-
-    --     ui_style.parent.thumb.offset[1] = thumb_offset_x_new
-    --     ui_style.parent.hotspot.offset[1] = thumb_offset_x_new
-
-    --     local scroll_percent = math.auto_lerp(-1*max_offset, max_offset, 0, 1, thumb_offset_x_new)
-    --     print(scroll_percent)
-
-    --     local pivot_offset = (scroll_total_area[1] - scroll_visible_area[1])* scroll_percent
-
-    --     local scenegraph = scenegraphs_data.main_window.scenegraph
-    --     local pivot = scenegraph.scroll_test_pivot
-    --     pivot.position[1] = pivot_offset
-
-    --     UIScenegraph.update_scenegraph(scenegraph, render_settings.scale)
-
-    --     else
-    --         content.cursor_x_start = nil
-    --         content.thumb_x_start = nil 
-    --     end
-
-    --     -- if drag_active then
-    --     --     local current_grid_index = widget.current_grid_index
-    --     --     local cursor_y_start = content.cursor_start[2]
-    --     --     local widget_y_start = content.widget_start[2]
-            
-    --     --     local max_negative_offset = -1 * (current_grid_index) * (sizes.header_3_height + 5) + (sizes.header_3_height*0.5)
-    --     --     max_negative_offset = current_grid_index == 1 and 0 or max_negative_offset
-    --     --     local max_positive_offset = (widget_count - current_grid_index) * (sizes.header_3_height + 5) + (sizes.header_3_height*0.5)
-    --     --     max_positive_offset = current_grid_index == widget_count and 0 or max_positive_offset
-
-    --     --     local inverse_scale = render_settings.inverse_scale
-    --     --     local cursor_y_offset = (cursor[2] - cursor_y_start) * inverse_scale
-    --     --     local y_offset = math.clamp(cursor_y_offset, max_negative_offset, max_positive_offset)
-    --     --     widget.offset[2] = widget_y_start + y_offset
-    --     --     widget.offset[3] = 5
-
-    --     --     local round_function = y_offset > 0 and math.floor or math.ceil
-
-    --     --     local index_offset = round_function(y_offset / (sizes.header_3_height + 5))
-
-    --     --     if math.abs(index_offset) > 0 then
-    --     --         change_rows_item_index(widget, grid, index_offset)
-    --     --         content.cursor_start = Vector3.to_array(cursor)
-    --     --         content.widget_start = table.clone(widget.offset)
-    --     --     end
-    --     -- else
-    --     --     content.cursor_start = nil
-    --     --     content.widget_start = nil
-    --     -- end
-    -- end
-
 
     local widget_templates = {
         main_window = {
@@ -3356,7 +3406,6 @@ ui_manager.setup_main_window = function()
                         default_font_size = 80,
                         font_size = 80,
                         text_color = {255,255,255,255},
-                        --text_color = {175,240,220,0},
                     },
                 },
                 {   content_id = "text_mask",
@@ -3419,7 +3468,7 @@ ui_manager.setup_main_window = function()
                     content = {
                         use_is_focused = true,
                     },
-                    change_function = callback(on_clicked_callback_hotspot_change_function, ui_manager.close_view),
+                    change_function = callback(on_clicked_callback_hotspot_change_function, ui_manager.toggle_view),
                     scenegraph_id = "exit_inner",
                 },
                 {   style_id = "frame_b",
@@ -3469,79 +3518,6 @@ ui_manager.setup_main_window = function()
             },
             scenegraph_id = "main_window",
         },
-        -- scroll_test = {
-        --     passes = {
-        --         {
-        --             pass_type = "rect",
-        --             style = {
-        --                 color = {255,255,0,0},
-        --                 offset = {0,-200,20}
-        --             },
-        --         },
-        --     },
-        --     scenegraph_id = "scroll_test_item",
-        -- },
-        -- horizontal_scrollbar = {
-        --     passes = {
-        --         {
-        --             style_id = "track_background",
-        --             pass_type = "rotated_texture",
-        --             value = "content/ui/materials/scrollbars/scrollbar_thumb_default",
-        --             style = {
-        --                 vertical_alignment = "center",
-        --                 horizontal_alignment = "center",
-        --                 angle = math.rad(90),
-        --                 color = Color.black(255, true),
-        --                 size = {scrollbar_size[2],scrollbar_size[1]},
-        --                 offset = {0,0,0}
-        --             },
-        --         },
-        --         {
-        --             style_id = "track_frame",
-        --             pass_type = "rotated_texture",
-        --             value = "content/ui/materials/scrollbars/scrollbar_frame_default",
-        --             style = {
-        --                 vertical_alignment = "center",
-        --                 horizontal_alignment = "center",
-        --                 angle = math.rad(90),
-        --                 size = {scrollbar_size[2],scrollbar_size[1]},
-        --                 offset = {0,0,3},
-        --                 color = Color.terminal_frame(255, true)
-        --             },
-        --         },
-        --         {
-        --             pass_type = "rotated_texture",
-        --             value = "content/ui/materials/scrollbars/scrollbar_thumb_default",
-        --             style_id = "thumb",
-        --             style = {
-        --                 vertical_alignment = "center",
-        --                 horizontal_alignment = "center",
-        --                 angle = math.rad(90),
-        --                 offset = {default_thumb_x_offset,0,2},
-        --                 color = terminal_green_color,
-        --                 size = {thumb_size[2],thumb_size[1]}
-        --             },
-        --         },
-        --         {   content_id = "hotspot",
-        --             style_id = "hotspot",
-        --             pass_type = "hotspot",
-        --             content = {
-        --                 use_is_focused = true,
-        --             },
-        --             style = {
-        --                 offset = {default_thumb_x_offset,0,2},
-        --                 vertical_alignment = "center",
-        --                 horizontal_alignment = "center",
-        --                 size = thumb_size
-        --             }
-        --         },
-        --         {   value_id = "horizontal_scrollbar_logic",
-        --             pass_type = "logic",
-        --             value = horizontal_scroll_test_function
-        --         },
-        --     },
-        --     scenegraph_id = "scroll_test_scrollbar"
-        -- }
     }
     local widgets, widgets_by_name = generate_widgets(widget_templates)
 
@@ -3621,44 +3597,12 @@ ui_manager.setup_main_window = function()
 
     set_main_view_animations()
 end
+--Function that sets up the sessions component
 ui_manager.setup_sessions = function()
     local scenegraph_name = "sessions"
     destroy_scenegraphs_for_transition_to(scenegraph_name)
 
     local widget_templates = {
-        -- sessions_header = {
-        --     passes = {
-        --         {   content_id = "title",
-        --             value_id = "text",
-        --             value = mod:localize("mloc_sessions"),
-        --             pass_type = "text",
-        --             style_id = "title",
-        --             style = {
-        --                 text_vertical_alignment = "center",
-        --                 text_horizontal_alignment = "left",
-        --                 offset = {sizes.padding,0,0},
-        --                 font_type = font_type,
-        --                 font_size = font_size*2.5,
-        --                 default_font_size = font_size*2.5,
-        --                 text_color = gold_color,
-        --             },
-        --         },
-        --         {   content_id = "divider",
-        --             value_id = "material_name",
-        --             value = "content/ui/materials/dividers/faded_line_01",
-        --             pass_type = "texture",
-        --             style_id = "divider",
-        --             style = {
-        --                 vertical_alignment = "bottom",
-        --                 horizontal_alignment = "center",
-        --                 size = {sizes.workspace_inner[1], sizes.divider_height},
-        --                 offset = {0,0,0},
-        --                 color = font_color,
-        --             },
-        --         }, 
-        --     },
-        --     scenegraph_id = "header"
-        -- },
         reports_tab = {
             passes = {
                 {   content_id = "title",
@@ -3844,7 +3788,6 @@ ui_manager.setup_sessions = function()
                         color = font_color,
                         offset = {0,0,3}
                     },
-                    --change_function = session_item_change_function
                     change_function = item_standard_change_function
                 },
                 {   content_id = "header_background",
@@ -3871,7 +3814,6 @@ ui_manager.setup_sessions = function()
                         color = font_color,
                         offset = {0,0,3},
                     },
-                    --change_function = session_item_change_function
                     change_function = item_standard_change_function
                 },
                 {   content_id = "header_title",
@@ -3889,7 +3831,6 @@ ui_manager.setup_sessions = function()
                         default_font_size = font_size,
                         text_color = font_color,
                     },
-                    --change_function = session_item_change_function
                     change_function = item_standard_change_function
                 },
                 {   content_id = "circumstance_background",
@@ -3978,8 +3919,6 @@ ui_manager.setup_sessions = function()
                         color = font_color,
                         size_addition = {-10,-10}
                     },
-                    --change_function = session_item_change_function,
-                    --change_function = item_standard_change_function,
                     scenegraph_id = "sessions_item_difficulty_icon"
                 },
                 {   content_id = "difficulty_bar_1",
@@ -3994,8 +3933,6 @@ ui_manager.setup_sessions = function()
                         color = font_color,
                         size_addition = {0,-10}
                     },
-                    --change_function = session_item_change_function,
-                    --change_function = item_standard_change_function,
                     scenegraph_id = "sessions_item_difficulty_bar"
                 },
                 {   content_id = "difficulty_bar_2",
@@ -4011,8 +3948,6 @@ ui_manager.setup_sessions = function()
                         size_addition = {0,-10},
                         offset = {20,0}
                     },
-                    --change_function = session_item_change_function,
-                    --change_function = item_standard_change_function,
                     scenegraph_id = "sessions_item_difficulty_bar"
                 },
                 {   content_id = "difficulty_bar_3",
@@ -4028,8 +3963,6 @@ ui_manager.setup_sessions = function()
                         size_addition = {0,-10},
                         offset = {40,0}
                     },
-                    --change_function = session_item_change_function,
-                    --change_function = item_standard_change_function,
                     scenegraph_id = "sessions_item_difficulty_bar"
                 },
                 {   content_id = "difficulty_bar_4",
@@ -4045,8 +3978,6 @@ ui_manager.setup_sessions = function()
                         size_addition = {0,-10},
                         offset = {60,0}
                     },
-                    --change_function = session_item_change_function,
-                    --change_function = item_standard_change_function,
                     scenegraph_id = "sessions_item_difficulty_bar"
                 },
                 {   content_id = "difficulty_bar_5",
@@ -4062,8 +3993,6 @@ ui_manager.setup_sessions = function()
                         size_addition = {0,-10},
                         offset = {80,0}
                     },
-                    --change_function = session_item_change_function,
-                    --change_function = item_standard_change_function,
                     scenegraph_id = "sessions_item_difficulty_bar"
                 },
                 {   content_id = "session_info",
@@ -4081,8 +4010,6 @@ ui_manager.setup_sessions = function()
                         text_color = font_color,
                         offset = {0,0,10},
                     },
-                    --change_function = session_item_change_function,
-                    --change_function = item_standard_change_function,
                     scenegraph_id = "sessions_item_info"
                 },
                 {   content_id = "session_id_frame",
@@ -4098,7 +4025,6 @@ ui_manager.setup_sessions = function()
                         offset = {0,0,3},
                         size = {item_size[1],20}
                     },
-                    --change_function = session_item_change_function,
                     change_function = item_standard_change_function,
                 },
                 {   content_id = "session_id",
@@ -4118,7 +4044,6 @@ ui_manager.setup_sessions = function()
                         text_color = font_color,
                         size = {item_size[1],20}
                     },
-                    --change_function = session_item_change_function,
                     change_function = item_no_font_size_change_function,
                 },
                 {   content_id = "hotspot",
@@ -4131,7 +4056,6 @@ ui_manager.setup_sessions = function()
                         on_hover_sound = UISoundEvents.default_mouse_hover,
                         on_complete_sound = UISoundEvents.default_click
                     },
-                    --scenegraph_id = "sessions_item_outer"
                 },
                 {   value_id = "background_gradient",
                     style_id = "background_gradient",
@@ -4166,7 +4090,6 @@ ui_manager.setup_sessions = function()
 
             item_template.passes[1].style.material_values.texture_map  = session.mission.texture_big
             local mission_name = Localize(session.mission.mission_name)
-            -- local header_font_size = adjusted_font_size(mission_name, font_size, font_type, get_block_size(6,2)[1])
             item_template.passes[5].value = mission_name
             item_template.passes[5].style.font_size = font_size * 0.9
             item_template.passes[5].style.default_font_size = font_size * 0.9
@@ -4262,6 +4185,7 @@ ui_manager.setup_sessions = function()
     local scroll_percentage = grid:get_scrollbar_percentage_by_index(widget_index)
     grid:select_grid_index(widget_index, scroll_percentage, true)
 end
+--Function that sets up the reports component
 ui_manager.setup_reports = function()
     local scenegraph_name = "reports"
     destroy_scenegraphs_for_transition_to(scenegraph_name)
@@ -4270,7 +4194,7 @@ ui_manager.setup_reports = function()
     local function error_message_change_function(content,style)
         if error_message then
             loading = false
-            content.text = "error:\n\t"..error_message.error.."\n\n"..error_message.stacktrace
+            content.text = "error:\n\t"..tostring(error_message.error).."\n\n"..tostring(error_message.stacktrace)
         else
             content.text = ""
         end
@@ -4350,33 +4274,6 @@ ui_manager.setup_reports = function()
                         offset = {1,0,0}
                     },
                 },
-                -- {   content_id = "frame",
-                --     value_id = "material_name",
-                --     value = "content/ui/materials/frames/line_light",
-                --     pass_type = "texture",
-                --     style_id = "frame",
-                --     style = {
-                --         --vertical_alignment = "bottom",
-                --         --horizontal_alignment = "center",
-                --         --size = {sizes.workspace_inner[1], sizes.divider_height},
-                --         offset = {0,0,0},
-                --         size_addition = {0,0},
-                --         color = terminal_green_color,
-                --     },
-                -- },
-                -- {   content_id = "divider",
-                --     value_id = "material_name",
-                --     value = "content/ui/materials/dividers/faded_line_01",
-                --     pass_type = "texture",
-                --     style_id = "divider",
-                --     style = {
-                --         vertical_alignment = "bottom",
-                --         horizontal_alignment = "center",
-                --         size = {sizes.workspace_inner[1], sizes.divider_height},
-                --         offset = {0,0,0},
-                --         color = font_color,
-                --     },
-                -- },
             },
             scenegraph_id = "reports_tab"
         },
@@ -4458,7 +4355,6 @@ ui_manager.setup_reports = function()
                         default_font_size = font_size*2,
                         text_color = gold_color,
                     },
-                    --change_function = report_title_change_function
                 },
                 },
                 scenegraph_id = "report_title_item"
@@ -4493,7 +4389,7 @@ ui_manager.setup_reports = function()
             passes = {
                 {   style_id = "mask", 
                     value_id = "material_name",
-                    value = "content/ui/materials/offscreen_masks/ui_overlay_offscreen_straight_blur",
+                    value = "content/ui/materials/offscreen_masks/ui_overlay_offscreen_vertical_blur",
                     pass_type = "texture",    
                     style = {
                         vertical_alignment = "center",
@@ -4511,7 +4407,6 @@ ui_manager.setup_reports = function()
                 {   content_id = "reports_frame",
                     value_id = "material_name",
                     value = "content/ui/materials/frames/line_thin_detailed_02",
-                    --value = "content/ui/materials/frames/line_light",
                     pass_type = "texture",
                     style_id = "reports_frame",           
                     style = {
@@ -4584,9 +4479,7 @@ ui_manager.setup_reports = function()
                 {   value_id = "frame",
                     style_id = "frame",
                     pass_type = "texture",
-                    --value = "content/ui/materials/frames/frame_tile_2px",
                     value = "content/ui/materials/frames/line_light",
-                    --change_function = report_item_change_function,
                     change_function = item_standard_change_function,
                     style = {
                         scale_to_material = true,
@@ -4616,26 +4509,26 @@ ui_manager.setup_reports = function()
             },
             scenegraph_id = "loading_icon"
         },
-        error_message = UIWidget.create_definition({
-            {   pass_type = "text",
-                style_id = "text",
-                value_id = "text",
-                value = "TEST",
-                style = {
-                    text_vertical_alignment = "center",
-                    text_horizontal_alignment = "left",
-                    offset = {
-                        0,
-                        0,
-                        0
+        error_message = {
+            passes = {
+                {   style_id = "error_message",
+                    value_id = "text",
+                    value = "",
+                    pass_type = "text",
+                    style = {
+                        text_vertical_alignment = "center",
+                        text_horizontal_alignment = "left",
+                        offset = {0,0,0},
+                        font_type = font_type,
+                        font_size = font_size,
+                        default_font_size = font_size,
+                        text_color = font_color,
                     },
-                    font_size = font_size,
-                    default_font_size = font_size,
-                    text_color = font_color,
+                    change_function = error_message_change_function
                 },
-                change_function = error_message_change_function
-            },
-        }, "report_space_inner"),
+                },
+                scenegraph_id = "error_message"
+        },
     }
     local widgets, widgets_by_name = generate_widgets(widget_templates)
 
@@ -4674,7 +4567,6 @@ ui_manager.setup_reports = function()
                         default_font_size = font_size,
                         text_color = font_color,
                     },
-                    --change_function = report_item_change_function,
                     change_function = item_standard_change_function,
                 },
                 {   content_id = "left_bar",
@@ -4683,7 +4575,6 @@ ui_manager.setup_reports = function()
                     style = {
                         color = font_color
                     },
-                    --change_function = report_item_change_function,
                     change_function = item_standard_change_function,
                     scenegraph_id = "reports_item_left_bar"
                 },
@@ -4709,7 +4600,6 @@ ui_manager.setup_reports = function()
                     style_id = "frame",
                     pass_type = "texture",
                     value = "content/ui/materials/frames/frame_tile_2px",
-                    --change_function = report_item_change_function,
                     change_function = item_standard_change_function,
                     style = {
                         scale_to_material = true,
@@ -4723,6 +4613,15 @@ ui_manager.setup_reports = function()
     end
 
     local temp_user_reports_array = {}
+
+    if not next(user_reports) then
+        local edit_report_button_widget = widgets_by_name.report_edit
+        edit_report_button_widget.visible = false
+        local report_title_widget = widgets_by_name.report_title
+        report_title_widget.visible = false
+        loading = false
+        return
+    end
 
     for _, report_template in pairs(user_reports) do
         temp_user_reports_array[#temp_user_reports_array+1] = report_template
@@ -4788,6 +4687,7 @@ ui_manager.setup_reports = function()
     ui_manager.setup_report_rows_order()
     load_report = true
 end
+--Function that sets up the reports row order component
 ui_manager.setup_report_rows_order = function()
     local scenegraph_name = "report_rows_order"
     destroy_scenegraph("report_rows_order")
@@ -4802,7 +4702,6 @@ ui_manager.setup_report_rows_order = function()
                     style = {
                         text_vertical_alignment = "center",
                         text_horizontal_alignment = "left",
-                        --offset = {sizes.padding_half,-1*sizes.divider_height,0},
                         offset = {sizes.padding_half,0,0},
                         font_type = font_type,
                         font_size = font_size*2,
@@ -4818,7 +4717,6 @@ ui_manager.setup_report_rows_order = function()
                 {   content_id = "report_rows_frame",
                     value_id = "material_name",
                     value = "content/ui/materials/frames/line_thin_detailed_02",
-                    --value = "content/ui/materials/frames/line_light",
                     pass_type = "texture",
                     style_id = "report_rows_frame",           
                     style = {
@@ -4930,7 +4828,6 @@ ui_manager.setup_report_rows_order = function()
                     style_id = "background",
                     style = {
                         color = {255,0,10,0},
-                        --color = {255,0,0,0},
                         offset = {0,0,-3},
                         default_offset = {0,0,-3},
                     },
@@ -5044,6 +4941,7 @@ ui_manager.setup_report_rows_order = function()
         widget.current_grid_index = index
     end
 end
+--Function that sets up the pivot table component
 ui_manager.setup_pivot_table = function()
     local scenegraph_name = "pivot_table"
     destroy_scenegraph("pivot_table")
@@ -5163,7 +5061,6 @@ ui_manager.setup_pivot_table = function()
 
     local columns_values_horizontal_scrollbar_widget = widgets_by_name.columns_values_horizontal_scrollbar
 
-    
     local scenegraph = generate_scenegraph(scenegraph_name, widgets, widgets_by_name)
 
     local function get_columns_item_template()
@@ -5178,7 +5075,6 @@ ui_manager.setup_pivot_table = function()
                         text_vertical_alignment = "center",
                         text_horizontal_alignment = "center",
                         offset = {0,0,2},
-                        --size_addition = {100,0},
                         font_type = font_type,
                         font_size = font_size*2,
                         default_font_size = font_size*2,
@@ -5243,14 +5139,11 @@ ui_manager.setup_pivot_table = function()
                         text_vertical_alignment = "center",
                         text_horizontal_alignment = "center",
                         offset = {0,0,2},
-                        --size_addition = {100,0},
                         font_type = font_type,
                         font_size = font_size*2,
                         default_font_size = font_size*2,
                         text_color = gold_color,
                     },
-                    --change_function = item_text_alpha_change_function,
-                    --scenegraph_id = "columns_item_player_name",
                 },
                 {   content_id = "class_icon",
                     pass_type = "texture",
@@ -5263,7 +5156,6 @@ ui_manager.setup_pivot_table = function()
                         color = gold_color,
                         offset = {0,0,0},
                     },
-                    --change_function = item_alpha_change_function,
                     scenegraph_id = "columns_item_player_icon"
                 },
                 {   content_id = "hotspot",
@@ -5313,7 +5205,7 @@ ui_manager.setup_pivot_table = function()
             end
             column_name = player_profile.name
             item_template = get_player_columns_item_template()
-            max_item_width = scenegraph.columns_item_player_name.size[1] - sizes.padding
+            max_item_width = scenegraph.columns_item_player_name.size[1] - 0.5*(scenegraph.columns_item_player_name.size[2]) - sizes.padding
             local columns_font_size, column_name_text_width = adjusted_font_size(column_name, font_size*2, font_type, max_item_width)
             item_template.passes[1].value = column_name
             item_template.passes[1].style.font_size = columns_font_size
@@ -5501,22 +5393,23 @@ ui_manager.setup_pivot_table = function()
         local hotspot = widget.content.hotspot or widget.content.parent.hotspot
         local is_expanded = widget.is_expanded
         local is_hover = hotspot.is_hover
+        local default_font_size = style.default_font_size
         if is_expanded and is_hover then
             style.color = highlight_gold
             style.text_color = highlight_gold
-            style.font_size = font_size * 1.25
+            style.font_size = default_font_size * 1.25
         elseif is_expanded then
             style.color = expanded_gold
             style.text_color = expanded_gold
-            style.font_size = font_size
+            style.font_size = default_font_size
         elseif  is_hover then
             style.color = highlight_green
             style.text_color = highlight_green
-            style.font_size = font_size * 1.25
+            style.font_size = default_font_size * 1.25
         else
             style.color = normal_green
             style.text_color = normal_green
-            style.font_size = font_size
+            style.font_size = default_font_size
         end
     end
     local function pivot_table_icon_change_function (widget_index, content, style)
@@ -5579,7 +5472,6 @@ ui_manager.setup_pivot_table = function()
             item_template.passes[2].change_function = callback(pivot_table_item_change_function, current_index)
             item_template.passes[3].style.offset[1] = item_template.passes[3].style.offset[1] + (20*level)
             item_template.passes[3].change_function = callback(pivot_table_icon_change_function, current_index)
-            --item_template.passes[3].change_function = callback(pivot_table_item_change_function, current_index)
             item_template.passes[4].change_function = callback(pivot_table_item_background_change_function, current_index)
             row_widget_templates[current_index] = item_template
             local children = value.children
@@ -5599,7 +5491,6 @@ ui_manager.setup_pivot_table = function()
 
     local widgets, widgets_by_name = generate_widgets(row_widget_templates)
 
-    update_font_sizes(widgets, scenegraph_name)
 
     for _, widget in ipairs(widgets) do
         widget.content.size = {scenegraph.rows_item.size[1],0}
@@ -5613,6 +5504,9 @@ ui_manager.setup_pivot_table = function()
         widget.content.size = scenegraph.rows_item.size
         widget.content.visible = true
     end
+
+    update_font_sizes(widgets, scenegraph_name)
+
 
     renderers.offscreen_renderer_2.scenegraphs[scenegraph] = widgets
 
@@ -5661,7 +5555,6 @@ ui_manager.setup_pivot_table = function()
             local item_template = get_value_item_template()
 
             item_template.passes[1].change_function = callback(pivot_table_item_background_change_function, current_index)
-            --item_template.passes[3].change_function = callback(pivot_table_item_background_change_function, current_index)
 
             local value_name = "value_row_"..current_index
             local values = value.values
@@ -5703,6 +5596,7 @@ ui_manager.setup_pivot_table = function()
 
     local grid = generate_grid("pt_values", scenegraph_name, widgets, widgets_by_name, "values_grid", "down", nil, "rows_values_vertical_scrollbar", "values_pivot", "report_inner")
 end
+--Function that sets up the edit report settings component
 ui_manager.setup_edit_report_settings = function()
     destroy_scenegraph("reports")
     destroy_scenegraph("report_rows_order")
@@ -5711,6 +5605,50 @@ ui_manager.setup_edit_report_settings = function()
     local edit_mode = edit_mode_cache.mode
 
     local edit_tab_title = edit_mode == "edit" and mod:localize("mloc_edit_report") or mod:localize("mloc_new_report")
+
+    local function save_button_disabled_logic_function(pass, ui_renderer, ui_style, content, position, size)
+        local save_check = edit_mode_cache.save_check
+        if save_check then
+            content.disabled = false
+        else
+            content.disabled = true
+        end
+    end
+
+    local dump_toggle = true
+
+    local function delete_button_logic_function(pass, ui_renderer, ui_style, content, position, size)
+        local hotspot = content.hotspot
+        local on_pressed = hotspot.on_pressed
+        local is_hover = hotspot.is_hover
+        local left_hold = input_service:get("left_hold")
+        local animation_time = 1
+        local timer_background_style = ui_style.parent.timer_background
+        local default_size_addition_x = timer_background_style.default_size_addition[1]
+
+        if on_pressed then
+            content.deleting_active = true
+            delete_animation_progress = animation_time
+            timer_background_style.size_addition[1] = default_size_addition_x
+            timer_background_style.visible = true
+        end
+
+        if content.deleting_active and is_hover and left_hold then
+            if delete_animation_progress <= 0 then
+                delete_animation_progress = nil
+                content.is_active = false
+                edit_mode_cache.delete_report = true
+                return
+            end
+
+            local size_addition_multiplier = delete_animation_progress /  animation_time
+            timer_background_style.size_addition[1] = default_size_addition_x * size_addition_multiplier
+        else
+            delete_animation_progress = nil
+            content.deleting_active = nil
+            timer_background_style.visible = false
+        end
+    end
 
     local widget_templates = {
         edit_tab = {
@@ -5784,8 +5722,8 @@ ui_manager.setup_edit_report_settings = function()
                     pass_type = "texture",
                     style_id = "report_settings_frame",           
                     style = {
-                        vertical_alignment = "center",
-                        horizontal_alignment = "center",
+                        vertical_alignment = "top",
+                        horizontal_alignment = "left",
                         color = terminal_green_color,
                         offset = {0,0,0},
                         size_addition = {0,0},
@@ -5936,7 +5874,6 @@ ui_manager.setup_edit_report_settings = function()
                     content = {
                         use_is_focused = true,
                     },
-                    change_function = callback(on_clicked_callback_hotspot_change_function)
                 },
                 {   value_id = "background_gradient",
                     style_id = "background_gradient",
@@ -5948,6 +5885,21 @@ ui_manager.setup_edit_report_settings = function()
                         color = {0,0,0,0},
                         offset = {0,0,-2},
                     },
+                },
+                {   value_id = "timer_background",
+                    style_id = "timer_background",
+                    pass_type = "rect",
+                    style = {
+                        color = delete_color_background,
+                        offset = {0,0,-1},
+                        size_addition = {-1*get_block_size_NEW(sizes.workspace_inner, 4, 1, 1)[1],0},
+                        default_size_addition = {-1*get_block_size_NEW(sizes.workspace_inner, 4, 1, 1)[1],0},
+                        visible = false
+                    },
+                },
+                {   value_id = "delete_button_logic",
+                    pass_type = "logic",
+                    value = delete_button_logic_function,
                 },
             },
             scenegraph_id = "delete_row"
@@ -5990,7 +5942,7 @@ ui_manager.setup_edit_report_settings = function()
                     content = {
                         use_is_focused = true,
                     },
-                    change_function = callback(on_clicked_callback_hotspot_change_function,ui_manager.setup_reports)
+                    change_function = callback(on_clicked_callback_hotspot_change_function, function()edit_mode_cache.exit = true end)
                 },
                 {   value_id = "background_gradient",
                     style_id = "background_gradient",
@@ -6044,6 +5996,7 @@ ui_manager.setup_edit_report_settings = function()
                     content = {
                         use_is_focused = true,
                     },
+                    change_function = callback(on_clicked_callback_hotspot_change_function, function() edit_mode_cache.save_report = true end)
                 },
                 {   value_id = "background_gradient",
                     style_id = "background_gradient",
@@ -6056,11 +6009,23 @@ ui_manager.setup_edit_report_settings = function()
                         offset = {0,0,-2},
                     },
                 },
+                {   value_id = "disabled_logic",
+                    pass_type = "logic",
+                    value = save_button_disabled_logic_function,
+                },
+
             },
             scenegraph_id = "save_row"
         },
     }
     local widgets, widgets_by_name = generate_widgets(widget_templates)
+
+    if edit_mode == "new" then
+        local delete_button_widget = widgets_by_name.delete_button
+        delete_button_widget.visible = false
+        local frame_widget = widgets_by_name.report_settings_frame
+        frame_widget.style.report_settings_frame.size_addition[2] = sizes.header_3_height + sizes.padding_half
+    end
 
     widgets_by_name.save_button.content.disabled = true
 
@@ -6134,64 +6099,18 @@ ui_manager.setup_edit_report_settings = function()
 
     local report_type_options = get_dropdown_options("report_types")
     local report_type_dropdown_widget = generate_dropdown_widget(scenegraph_name, "report_type_input", report_type_options, 5, report_type_dropdown_callback_function, select_text, true)
-
-    if edit_mode == "edit" then
-        local user_report = user_reports[selected_report_id]
-
-        local name_input_widget = widgets_by_name.name_input
-        name_input_widget.content.input_text = user_report.name
-
-        local template_name = user_report.template_name or 1
-        local template_widget_content = template_dropdown_widget.content
-        local template_options_by_id = template_widget_content.options_by_id
-        local template_option = template_options_by_id[template_name]
-        local template_index = template_option and template_option.index
-        local template_id = template_option and template_option.id
-        template_widget_content.selected_index = template_index
-        template_widget_content.set_disabled = true
-        edit_mode_cache.selected_template = template_id
-
-        local dataset_name = user_report.dataset_name
-        local dataset_widget_content = dataset_dropdown_widget.content
-        local dataset_options_by_id = dataset_widget_content.options_by_id
-        local dataset_option = dataset_options_by_id[dataset_name]
-        local dataset_index = dataset_option and dataset_option.index
-        local dataset_id = dataset_option and dataset_option.id
-        dataset_widget_content.selected_index = dataset_index
-        dataset_widget_content.set_disabled = true
-        edit_mode_cache.selected_dataset = dataset_id
-
-        --local report_type_name = user_report.report_type_name
-        local report_type_name = "mloc_report_type_pivot_table"
-        local report_type_widget_content = report_type_dropdown_widget.content
-        local report_type_options_by_id = report_type_widget_content.options_by_id
-        local report_type_option = report_type_options_by_id[report_type_name]
-        local report_type_index = report_type_option and report_type_option.index
-        local report_type_id = report_type_option and report_type_option.id
-        report_type_widget_content.selected_index = report_type_index
-        report_type_widget_content.set_disabled = true
-        edit_mode_cache.selected_report_type = report_type_id
-    end
 end
+--Function that sets up the edit pivot table component
 ui_manager.setup_edit_pivot_table = function()
     local scenegraph_name = "edit_pivot_table"
     destroy_scenegraph(scenegraph_name)
-    local edit_mode = edit_mode_cache.mode
-    local functions = {}
-
-    local renderer_name_lookup = {
-        default = "default_renderer",
-        column = "offscreen_renderer_1",
-        rows = "offscreen_renderer_2",
-        values = "offscreen_renderer_3",
-    }
     local scenegraph_id_lookup = {
         column = "column_item",
         rows = "rows_item",
         values = "values_item",
     }
 
-    functions.get_widget_templates = function()
+    edit_pivot_table_functions.get_widget_templates = function()
         local widget_templates = {
             dataset_fields_title = {
                 passes = {
@@ -6308,7 +6227,7 @@ ui_manager.setup_edit_pivot_table = function()
                             zone = "column",
                             use_is_focused = true,
                         },
-                        change_function = functions.drop_zones_hotspot_change_function
+                        change_function = edit_pivot_table_functions.drop_zones_hotspot_change_function
                     },
                 },
                 scenegraph_id = "column_frame"
@@ -6372,7 +6291,7 @@ ui_manager.setup_edit_pivot_table = function()
                             zone = "rows",
                             use_is_focused = true,
                         },
-                        change_function = functions.drop_zones_hotspot_change_function
+                        change_function = edit_pivot_table_functions.drop_zones_hotspot_change_function
                     },
                 },
                 scenegraph_id = "rows_frame"
@@ -6440,7 +6359,7 @@ ui_manager.setup_edit_pivot_table = function()
                             zone = "values",
                             use_is_focused = true,
                         },
-                        change_function = functions.drop_zones_hotspot_change_function
+                        change_function = edit_pivot_table_functions.drop_zones_hotspot_change_function
                     },
                 },
                 scenegraph_id = "values_frame"
@@ -6456,7 +6375,7 @@ ui_manager.setup_edit_pivot_table = function()
                             horizontal_alignment = "center",
                             color = {255,255,255,255},
                             offset = {0,0,0},
-                            size_addition = {2*sizes.padding,3*sizes.padding}
+                            size_addition = {2*sizes.padding,2*sizes.padding}
                         },
                     },
                 },
@@ -6504,7 +6423,7 @@ ui_manager.setup_edit_pivot_table = function()
                         content = {
                             use_is_focused = true,
                         },
-                        change_function = callback(on_clicked_callback_hotspot_change_function,functions.create_calculated_field_edit_item_widget)
+                        change_function = callback(on_clicked_callback_hotspot_change_function,edit_pivot_table_functions.create_calculated_field_edit_item_widget)
                     },
                     {   value_id = "background_gradient",
                         style_id = "background_gradient",
@@ -6599,32 +6518,12 @@ ui_manager.setup_edit_pivot_table = function()
                     },
                 },
                 scenegraph_id = "pivot_table_settings_frame"
-            },
-            -- expand_title = {
-            --     passes = {
-            --         {   content_id = "title",
-            --             value_id = "text",
-            --             value = mod:localize("mloc_expand_first_level"),
-            --             pass_type = "text",
-            --             style_id = "title",
-            --             style = {
-            --                 text_vertical_alignment = "center",
-            --                 text_horizontal_alignment = "left",
-            --                 offset = {0,0,0},
-            --                 font_type = font_type,
-            --                 font_size = font_size,
-            --                 default_font_size = font_size,
-            --                 text_color = gold_color,
-            --             },
-            --         },
-            --         },
-            --         scenegraph_id = "expand_title"
-            -- },
+            }
         }
 
         return widget_templates
     end
-    functions.drop_zones_hotspot_change_function = function(content, style)
+    edit_pivot_table_functions.drop_zones_hotspot_change_function = function(content, style)
         local is_hover = content.is_hover
         local zone = content.zone
         if is_hover then
@@ -6633,11 +6532,11 @@ ui_manager.setup_edit_pivot_table = function()
             edit_mode_cache.active_zone = nil
         end
     end
-    functions.remove_widget = function(widget)
+    edit_pivot_table_functions.remove_widget = function(widget)
         local content = widget.content
         local current_renderer_name = content.current_renderer_name
         local current_renderer_index = content.current_renderer_index
-        local scenegraph = functions.get_scenegraph()
+        local scenegraph = edit_pivot_table_functions.get_scenegraph()
 
         local current_grid_name = content.current_grid_name
 
@@ -6676,10 +6575,10 @@ ui_manager.setup_edit_pivot_table = function()
             widget.content.current_renderer_index = index
         end
     end
-    functions.change_widget_renderer = function(widget, new_renderer_name)
+    edit_pivot_table_functions.change_widget_renderer = function(widget, new_renderer_name)
         local content = widget.content
         local current_renderer_name = content.current_renderer_name
-        local scenegraph = functions.get_scenegraph()
+        local scenegraph = edit_pivot_table_functions.get_scenegraph()
 
         if current_renderer_name == new_renderer_name then
             return
@@ -6702,9 +6601,9 @@ ui_manager.setup_edit_pivot_table = function()
         content.current_renderer_name = new_renderer_name
         content.current_renderer_index = new_renderer_index
     end
-    functions.change_widget_scenegraph_id = function(widget, new_scenegraph_id)
+    edit_pivot_table_functions.change_widget_scenegraph_id = function(widget, new_scenegraph_id)
         local content = widget.content
-        local scenegraph = functions.get_scenegraph()
+        local scenegraph = edit_pivot_table_functions.get_scenegraph()
         local current_scenegraph_id = widget.scenegraph_id
 
         if current_scenegraph_id == new_scenegraph_id then
@@ -6722,7 +6621,7 @@ ui_manager.setup_edit_pivot_table = function()
         content.widget_start = {new_widget_x_offset, new_widget_y_offset}
         widget.scenegraph_id = new_scenegraph_id
     end
-    functions.change_widget_grid = function(widget, new_zone)
+    edit_pivot_table_functions.change_widget_grid = function(widget, new_zone)
         local content = widget.content
         local current_grid_name = content.current_grid_name
         local grids = scenegraphs_data.edit_pivot_table.grids
@@ -6762,25 +6661,25 @@ ui_manager.setup_edit_pivot_table = function()
             local new_grid_index = #new_grid_widgets+1
 
             local new_scenegraph_id = scenegraph_id_lookup[new_zone]
-            functions.change_widget_scenegraph_id(widget, new_scenegraph_id)
+            edit_pivot_table_functions.change_widget_scenegraph_id(widget, new_scenegraph_id)
 
             new_grid_widgets[new_grid_index] = widget
             content.current_grid_name = new_zone
             content.current_grid_index = new_grid_index
             new_grid:force_update_list_size()
         else
-            functions.change_widget_scenegraph_id(widget, "edit_item")
+            edit_pivot_table_functions.change_widget_scenegraph_id(widget, "edit_item")
         end
     end
-    functions.get_default_edit_item_size = function()
-        local scenegraph = functions.get_scenegraph()
+    edit_pivot_table_functions.get_default_edit_item_size = function()
+        local scenegraph = edit_pivot_table_functions.get_scenegraph()
         return table.clone(scenegraph.values_item.size)
     end
-    functions.edit_item_drag_function = function(widget, pass, ui_renderer, ui_style, content, position, size)
+    edit_pivot_table_functions.edit_item_drag_function = function(widget, pass, ui_renderer, ui_style, content, position, size)
         local hotspot = content.hotspot
         local on_pressed = hotspot.on_pressed
         local cursor = input_service:get("cursor")
-        local item_size = functions.get_default_edit_item_size()
+        local item_size = edit_pivot_table_functions.get_default_edit_item_size()
 
         if on_pressed then
             widget.size = item_size
@@ -6793,7 +6692,7 @@ ui_manager.setup_edit_pivot_table = function()
             end
             content.cursor_start = Vector3.to_array(cursor)
             content.widget_start = table.clone(widget.offset)
-            functions.change_widget_renderer(widget, "default_renderer")
+            edit_pivot_table_functions.change_widget_renderer(widget, "default_renderer")
         end
 
         local drag_active = content.drag_active
@@ -6809,18 +6708,18 @@ ui_manager.setup_edit_pivot_table = function()
                 local column_widgets = scenegraphs_data.edit_pivot_table.grids.column.widgets
                 for index, widget in ipairs(column_widgets) do
                     if widget.name ~= widget_name then
-                        functions.change_widget_grid(widget)
-                        functions.change_widget_renderer(widget, "default_renderer")
-                        functions.remove_widget(widget)                        
+                        edit_pivot_table_functions.change_widget_grid(widget)
+                        edit_pivot_table_functions.change_widget_renderer(widget, "default_renderer")
+                        edit_pivot_table_functions.remove_widget(widget)                        
                     end
                 end
             end
 
             if not current_grid_name then
-                functions.remove_widget(widget)
+                edit_pivot_table_functions.remove_widget(widget)
             else
                 local new_renderer_name = renderer_name_lookup[current_grid_name]
-                functions.change_widget_renderer(widget, new_renderer_name)
+                edit_pivot_table_functions.change_widget_renderer(widget, new_renderer_name)
                 local grid = scenegraphs_data.edit_pivot_table.grids[current_grid_name].grid
                 grid:force_update_list_size()
             end
@@ -6828,7 +6727,7 @@ ui_manager.setup_edit_pivot_table = function()
         elseif drag_active then
 
             if current_grid_name ~= active_zone then
-                functions.change_widget_grid(widget, active_zone)
+                edit_pivot_table_functions.change_widget_grid(widget, active_zone)
             end
 
             local cursor_x_start = content.cursor_start[1]
@@ -6873,8 +6772,6 @@ ui_manager.setup_edit_pivot_table = function()
 
             if math.abs(index_offset) > 0 then
                 change_grid_index(widget, grid, index_offset)
-                --content.cursor_start = Vector3.to_array(cursor)
-                --content.widget_start = table.clone(widget.offset)
             end
         else
             content.cursor_start = nil
@@ -6882,11 +6779,11 @@ ui_manager.setup_edit_pivot_table = function()
             widget.offset[3] = 0
         end
     end
-    functions.in_values_grid_visibility_function = function(content)
+    edit_pivot_table_functions.in_values_grid_visibility_function = function(content)
         local content = content.parent or content
         return not content.drag_active and content.current_grid_name == "values"
     end
-    functions.expand_icon_change_function = function(content, style)
+    edit_pivot_table_functions.expand_icon_change_function = function(content, style)
         local content = content.parent or content
         local hotspot = content.expand_hotspot
         local is_hover = hotspot.is_hover
@@ -6905,7 +6802,7 @@ ui_manager.setup_edit_pivot_table = function()
             style.size_addition = {0,0}
         end
     end
-    functions.edit_item_hotspot_change_function = function(content, style)
+    edit_pivot_table_functions.edit_item_hotspot_change_function = function(content, style)
         local content = content.parent
         if not content.drag_active and content.current_grid_name == "values" then
             style.size_addition[1] = -1* (sizes.header_3_height + sizes.padding)
@@ -6913,7 +6810,7 @@ ui_manager.setup_edit_pivot_table = function()
             style.size_addition[1] = 0
         end
     end
-    functions.toggle_expand_item_function = function(widget)
+    edit_pivot_table_functions.toggle_expand_item_function = function(widget)
         local content = widget.content
         local new_expanded_state = not content.is_expanded
         content.is_expanded = new_expanded_state
@@ -6922,29 +6819,39 @@ ui_manager.setup_edit_pivot_table = function()
         local scenegraph_item = scenegraph_settings.scenegraph[new_scenegraph_id]
         local new_size = table.clone(scenegraph_item.size)
         widget.size = new_size
+
+        local scenegraph = edit_pivot_table_functions.get_scenegraph()
+        local values_grid_pivot = scenegraph.values_pivot
+        local previous_pivot_y = math.abs(values_grid_pivot.position[2])
+        local values_grid = scenegraph_settings.grids.values.grid
+
+        values_grid:force_update_list_size()
+    
+        local total_grid_height= values_grid._total_grid_length
+        local visible_grid_height = scenegraph.values_grid.size[2]
         
-        local grid = scenegraph_settings.grids.values.grid
-        grid:force_update_list_size()
+        local new_scrollbar_progress = math.clamp01(previous_pivot_y/(total_grid_height-visible_grid_height))
+        values_grid:set_scrollbar_progress(new_scrollbar_progress)
     end
-    functions.expanded_visibility_function = function(content)
+    edit_pivot_table_functions.expanded_visibility_function = function(content)
         local content = content.parent or content
         return content.is_expanded
     end
-    functions.expanded_calculated_field_visibility_function = function(content)
+    edit_pivot_table_functions.expanded_calculated_field_visibility_function = function(content)
         local content = content.parent or content
         local is_expanded = content.is_expanded
         local field_type = content.value_template.type
         local is_calculated_field = field_type == "calculated_field"
         return is_expanded and is_calculated_field
     end
-    functions.expanded_normal_field_visibility_function = function(content)
+    edit_pivot_table_functions.expanded_normal_field_visibility_function = function(content)
         local content = content.parent or content
         local is_expanded = content.is_expanded
         local field_type = content.value_template.type
         local is_normal_field = field_type ~= "calculated_field"
         return is_expanded and is_normal_field
     end
-    functions.edit_item_title_change_function = function(content, style)
+    edit_pivot_table_functions.edit_item_title_change_function = function(content, style)
         local content = content.parent or content
         local current_crid_name = content.current_grid_name
         
@@ -6956,7 +6863,7 @@ ui_manager.setup_edit_pivot_table = function()
         
         item_drag_change_function(content, style)
     end
-    functions.child_widget_logic_function = function(parent_widget, child_widget, pass, ui_renderer, ui_style, content, position, size)
+    edit_pivot_table_functions.child_widget_logic_function = function(parent_widget, child_widget, pass, ui_renderer, ui_style, content, position, size)
 
         local content = parent_widget.content
         local is_expanded = content.is_expanded
@@ -6968,8 +6875,8 @@ ui_manager.setup_edit_pivot_table = function()
             child_widget.visible = false
         end
     end
-    functions.get_edit_item_passes_template = function()
-        local item_size = functions.get_default_edit_item_size()
+    edit_pivot_table_functions.get_edit_item_passes_template = function()
+        local item_size = edit_pivot_table_functions.get_default_edit_item_size()
         local item_passes = {
                 {   content_id = "title",
                     value_id = "text",
@@ -6981,7 +6888,6 @@ ui_manager.setup_edit_pivot_table = function()
                         text_horizontal_alignment = "left",
                         offset = {sizes.padding,0,2},
                         default_offset = {sizes.padding,0,2},
-                        --size_addition = {-1*sizes.padding,0},
                         font_type = font_type,
                         font_size = font_size,
                         default_font_size = font_size,
@@ -6990,7 +6896,7 @@ ui_manager.setup_edit_pivot_table = function()
                     content = {
                         default_text = "temp"
                     },
-                    change_function = functions.edit_item_title_change_function,
+                    change_function = edit_pivot_table_functions.edit_item_title_change_function,
                 },
                 {   content_id = "left_bar",
                     pass_type = "rect",
@@ -7016,7 +6922,7 @@ ui_manager.setup_edit_pivot_table = function()
                     content = {
                         use_is_focused = true,
                     },
-                    change_function = functions.edit_item_hotspot_change_function
+                    change_function = edit_pivot_table_functions.edit_item_hotspot_change_function
                 },
                 {   value_id = "background_gradient",
                     style_id = "background_gradient",
@@ -7024,7 +6930,6 @@ ui_manager.setup_edit_pivot_table = function()
                     value = "content/ui/materials/masks/gradient_horizontal_sides_dynamic_02",
                     change_function = item_gradient_drag_change_function,
                     style = {
-                        --scale_to_material = true,
                         color = {0,0,0,0},
                         offset = {0,0,-2},
                         default_offset = {0,0,-2},
@@ -7058,7 +6963,7 @@ ui_manager.setup_edit_pivot_table = function()
                     style_id = "expand_icon",
                     pass_type = "texture",
                     value = "content/ui/materials/buttons/dropdown_line",
-                    change_function = functions.expand_icon_change_function,
+                    change_function = edit_pivot_table_functions.expand_icon_change_function,
                     style = {
                         vertical_alignment = "center",
                         horizontal_alignment = "center", 
@@ -7068,7 +6973,7 @@ ui_manager.setup_edit_pivot_table = function()
                         offset = {0.5*(item_size[1]-sizes.header_3_height) - sizes.padding_half,0,0},
                         default_offset = {0,0,0},
                     },
-                    visibility_function = functions.in_values_grid_visibility_function,
+                    visibility_function = edit_pivot_table_functions.in_values_grid_visibility_function,
                 },
                 {   content_id = "expand_hotspot",
                     style_id = "expand_hotspot",
@@ -7082,7 +6987,7 @@ ui_manager.setup_edit_pivot_table = function()
                     content = {
                         use_is_focused = true,
                     },
-                    visibility_function = functions.in_values_grid_visibility_function,
+                    visibility_function = edit_pivot_table_functions.in_values_grid_visibility_function,
                 },
                 {   value_id = "expanded_frame",
                     style_id = "expanded_frame",
@@ -7094,7 +6999,7 @@ ui_manager.setup_edit_pivot_table = function()
                         offset = {0,0,0},
                         default_offset = {0,0,0},
                     },
-                    visibility_function = functions.expanded_visibility_function,
+                    visibility_function = edit_pivot_table_functions.expanded_visibility_function,
                     scenegraph_id = "values_item_settings"
                 },
                 {   content_id = "label_title",
@@ -7112,11 +7017,13 @@ ui_manager.setup_edit_pivot_table = function()
                         default_font_size = font_size,
                         text_color = gold_color,
                     },
-                    --change_function = item_drag_change_function,
-                    visibility_function = functions.expanded_visibility_function,
+                    visibility_function = edit_pivot_table_functions.expanded_visibility_function,
                     scenegraph_id  ="values_item_setting_header"
                 },
                 {   value_id = "label_input_logic",
+                    pass_type = "logic",
+                },
+                {   value_id = "label_input_logic_2",
                     pass_type = "logic",
                 },
                 {   content_id = "field_title",
@@ -7134,7 +7041,7 @@ ui_manager.setup_edit_pivot_table = function()
                         default_font_size = font_size,
                         text_color = gold_color,
                     },
-                    visibility_function = functions.expanded_normal_field_visibility_function,
+                    visibility_function = edit_pivot_table_functions.expanded_normal_field_visibility_function,
                     scenegraph_id  ="values_item_setting_header"
                 },
                 {   content_id = "field_input",
@@ -7152,7 +7059,7 @@ ui_manager.setup_edit_pivot_table = function()
                         default_font_size = font_size,
                         text_color = font_color,
                     },
-                    visibility_function = functions.expanded_normal_field_visibility_function,
+                    visibility_function = edit_pivot_table_functions.expanded_normal_field_visibility_function,
                     scenegraph_id  ="values_item_setting_input"
                 },
                 {   content_id = "formula_title",
@@ -7170,10 +7077,13 @@ ui_manager.setup_edit_pivot_table = function()
                         default_font_size = font_size,
                         text_color = gold_color,
                     },
-                    visibility_function = functions.expanded_calculated_field_visibility_function,
+                    visibility_function = edit_pivot_table_functions.expanded_calculated_field_visibility_function,
                     scenegraph_id  ="values_item_setting_header"
                 },
                 {   value_id = "formula_input_logic",
+                    pass_type = "logic",
+                },
+                {   value_id = "formula_input_logic_2",
                     pass_type = "logic",
                 },
                 {   content_id = "format_title",
@@ -7191,8 +7101,7 @@ ui_manager.setup_edit_pivot_table = function()
                         default_font_size = font_size,
                         text_color = gold_color,
                     },
-                    --change_function = item_drag_change_function,
-                    visibility_function = functions.expanded_visibility_function,
+                    visibility_function = edit_pivot_table_functions.expanded_visibility_function,
                     scenegraph_id  ="values_item_setting_header"
                 },
                 {   value_id = "format_input_logic",
@@ -7213,8 +7122,7 @@ ui_manager.setup_edit_pivot_table = function()
                         default_font_size = font_size,
                         text_color = gold_color,
                     },
-                    --change_function = item_drag_change_function,
-                    visibility_function = functions.expanded_visibility_function,
+                    visibility_function = edit_pivot_table_functions.expanded_visibility_function,
                     scenegraph_id  ="values_item_setting_header"
                 },
                 {   value_id = "visible_input_logic",
@@ -7223,14 +7131,26 @@ ui_manager.setup_edit_pivot_table = function()
         }
         return item_passes
     end
-    functions.create_edit_item_child_widgets = function(parent_widget, is_calculated_field)
-        local scenegraph = functions.get_scenegraph()
+    edit_pivot_table_functions.add_edit_widget_to_renderer = function(widget, renderer_name)
+        local scenegraph = edit_pivot_table_functions.get_scenegraph()
+        local renderer_settings = renderers[renderer_name]
+        local renderer_widgets = renderer_settings.scenegraphs[scenegraph]
+        local renderer_index = #renderer_widgets+1
+        local content = widget.content
+
+        content.current_renderer_name = renderer_name
+        content.current_renderer_index = renderer_index
+        renderer_widgets[renderer_index] = widget
+    end
+    edit_pivot_table_functions.create_edit_item_child_widgets = function(parent_widget, field_type)
+        local scenegraph = edit_pivot_table_functions.get_scenegraph()
         local parent_widget_content = parent_widget.content
         local base_offset_y = sizes.header_3_height + sizes.padding_half
         local child_widgets = {}
 
         local label_input_passes = get_custom_text_input_template()
         local label_input_definition = UIWidget.create_definition(label_input_passes, "values_item_setting_input")
+
         local label_input_widget = UIWidget.init("label_input", label_input_definition)
         local label_input_widget_content = label_input_widget.content
         label_input_widget_content.input_text = parent_widget.content.title.default_text
@@ -7238,9 +7158,17 @@ ui_manager.setup_edit_pivot_table = function()
         label_input_widget.default_offset = {0,0}
 
         child_widgets.label_input_widget = label_input_widget
-        parent_widget_content.label_input_logic = callback(functions.child_widget_logic_function, parent_widget, label_input_widget)
+        parent_widget_content.label_input_logic = callback(edit_pivot_table_functions.child_widget_logic_function, parent_widget, label_input_widget)
 
-        if is_calculated_field then
+        local label_input_logic_2_function = function(parent_widget, label_input_widget)
+            local value_template = parent_widget.content.value_template
+            local label_input_text = label_input_widget.content.input_text
+            value_template.label = label_input_text
+        end
+
+        parent_widget_content.label_input_logic_2 = callback(label_input_logic_2_function, parent_widget, label_input_widget)
+
+        if field_type == "calculated_field" then
             parent_widget.content.value_template.type = "calculated_field"
             local formula_input_passes = get_custom_text_input_template()
             local formula_input_definition = UIWidget.create_definition(formula_input_passes, "values_item_setting_input")
@@ -7248,9 +7176,16 @@ ui_manager.setup_edit_pivot_table = function()
             formula_input_widget.offset = {0,base_offset_y}
             formula_input_widget.default_offset = {0,base_offset_y}
             child_widgets.formula_input_widget = formula_input_widget
-            parent_widget_content.formula_input_logic = callback(functions.child_widget_logic_function, parent_widget, formula_input_widget)
+            parent_widget_content.formula_input_logic = callback(edit_pivot_table_functions.child_widget_logic_function, parent_widget, formula_input_widget)
+
+            local formula_input_logic_2_function = function(parent_widget, formula_input_widget)
+                local value_template = parent_widget.content.value_template
+                local formula_input_text = formula_input_widget.content.input_text
+                value_template.function_string = formula_input_text
+            end
+            parent_widget_content.formula_input_logic_2 = callback(formula_input_logic_2_function, parent_widget, formula_input_widget)
+
         else
-            local field_type = parent_widget.content.field_type
             parent_widget.content.value_template.type = (field_type == "number") and "sum" or "count"
         end
 
@@ -7269,7 +7204,7 @@ ui_manager.setup_edit_pivot_table = function()
         parent_widget.content.value_template.format = "none"
         
         child_widgets.format_input_widget = format_input_widget
-        parent_widget_content.format_input_logic = callback(functions.child_widget_logic_function, parent_widget, format_input_widget)
+        parent_widget_content.format_input_logic = callback(edit_pivot_table_functions.child_widget_logic_function, parent_widget, format_input_widget)
 
         local visible_input_options = get_dropdown_options("boolean")
         local visible_input_changed_callback_function = function(widget, option_id)
@@ -7281,11 +7216,11 @@ ui_manager.setup_edit_pivot_table = function()
         visible_input_widget.offset = {0,3*base_offset_y}
         visible_input_widget.default_offset = {0,3*base_offset_y}
 
-        visible_input_widget.content.selected_id = "true"
-        parent_widget.content.value_template.visible = "true"
+        visible_input_widget.content.selected_id = true
+        parent_widget.content.value_template.visible = true
 
         child_widgets.visible_input_widget = visible_input_widget
-        parent_widget_content.visible_input_logic = callback(functions.child_widget_logic_function, parent_widget, visible_input_widget)
+        parent_widget_content.visible_input_logic = callback(edit_pivot_table_functions.child_widget_logic_function, parent_widget, visible_input_widget)
 
         local renderer_widgets = renderers.offscreen_renderer_3.scenegraphs[scenegraph]
 
@@ -7298,123 +7233,91 @@ ui_manager.setup_edit_pivot_table = function()
 
         parent_widget_content.child_widgets = child_widgets
     end
-    functions.create_edit_item_widget = function(widget, is_calculated_field)
-        local scenegraph = functions.get_scenegraph()
-        local field_name = widget.name
-        local edit_widget_pass_template = functions.get_edit_item_passes_template()
-        local edit_widget_definition = UIWidget.create_definition(edit_widget_pass_template, "edit_item")
-        local edit_widget = UIWidget.init(field_name, edit_widget_definition)
-        local edit_widget_content = edit_widget.content
-        
-        edit_widget_content.title.default_text = field_name
-        edit_widget_content.field_input.text = field_name
-        edit_widget_content.field_type = widget.content.field_type.value_id
+    edit_pivot_table_functions.create_edit_item_widget = function(widget_name, scenegraph_id, field_type)
+        local scenegraph = edit_pivot_table_functions.get_scenegraph()
+        local scenegraph_item_size = scenegraph[scenegraph_id].size
+        local edit_widget_pass_template = edit_pivot_table_functions.get_edit_item_passes_template()
+        local edit_widget_definition = UIWidget.create_definition(edit_widget_pass_template, scenegraph_id)
 
+        local edit_widget = UIWidget.init(widget_name, edit_widget_definition)
+        local edit_widget_content = edit_widget.content
+
+        edit_widget_content.title.default_text = widget_name
+        edit_widget_content.field_input.text = widget_name
+        edit_widget_content.drag_logic = callback(edit_pivot_table_functions.edit_item_drag_function, edit_widget)
+        edit_widget_content.size = {scenegraph_item_size[1],scenegraph_item_size[2]}
+        edit_widget_content.value_template = {}
+
+        if field_type ~= "calculated_field" then
+            edit_widget_content.value_template.field_name = widget_name
+        end
+
+        local toggle_expand_callback = callback(edit_pivot_table_functions.toggle_expand_item_function, edit_widget)
+        local edit_widget_passes = edit_widget.passes
+        edit_widget_passes[9].change_function = callback(on_clicked_callback_hotspot_change_function, toggle_expand_callback)
+
+        update_font_sizes({edit_widget}, "edit_pivot_table")
+
+        edit_pivot_table_functions.create_edit_item_child_widgets(edit_widget, field_type)
+
+        return edit_widget
+    end
+    edit_pivot_table_functions.create_edit_item_widget_from_dataset_widget = function(widget)
+        local field_type = widget.content.field_type.value_id
+
+        local edit_widget = edit_pivot_table_functions.create_edit_item_widget(widget.name, "edit_item", field_type)
+        local edit_widget_content = edit_widget.content
+
+        local scenegraph = edit_pivot_table_functions.get_scenegraph()
+        local cursor = input_service:get("cursor")
         local pivot_scenegraph_position = scenegraph.dataset_fields_pivot.position
         local widget_x = widget.offset[1] + pivot_scenegraph_position[1]
         local widget_y = widget.offset[2] + pivot_scenegraph_position[2]
 
         edit_widget.offset = {widget_x, widget_y}
         edit_widget_content.widget_start = {widget_x, widget_y}
-
-        local cursor = input_service:get("cursor")
         edit_widget_content.cursor_start = Vector3.to_array(cursor)
-        edit_widget_content.is_expanded = false
         edit_widget_content.drag_active = true
-        edit_widget_content.drag_logic = callback(functions.edit_item_drag_function, edit_widget)
-        edit_widget_content.size = table.clone(scenegraph.edit_item.size)
-        edit_widget_content.value_template = {}
 
-        local toggle_expand_callback = callback(functions.toggle_expand_item_function, edit_widget)
-        local edit_widget_passes = edit_widget.passes
-        edit_widget_passes[9].change_function = callback(on_clicked_callback_hotspot_change_function, toggle_expand_callback)
-        
-        local renderer_settings = renderers.default_renderer
-        local widgets = renderer_settings.scenegraphs[scenegraph]
-        local edit_widget_index = #widgets+1
-
-        edit_widget_content.current_renderer_name = "default_renderer"
-        edit_widget_content.current_renderer_index = edit_widget_index
-        widgets[edit_widget_index] = edit_widget
-
-        update_font_sizes({edit_widget}, "edit_pivot_table")
-
-        functions.create_edit_item_child_widgets(edit_widget, is_calculated_field)
+        local renderer_name = "default_renderer"
+        edit_pivot_table_functions.add_edit_widget_to_renderer(edit_widget, renderer_name)
 
         return edit_widget
     end
-    functions.create_calculated_field_edit_item_widget = function()
+    edit_pivot_table_functions.create_calculated_field_edit_item_widget = function()
         local widget_name = "calculated_field_"..PDI.utilities.uuid()
         local widget_label = "calculated_field"
-        local scenegraph = functions.get_scenegraph()
-        local expanded_scenegraph_item = scenegraph.values_item_expanded
-        local expanded_size = expanded_scenegraph_item.size
-        local edit_widget_pass_template = functions.get_edit_item_passes_template()
-        local edit_widget_definition = UIWidget.create_definition(edit_widget_pass_template, "values_item")
-        local edit_widget = UIWidget.init(widget_name, edit_widget_definition)
+        local scenegraph_id = "values_item"
 
-        edit_widget.size = {expanded_size[1], expanded_size[2]}
-        
+        local edit_widget = edit_pivot_table_functions.create_edit_item_widget(widget_name,scenegraph_id, "calculated_field")
+
         local edit_widget_content = edit_widget.content
-        edit_widget_content.is_expanded = true
-        edit_widget_content.drag_logic = callback(functions.edit_item_drag_function, edit_widget)
-        edit_widget_content.size = table.clone(scenegraph.edit_item.size)
-        edit_widget_content.value_template = {}
-        edit_widget_content.value_template.type = widget_label
         edit_widget_content.title.default_text = widget_label
 
-        local toggle_expand_callback = callback(functions.toggle_expand_item_function, edit_widget)
-        local edit_widget_passes = edit_widget.passes
-        edit_widget_passes[9].change_function = callback(on_clicked_callback_hotspot_change_function, toggle_expand_callback)
+        local label_input_widget = edit_widget_content.child_widgets.label_input_widget
+        local label_input_widget_content = label_input_widget.content
+        label_input_widget_content.input_text = widget_label
 
-        local renderer_settings = renderers.offscreen_renderer_3
-        local widgets = renderer_settings.scenegraphs[scenegraph]
-        local edit_widget_index = #widgets+1
+        local renderer_name = "offscreen_renderer_3"
+        edit_pivot_table_functions.add_edit_widget_to_renderer(edit_widget, renderer_name)
 
-        edit_widget_content.current_renderer_name = "offscreen_renderer_3"
-        edit_widget_content.current_renderer_index = edit_widget_index
-        widgets[edit_widget_index] = edit_widget
-
-        update_font_sizes({edit_widget}, "edit_pivot_table")
-
-        functions.create_edit_item_child_widgets(edit_widget, true)
-
-        local grid_settings = scenegraphs_data.edit_pivot_table.grids.values
-        local grid_widgets = grid_settings.widgets
-        local grid = grid_settings.grid
-        local grid_index = #grid_widgets+1
-
-        grid_widgets[grid_index] = edit_widget
-
-        edit_widget_content.current_grid_name = "values"
-        edit_widget_content.current_grid_index = grid_index
-
-        grid:force_update_list_size()
-
+        local grid_name = "values"
+        edit_pivot_table_functions.change_widget_grid(edit_widget, grid_name)
         return edit_widget
     end
-    functions.dataset_field_item_hotspot_change_function = function(widget, content, style)
+    edit_pivot_table_functions.dataset_field_item_hotspot_change_function = function(widget, content, style)
         local on_pressed = content.on_pressed
         if on_pressed then
-            functions.create_edit_item_widget(widget)
+            edit_pivot_table_functions.create_edit_item_widget_from_dataset_widget(widget)
         end
     end
-    functions.get_scenegraph = function()
+    edit_pivot_table_functions.get_scenegraph = function()
         return scenegraphs_data.edit_pivot_table.scenegraph
     end
-    functions.add_calculated_field_callback = function()
-        local calculated_field_widget = functions.create_calculated_field_edit_item_widget()
+    edit_pivot_table_functions.add_calculated_field_callback = function()
+        local calculated_field_widget = edit_pivot_table_functions.create_calculated_field_edit_item_widget()
     end
-    functions.load_report_template = function(template)
-    end
-
-    local widgets, widgets_by_name = generate_widgets(functions.get_widget_templates())
-    
-    local scenegraph = generate_scenegraph(scenegraph_name, widgets, widgets_by_name)
-
-    update_font_sizes(widgets, scenegraph_name)
-
-    local function get_dataset_field_item_template()
+    edit_pivot_table_functions.get_dataset_field_item_template = function()
         local item_template = {
             passes = {
                 {   content_id = "title",
@@ -7427,7 +7330,6 @@ ui_manager.setup_edit_pivot_table = function()
                         text_horizontal_alignment = "left",
                         offset = {sizes.padding,0,2},
                         default_offset = {sizes.padding,0,2},
-                        --size_addition = {-1*sizes.padding,0},
                         font_type = font_type,
                         font_size = font_size,
                         default_font_size = font_size,
@@ -7479,7 +7381,6 @@ ui_manager.setup_edit_pivot_table = function()
                     value = "content/ui/materials/masks/gradient_horizontal_sides_dynamic_02",
                     change_function = item_gradient_drag_change_function,
                     style = {
-                        --scale_to_material = true,
                         color = {0,0,0,0},
                         offset = {0,0,-2},
                         default_offset = {0,0,-2},
@@ -7491,7 +7392,6 @@ ui_manager.setup_edit_pivot_table = function()
                     value = "content/ui/materials/frames/frame_tile_2px",
                     change_function = item_drag_change_function,
                     style = {
-                        --scale_to_material = true,
                         color = {0,0,0,0},
                         offset_offset = {0,0,0},
                         default_offset = {0,0,0},
@@ -7515,50 +7415,164 @@ ui_manager.setup_edit_pivot_table = function()
         }
         return item_template
     end
+    edit_pivot_table_functions.create_dataset_field_widgets = function(dataset_name)
+        local scenegraph = edit_pivot_table_functions.get_scenegraph()
+        local dataset_template = PDI.dataset_manager.get_dataset_template(dataset_name)
+        local dataset_legend = dataset_template.legend
 
-    local dataset_name = edit_mode_cache.selected_dataset
-    local dataset_template = PDI.dataset_manager.get_dataset_template(dataset_name)
-    local dataset_legend = dataset_template.legend
+        local widget_templates = {}
 
-    local widget_templates = {}
+        for dataset_field_name, dataset_field_type in pairs(dataset_legend) do
+            local item_template = edit_pivot_table_functions.get_dataset_field_item_template()
+            item_template.name = dataset_field_name
+            item_template.passes[1].value = dataset_field_name
+            local localized_dataset_field_type = mod:localize("mloc_field_type_"..dataset_field_type)
+            item_template.passes[2].value = "("..localized_dataset_field_type..")"
+            item_template.passes[2].style.offset[1] = -1*sizes.padding
+            item_template.passes[2].content.value_id = dataset_field_type
 
-    for dataset_field_name, dataset_field_type in pairs(dataset_legend) do
-        local item_template = get_dataset_field_item_template()
-        item_template.name = dataset_field_name
-        item_template.passes[1].value = dataset_field_name
-        local localized_dataset_field_type = mod:localize("mloc_field_type_"..dataset_field_type)
-        item_template.passes[2].value = "("..localized_dataset_field_type..")"
-        item_template.passes[2].style.offset[1] = -1*sizes.padding
-        item_template.passes[2].content.value_id = dataset_field_type
+            widget_templates[#widget_templates+1] = item_template 
+        end
 
-        widget_templates[#widget_templates+1] = item_template 
+        table.sort(widget_templates, function(v1,v2) return v1.name < v2.name end)
+
+        local widgets, widgets_by_name = generate_widgets(widget_templates)
+
+        update_font_sizes(widgets, scenegraph_name)
+
+        for index, widget in ipairs(widgets) do
+            widget.content.size = scenegraph.dataset_fields_item.size
+            widget.passes[4].change_function = callback(edit_pivot_table_functions.dataset_field_item_hotspot_change_function, widget)
+            widget.current_grid_index = index
+        end
+
+        local dataset_fields_grid = generate_grid("dataset_fields", scenegraph_name, widgets, widgets_by_name, "dataset_fields_grid", "down", {0,sizes.padding_half}, "dataset_fields_scrollbar", "dataset_fields_pivot")
+
+        renderers.offscreen_renderer_1.scenegraphs[scenegraph] = widgets
+    end
+    edit_pivot_table_functions.load_report_template_to_edit = function(template)
+        if not edit_mode_cache then
+            return
+        end
+    
+        local template_name = template.template_name or 1
+        local widgets_by_name = scenegraphs_data.edit_report_settings.widgets_by_name
+        local name_input_widget = widgets_by_name.name_input
+        local template_dropdown_widget = widgets_by_name.template_input
+        local dataset_dropdown_widget = widgets_by_name.dataset_input
+        local report_type_dropdown_widget = widgets_by_name.report_type_input
+    
+        name_input_widget.content.input_text = template.name
+    
+        local template_widget_content = template_dropdown_widget.content
+        local template_options_by_id = template_widget_content.options_by_id
+        local template_option = template_options_by_id[template_name]
+        local template_index = template_option and template_option.index
+        local template_id = template_option and template_option.id
+        template_widget_content.selected_index = template_index
+        if edit_mode_cache.mode == "edit" then
+            template_widget_content.set_disabled = true
+        end
+        edit_mode_cache.selected_template = template_id
+    
+        local dataset_name = template.dataset_name
+        local dataset_widget_content = dataset_dropdown_widget.content
+        local dataset_options_by_id = dataset_widget_content.options_by_id
+        local dataset_option = dataset_options_by_id[dataset_name]
+        local dataset_index = dataset_option and dataset_option.index
+        local dataset_id = dataset_option and dataset_option.id
+        dataset_widget_content.selected_index = dataset_index
+        dataset_widget_content.set_disabled = true
+        edit_mode_cache.selected_dataset = dataset_id
+    
+        local report_type_name = "mloc_report_type_pivot_table"
+        local report_type_widget_content = report_type_dropdown_widget.content
+        local report_type_options_by_id = report_type_widget_content.options_by_id
+        local report_type_option = report_type_options_by_id[report_type_name]
+        local report_type_index = report_type_option and report_type_option.index
+        local report_type_id = report_type_option and report_type_option.id
+        report_type_widget_content.selected_index = report_type_index
+        report_type_widget_content.set_disabled = true
+        edit_mode_cache.selected_report_type = report_type_id
+    
+        local dataset_template = PDI.dataset_manager.get_dataset_template(dataset_name)
+        local dataset_legend = dataset_template.legend
+        local column_name = template.columns[1]
+        local column_scenegraph_id = "column_item"
+        local column_type = dataset_legend[column_name]
+        local column_widget = edit_pivot_table_functions.create_edit_item_widget(column_name, column_scenegraph_id, column_type)
+        local column_grid_name = "column"
+        local column_renderer_name = renderer_name_lookup[column_grid_name]
+        edit_pivot_table_functions.add_edit_widget_to_renderer(column_widget, column_renderer_name)
+        edit_pivot_table_functions.change_widget_grid(column_widget, column_grid_name)
+    
+        local rows = template.rows
+        local rows_scenegraph_id = "rows_item"
+        local rows_grid_name = "rows"
+        local rows_renderer_name = renderer_name_lookup[rows_grid_name]
+    
+        for _, row_name in ipairs(rows) do
+            local row_type = dataset_legend[row_name]
+            local rows_widget = edit_pivot_table_functions.create_edit_item_widget(row_name, rows_scenegraph_id, row_type)
+            edit_pivot_table_functions.add_edit_widget_to_renderer(rows_widget, rows_renderer_name)
+            edit_pivot_table_functions.change_widget_grid(rows_widget, rows_grid_name)
+        end
+    
+        local values = template.values
+        local values_scenegraph_id = "values_item"
+        local values_grid_name = "values"
+        local values_renderer_name = renderer_name_lookup[values_grid_name]
+    
+        local values_grid_settings = scenegraphs_data.edit_pivot_table.grids[values_grid_name]
+        local values_grid = values_grid_settings.grid
+    
+        for _, value_template in ipairs(values) do
+            local calculated_field_uuid = "calculated_field_"..PDI.utilities.uuid()
+            local value_name = value_template.field_name or calculated_field_uuid
+            local value_type = dataset_legend[value_name] or "calculated_field"
+            local values_widget = edit_pivot_table_functions.create_edit_item_widget(value_name, values_scenegraph_id, value_type)
+            
+            local values_widget_content = values_widget.content
+            values_widget_content.value_template = value_template
+    
+            local child_widgets = values_widget_content.child_widgets
+            child_widgets.label_input_widget.content.input_text = value_template.label
+            if value_type == "calculated_field" then
+                child_widgets.formula_input_widget.content.input_text = value_template.function_string
+            end
+            child_widgets.format_input_widget.content.selected_id = value_template.format
+            child_widgets.visible_input_widget.content.selected_id = value_template.visible
+    
+            edit_pivot_table_functions.add_edit_widget_to_renderer(values_widget, values_renderer_name)
+            edit_pivot_table_functions.change_widget_grid(values_widget, values_grid_name)
+        end
+        values_grid:force_update_list_size()
+    
+        local data_filter_input_widget = scenegraphs_data.edit_pivot_table.widgets_by_name.data_filter_input
+        local data_filter_input_widget_content = data_filter_input_widget.content
+        local filter_string = template.filters[1]
+        local new_caret_position = Utf8.string_length(filter_string)+1
+        data_filter_input_widget_content.input_text = filter_string
+        data_filter_input_widget_content.caret_position = new_caret_position
+        data_filter_input_widget_content.force_caret_update = true
     end
 
+    local widget_templates = edit_pivot_table_functions.get_widget_templates()
     local widgets, widgets_by_name = generate_widgets(widget_templates)
-
+    local scenegraph = generate_scenegraph(scenegraph_name, widgets, widgets_by_name)
     update_font_sizes(widgets, scenegraph_name)
 
-    renderers.offscreen_renderer_1.scenegraphs[scenegraph] = widgets
+    renderers.offscreen_renderer_1.scenegraphs[scenegraph] = {}
     renderers.offscreen_renderer_2.scenegraphs[scenegraph] = {}
     renderers.offscreen_renderer_3.scenegraphs[scenegraph] = {}
 
-    local dataset_fields_grid = generate_grid("dataset_fields", scenegraph_name, widgets, widgets_by_name, "dataset_fields_grid", "down", {0,sizes.padding_half}, "dataset_fields_scrollbar", "dataset_fields_pivot")
+    local dataset_fields_grid = generate_grid("dataset_fields", scenegraph_name, {}, {}, "dataset_fields_grid", "down", {0,sizes.padding_half}, "dataset_fields_scrollbar", "dataset_fields_pivot")
 
     local column_grid = generate_grid("column", scenegraph_name, {}, {}, "column_grid", "down", {0,sizes.padding_half})
 
     local rows_grid = generate_grid("rows", scenegraph_name, {}, {}, "rows_grid", "down", {0,sizes.padding_half}, "rows_scrollbar", "rows_pivot")
 
     local values_grid = generate_grid("values", scenegraph_name, {}, {}, "values_grid", "down", {0,sizes.padding_half}, "values_scrollbar", "values_pivot")
-
-    for index, widget in ipairs(widgets) do
-        widget.content.size = scenegraph.dataset_fields_item.size
-        widget.passes[4].change_function = callback(functions.dataset_field_item_hotspot_change_function, widget)
-        widget.current_grid_index = index
-    end
-
-    if not edit_mode == "edit" then
-        return
-    end
-
 end
+
 return ui_manager

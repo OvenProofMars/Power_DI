@@ -28,10 +28,10 @@ PdiMainView2.update = function(self, dt, t, input_service)
 	return PdiMainView2.super.update(self, dt, t, input_service)
 end
 PdiMainView2.draw = function (self, dt, t, input_service, layer)
+    PDI.ui_manager.draw_widgets(dt, t)
     PdiMainView2.super.draw(self, dt, t, input_service, layer)
 end
 PdiMainView2._draw_widgets = function(self, dt, t, input_service, ui_renderer, render_settings)
-    PDI.ui_manager.draw_widgets(dt, t)
 	PdiMainView2.super._draw_widgets(self, dt, t, input_service, ui_renderer, render_settings)
 end
 PdiMainView2.on_exit = function(self)

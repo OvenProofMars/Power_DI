@@ -283,6 +283,10 @@ local rpc_remove_buff = function(self, channel_id, game_object_id, server_index)
     local server_index_uuid = unit_uuid.."_"..server_index
     local buff_lookup = buff_lookup_table[server_index_uuid]
 
+    if not buff_lookup then
+        return
+    end
+
     local temp_table = {}
 
     temp_table.event = "remove_buff"
@@ -297,7 +301,6 @@ local rpc_remove_buff = function(self, channel_id, game_object_id, server_index)
     temp_table.from_specialization = buff_lookup.from_specialization
     temp_table.server_index = server_index
 
-    --buff_lookup_table[server_index_uuid] = nil
     output_table[#output_table+1] = temp_table
 end
 local rpc_buff_proc_set_active_time = function(self, channel_id, game_object_id, server_index, activation_frame)
@@ -309,6 +312,10 @@ local rpc_buff_proc_set_active_time = function(self, channel_id, game_object_id,
     local unit_uuid = get_unit_uuid(unit)
     local server_index_uuid = unit_uuid.."_"..server_index
     local buff_lookup = buff_lookup_table[server_index_uuid]
+
+    if not buff_lookup then
+        return
+    end
 
     local temp_table = {}
 
@@ -336,6 +343,10 @@ local rpc_buff_set_start_time = function(self, channel_id, game_object_id, serve
     local unit_uuid = get_unit_uuid(unit)
     local server_index_uuid = unit_uuid.."_"..server_index
     local buff_lookup = buff_lookup_table[server_index_uuid]
+
+    if not buff_lookup then
+        return
+    end
 
     local temp_table = {}
 

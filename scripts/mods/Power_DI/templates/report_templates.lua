@@ -27,9 +27,9 @@ report_templates = {
                 format = "number"
             },
             {
-                field_name = "critical_hit",
+                field_name = "damage_profile_name",
                 type = "count",
-                label = "critical_hit_count",
+                label = "hit_count",
                 visible = false,
                 format = "none"
             },
@@ -37,13 +37,6 @@ report_templates = {
                 field_name = "critical_hit",
                 type = "sum",
                 label = "critical_hit_sum",
-                visible = false,
-                format = "none"
-            },
-            {
-                field_name = "weakspot_hit",
-                type = "count",
-                label = "weakspot_hit_count",
                 visible = false,
                 format = "none"
             },
@@ -59,14 +52,14 @@ report_templates = {
                 label = "Crit percent",
                 visible = true,
                 format = "percentage",
-                function_string = "critical_hit_sum/critical_hit_count"
+                function_string = "critical_hit_sum/hit_count"
             },
             {
                 type = "calculated_field",
                 label = "Weakspot percent",
                 visible = true,
                 format = "percentage",
-                function_string = "weakspot_hit_sum/weakspot_hit_count"
+                function_string = "weakspot_hit_sum/hit_count"
             },
         },
         filters = {

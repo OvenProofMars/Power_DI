@@ -20,7 +20,10 @@
         "Clipboard",
         "Keyboard",
         "Log",
-        "RESOLUTION_LOOKUP"
+        "RESOLUTION_LOOKUP",
+        "Application",
+        "ShadingEnvironment",
+        "World"
     ],
     "Lua.diagnostics.disable": [
         "undefined-field"
