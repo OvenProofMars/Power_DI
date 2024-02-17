@@ -906,8 +906,10 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
     local scenegraph_templates = {}
     scenegraph_templates.main_window = {
         screen = {
-            scale = "fit",
-            size = sizes.screen_size,
+            scale = "aspect_ratio",
+            size = sizes.screen,
+            vertical_alignment = "center",
+            horizontal_alignment = "center",
         },
         main_window = {
             parent = "screen",
@@ -997,8 +999,10 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
     local session_item_size = get_block_size(6,2,1,sizes.scrollbar_width)
     scenegraph_templates.sessions = {
         screen = {
-            scale = "fit",
-            size = sizes.screen_size,
+            scale = "aspect_ratio",
+            size = sizes.screen,
+            vertical_alignment = "center",
+            horizontal_alignment = "center",
         },
         header_anchor = {
             parent = "screen",
@@ -1144,8 +1148,10 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
     local report_item_size = sizes.report_item_size
     scenegraph_templates.reports = {
         screen = {
-            scale = "fit",
-            size = sizes.screen_size,
+            scale = "aspect_ratio",
+            size = sizes.screen,
+            vertical_alignment = "center",
+            horizontal_alignment = "center",
         },
         report_anchor = {
             parent = "screen",
@@ -1395,8 +1401,10 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
     }
     scenegraph_templates.report_rows_order = {
         screen = {
-            scale = "fit",
-            size = sizes.screen_size,
+            scale = "aspect_ratio",
+            size = sizes.screen,
+            vertical_alignment = "center",
+            horizontal_alignment = "center",
         },
         header_anchor = {
             parent = "screen",
@@ -1493,8 +1501,10 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
 
     scenegraph_templates.pivot_table = {
         screen = {
-            scale = "fit",
-            size = sizes.screen_size,
+            scale = "aspect_ratio",
+            size = sizes.screen,
+            vertical_alignment = "center",
+            horizontal_alignment = "center",
         },
         anchor = {
             parent = "screen",
@@ -1672,8 +1682,8 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
 
     scenegraph_templates.edit_report_settings = {
         screen = {
-            scale = "fit",
-            size = sizes.screen_size,
+            scale = "aspect_ratio",
+            size = sizes.screen,
         },
         header_anchor = {
             parent = "screen",
@@ -1865,7 +1875,7 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
     scenegraph_templates.edit_pivot_table = {
         screen = {
             scale = "fit",
-            size = sizes.screen_size,
+            size = sizes.screen,
         },
         header_anchor = {
             parent = "screen",
