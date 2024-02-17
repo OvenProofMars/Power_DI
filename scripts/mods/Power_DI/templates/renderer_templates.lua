@@ -31,7 +31,7 @@ local renderer_templates = {}
 
 renderer_templates.default_renderer = {
     name = "default_renderer",
-    world_layer = world_layer,
+    world_layer = world_layer + 1,
     viewport_type = "overlay",
     viewport_layer = viewport_layer
 }

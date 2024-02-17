@@ -7581,6 +7581,13 @@ ui_manager.setup_edit_pivot_table = function()
     local scenegraph = generate_scenegraph(scenegraph_name, widgets, widgets_by_name)
     update_font_sizes(widgets, scenegraph_name)
 
+    -- for _, widget in ipairs(widgets) do
+    --     local scenegraph_id = widget.scenegraph_id
+    --     local scenegraph_item = scenegraph[scenegraph_id]
+    --     local scenegraph_item_size = table.clone(scenegraph_item.size)
+    --     widget.content.size = scenegraph_item_size
+    -- end
+
     renderers.offscreen_renderer_1.scenegraphs[scenegraph] = {}
     renderers.offscreen_renderer_2.scenegraphs[scenegraph] = {}
     renderers.offscreen_renderer_3.scenegraphs[scenegraph] = {}

@@ -1,3 +1,5 @@
+local DMF = get_mod("DMF")
+
 local UIRenderer = require("scripts/managers/ui/ui_renderer")
 local _math_max = math.max
 local _math_min = math.min
@@ -313,13 +315,16 @@ local CustomMultiLineTextInput = {
 			local font_size = display_text_style.font_size
 
 			local text_hight = _ui_renderer_text_height(ui_renderer, new_input_text, font_type, font_size)
-			local max_text_width = size[1] - 1
+			local max_text_width = (size[1] * ui_renderer.inverse_scale) - 1
 
 			if display_text_style.size_addition then
 				max_text_width = max_text_width + display_text_style.size_addition[1]
 			end
 
 			local rows = _ui_renderer_word_wrap(ui_renderer, new_input_text, font_type, font_size, max_text_width)
+
+			DMF:dump(rows)
+
 			local previous_compound_row_length = 0
 			local current_row = 1
 
