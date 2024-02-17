@@ -55,11 +55,16 @@ Formulas are used for both the calculated fields and the data filter. Formulas u
 
 Available options:
 
-`=` equal, `~` not equal, `>` greater than, `<` less than, `or` or, `and` and, `(` bracket open, `)` bracket close, `""` string
-
- A | B  
- --- | --- 
- `=` | equal
+Symbol | Function
+`=` | equal
+`~` | not equal
+`>` | greater than
+`<` | less than 
+`or` | or
+`and` | and
+`(` | bracket open
+`)` | bracket close
+`""` | string
 
 Example:
 
