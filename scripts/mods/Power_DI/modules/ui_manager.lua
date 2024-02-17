@@ -5460,12 +5460,14 @@ ui_manager.setup_pivot_table = function()
         local current_level_index_array = {}
         local last_child_index
 
+        local utilities_localize = PDI.utilities.localize
+
         for index, value in ipairs(input_table) do
             local current_index = #row_widget_templates+1
             last_child_index = current_index
             current_level_index_array[#current_level_index_array+1] = current_index
             local item_template = get_rows_item_template()
-            local row_name = value.name
+            local row_name = utilities_localize(value.name)
           
             local toggle_row_callback = callback(toggle_row, current_index)
 
