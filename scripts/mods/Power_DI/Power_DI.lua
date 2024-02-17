@@ -73,7 +73,6 @@ end
 
 --Trigger for updating settings--
 function mod.on_setting_changed(setting_id)
-    print(setting_id)
     local new_value = mod:get(setting_id)
     local setting_function = setting_functions[setting_id]
     if setting_function then
