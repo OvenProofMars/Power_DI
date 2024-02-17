@@ -336,8 +336,8 @@ return {
 		["zh-cn"] = "数据筛选器",
 	},
 	mloc_add_calculated_field = {
-		en = "Add calculated_field",
-		["zh-cn"] = "添加计算字段 calculated_field",
+		en = "Add calculated field",
+		["zh-cn"] = "添加计算字段 calculated field",
 	},
 	mloc_edit_item_label = {
 		en = "Label:",

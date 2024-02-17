@@ -53,6 +53,7 @@ local packages_array = {
     "packages/ui/views/store_view/store_view",
     "packages/ui/hud/mission_objective_popup/mission_objective_popup",
     "packages/ui/hud/interaction/interaction",
+    "packages/ui/views/main_menu_view/main_menu_view",
 }
 
 local edit_pivot_table_functions = {}
