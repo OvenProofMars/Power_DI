@@ -17,7 +17,7 @@ local circumstance_templates = require("scripts/settings/circumstance/circumstan
 local ScrollbarPassTemplates = require("scripts/ui/pass_templates/scrollbar_pass_templates")
 local DropdownPassTemplates = require("scripts/ui/pass_templates/dropdown_pass_templates")
 local TextInputPassTemplates = require("scripts/ui/pass_templates/text_input_pass_templates")
-local CustomMultiLineTextInput = mod:io_dofile("Power_DI/scripts/mods/Power_DI/views/widgets/custom_multi_line_text_input")
+local CustomMultiLineTextInput = mod:io_dofile("Power_DI/scripts/mods/Power_DI/templates/widgets/custom_multi_line_text_input")
 
 local input_manager = Managers.input
 local input_service = input_manager and input_manager:get_input_service("View")
