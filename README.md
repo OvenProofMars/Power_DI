@@ -57,8 +57,9 @@ Available options:
 
 `=` equal, `~` not equal, `>` greater than, `<` less than, `or` or, `and` and, `(` bracket open, `)` bracket close, `""` string
 
---- | --- 
-`=` | equal
+ A | B  
+ --- | --- 
+ `=` | equal
 
 Example:
 
