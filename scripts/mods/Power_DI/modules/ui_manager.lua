@@ -4114,13 +4114,18 @@ ui_manager.setup_sessions = function()
 
             if circumstance then
                 local circumstance_template = circumstance_templates[circumstance]
-                item_template.passes[6].style.visible = true
-                item_template.passes[7].style.visible = true
-                item_template.passes[8].style.visible = true
-                item_template.passes[9].style.visible = true
-                item_template.passes[9].value = Localize(circumstance_template.ui.display_name)
-                item_template.passes[10].style.visible = true
-                item_template.passes[10].value = circumstance_template.ui.icon
+                local circumstance_template_ui = circumstance_template.ui
+                if circumstance_template_ui then
+                    local display_name = circumstance_template_ui.display_name
+                    local icon = circumstance_template_ui.icon
+                    item_template.passes[6].style.visible = true
+                    item_template.passes[7].style.visible = true
+                    item_template.passes[8].style.visible = true
+                    item_template.passes[9].style.visible = true
+                    item_template.passes[9].value = Localize(display_name)
+                    item_template.passes[10].style.visible = true
+                    item_template.passes[10].value = icon
+                end
             end
             
             for i = 1, session.difficulty, 1 do
