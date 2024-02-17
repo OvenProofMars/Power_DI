@@ -56,6 +56,7 @@ Formulas are used for both the calculated fields and the data filter. Formulas u
 Available options:
 
 Symbol | Function
+ --- | ---
 `=` | equal
 `~` | not equal
 `>` | greater than
