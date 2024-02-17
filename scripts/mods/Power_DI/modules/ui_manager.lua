@@ -1684,6 +1684,8 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
         screen = {
             scale = "aspect_ratio",
             size = sizes.screen,
+            vertical_alignment = "center",
+            horizontal_alignment = "center",
         },
         header_anchor = {
             parent = "screen",
@@ -1874,8 +1876,10 @@ local function generate_scenegraph (scenegraph_name, widgets, widgets_by_name)
     local values_block_size = {rows_block_size[1], rows_block_size[2] + 2*sizes.header_3_height + 2*sizes.padding}
     scenegraph_templates.edit_pivot_table = {
         screen = {
-            scale = "fit",
+            scale = "aspect_ratio",
             size = sizes.screen,
+            vertical_alignment = "center",
+            horizontal_alignment = "center",
         },
         header_anchor = {
             parent = "screen",
