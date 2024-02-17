@@ -3230,12 +3230,16 @@ ui_manager.open_ui = function(instance)
 
     if selected_session_id == "local" and not in_game then
         local sessions_index = PDI.data.save_data.sessions_index
-        selected_session_id = sessions_index[#sessions_index]
-        load_session = true
-    else
-        ui_manager.setup_main_window()
-        ui_manager.setup_reports()
+        local most_recent_session_id = sessions_index[#sessions_index]
+        if most_recent_session_id then
+            selected_session_id = most_recent_session_id
+            load_session = true
+            return
+        end
     end
+
+    ui_manager.setup_main_window()
+    ui_manager.setup_reports()
 end
 --Function to handle closing the UI
 ui_manager.close_ui = function()
