@@ -73,7 +73,7 @@ return {
                 tooltip = "max_cycles_tooltip",
                 type = "numeric",
                 default_value = 1000,
-                range = {0, 10000},
+                range = {100, 10000},
                 unit_text = "cycles",
                 decimals_number = 0
             },
