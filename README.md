@@ -57,18 +57,17 @@ Available options:
 
 Symbol | Function
  --- | ---
-`=` | equal
-`~` | not equal
-`>` | greater than
-`<` | less than 
-`or` | or
-`and` | and
-`(` | bracket open
-`)` | bracket close
-`""` | string
+`=`|equal
+`~`|not equal
+`>`|greater than
+`<`|less than 
+`or`|or
+`and`|and
+`(`|bracket open
+`)`|bracket close
+`""`|string
 
 Example:
-
 `attacker_type = "Player" and damage > 0`
 
 ## Settings
