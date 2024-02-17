@@ -57,9 +57,12 @@ Available options:
 
 `=` equal, `~` not equal, `>` greater than, `<` less than, `or` or, `and` and, `(` bracket open, `)` bracket close, `""` string
 
+--- | --- 
+`=` | equal
+
 Example:
 
-field1 = "value1" and field2 > 5
+`attacker_type = "Player" and damage > 0`
 
 ## Settings
 ![Settings](https://i.imgur.com/OGeBBM7.png "Settings")
