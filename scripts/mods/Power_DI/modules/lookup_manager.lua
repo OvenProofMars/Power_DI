@@ -1,5 +1,4 @@
 local mod = get_mod("Power_DI")
-local DMF = get_mod("DMF")
 local PDI, utilities, master_data_items_cache
 
 local lookup_manager = {}

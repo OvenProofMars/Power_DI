@@ -1,5 +1,4 @@
 local mod = get_mod("Power_DI")
-local DMF = get_mod("DMF")
 local PDI
 local dataset_manager = {}
 

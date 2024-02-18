@@ -1,5 +1,4 @@
 local mod = get_mod("Power_DI")
-local DMF = get_mod("DMF")
 
 local view_templates = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\templates\view_templates]])
 local renderer_templates = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\templates\renderer_templates]])

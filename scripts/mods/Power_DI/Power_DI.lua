@@ -1,8 +1,8 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 local PDI = {}
-local MasterItems = require("scripts/backend/master_items")
-mod.version = "0.9.3"
+--local MasterItems = require("scripts/backend/master_items")
+mod.version = "0.9.4"
 mod.cache = {}
 PDI.promise = require("scripts/foundation/utilities/promise")
 PDI.utilities = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\utilities]])

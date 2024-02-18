@@ -1,10 +1,9 @@
 local mod = get_mod("Power_DI")
-local DMF = get_mod("DMF")
 local PDI, user_reports
 local report_manager = {}
 report_manager.registered_reports = {}
 local legend_cache
-local blank_value = "nil"
+--local blank_value = "nil"
 
 --Generate the filter function from a string, function will be run in separate environment--
 local function generate_filter_function (template)

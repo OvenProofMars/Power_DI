@@ -1,6 +1,3 @@
-local mod = get_mod("Power_DI")
-local DMF = get_mod("DMF")
-
 PdiMainView = class("PDIMainView", "BaseView")
 
 local PDI, ui_manager

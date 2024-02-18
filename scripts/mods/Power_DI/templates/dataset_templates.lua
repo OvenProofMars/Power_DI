@@ -1,6 +1,3 @@
-local mod = get_mod("Power_DI")
-local DMF = get_mod("DMF")
-
 local ItemUtils = require("scripts/utilities/items")
 
 local dataset_templates

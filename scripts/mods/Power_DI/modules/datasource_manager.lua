@@ -1,5 +1,5 @@
 local mod = get_mod("Power_DI")
-local PDI, utilities
+local PDI
 
 --Datasource manager data structure--
 local datasource_manager = {}
@@ -17,7 +17,6 @@ end
 --Initializing the component, loads and registers the datasource templates--
 datasource_manager.init = function(input_table)
     PDI = input_table
-    utilities = PDI.utilities
     local return_value = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\templates\datasource_templates]])
     local datasource_templates = return_value.datasource_templates
     local data_locations = return_value.data_locations
@@ -109,7 +108,6 @@ datasource_manager.add_datasources = function(session)
 
     for _, datasource_template in pairs(datasource_manager.registered_datasources) do
         local datasource_name = datasource_template.name
-        --local data_structure = utilities.copy(datasource_template.data_structure)
         session.datasources[datasource_name] = {}
     end
 end

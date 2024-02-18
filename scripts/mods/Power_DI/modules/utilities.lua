@@ -8,6 +8,8 @@ local allowed_types_for_saving = {"string","boolean","number","Vector3","Vector3
 
 local utilities = {}
 
+utilities.DMF = DMF
+
 
 utilities.init = function(input_table)
     PDI = input_table
@@ -205,14 +207,6 @@ end
 
 --Function to recreate the meta table for a master item--
 utilities.set_master_item_meta_table = function(item_instance)
-    -- local item_instance = {
-    --     __gear = gear,
-    --     __gear_id = gear_id,
-    --     __master_item = master_item,
-    --     __master_ver = master_version,
-    --     __is_preview_item = false,
-    -- }
-
     setmetatable(item_instance, {
         __index = function (t, field_name)
             local master_ver = rawget(item_instance, "__master_ver")

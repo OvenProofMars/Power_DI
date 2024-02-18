@@ -1,6 +1,5 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
-local MasterItems = require("scripts/backend/master_items")
 local PDI
 local auto_save_setting = mod:get("auto_save")
 local auto_save_interval = mod:get("auto_save_interval")
