@@ -132,7 +132,7 @@ local player_status = function(data)
                     v.player = player_profile_lookup and player_profile_lookup.character_id
                     
                     local state_name = v.state_name
-                    v.state_category = player_state_categories[state_name] or "Other"
+                    v.state_category = player_state_categories[state_name] or "mloc_other"
                     v.state_name = string.gsub(state_name,"_", " ")
                     v.player_unit_uuid = nil
                     v.player_unit_position = nil
@@ -396,7 +396,7 @@ end
 
 local player_abilities = function(data)
     local PlayerProfiles = {}
-    local player_ability_types_lookup = {combat_ability = "Combat ability", grenade_ability = "Blitz ability"}
+    local player_ability_types_lookup = {combat_ability = "mloc_combat_ability", grenade_ability = "mloc_blitz_ability"}
     data:append_dataset("PlayerAbilities")
     :next(
         function()
@@ -416,9 +416,9 @@ local player_abilities = function(data)
 
                 local event_type
                 if v.charge_delta > 0 then
-                    event_type = "Charge gained"
+                    event_type = "mloc_ability_charge_gained"
                 elseif v.charge_delta < 0 then
-                    event_type = "Charge used"
+                    event_type = "mloc_ability_charge_used"
                 end
                 v.event_type = event_type
                 local ability_type = v.ability_type
@@ -439,7 +439,7 @@ end
 local player_buffs = function(data)
     local PlayerProfiles = {}
     local item_slot_names = {"slot_primary", "slot_secondary", "slot_attachment_1", "slot_attachment_2", "slot_attachment_3"}
-    local item_types_lookup = {WEAPON_MELEE = "Melee weapon", WEAPON_RANGED = "Ranged weapon", GADGET = "Curio"}
+    local item_types_lookup = {WEAPON_MELEE = "mloc_melee_weapon", WEAPON_RANGED = "mloc_ranged_weapon", GADGET = "mloc_curio"}
     local player_items = {}
     local master_items = data.lookup_proxies.MasterItems
     local weapon_trait_templates = data.lookup_proxies.weapon_trait_templates

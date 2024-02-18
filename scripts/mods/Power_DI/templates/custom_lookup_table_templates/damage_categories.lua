@@ -1,7 +1,7 @@
 local damage_categories = {}
 
 local damage_profile_templates = {
-    ["Melee weapon damage"] = {
+    ["mloc_melee_weapon_damage"] = {
         require("scripts/settings/equipment/weapon_templates/chain_swords/settings_templates/chain_sword_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/chain_swords/settings_templates/chain_sword_2h_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/chain_axes/settings_templates/chain_axe_damage_profile_templates"),
@@ -20,7 +20,7 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/ninjafencer_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/luggable_damage_profile_templates"),
     },
-    ["Ranged weapon damage"] = {
+    ["mloc_ranged_weapon_damage"] = {
         require("scripts/settings/equipment/weapon_templates/force_staffs/settings_templates/force_staff_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/flamers/settings_templates/flamer_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/spraynpray_damage_profile_templates"),
@@ -41,26 +41,26 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/killshot_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/tank_damage_profile_templates"),
     },
-    ["Blitz damage"] = {
+    ["mloc_blitz_damage"] = {
         require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/psyker_smite_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/smiter_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/zealot_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/demolitions_damage_profile_templates"),
     },
-    ["Combat ability damage"] = {
+    ["mloc_combat_ability_damage"] = {
         require("scripts/settings/damage/damage_profiles/ability_damage_profile_templates"),
     },
-    ["Condition damage"] = {
+    ["mloc_debuff_damage"] = {
         require("scripts/settings/damage/damage_profiles/buff_damage_profile_templates"),
     },
     ["Environmental damage"] = {
         require("scripts/settings/damage/damage_profiles/prop_damage_profile_templates"),
     },
-    ["Minion"] = {
+    ["mloc_minion"] = {
         require("scripts/settings/damage/damage_profiles/minion_damage_profile_templates"),
     },
-    ["Other"] = {
+    ["mloc_other"] = {
         require("scripts/settings/damage/damage_profiles/common_damage_profile_templates"),
     },
 }

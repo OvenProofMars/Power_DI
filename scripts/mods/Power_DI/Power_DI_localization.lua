@@ -1,4 +1,5 @@
 return {
+	--Mod settings
 	mod_description = {
 		en = "Framework for collection, transforming, and displaying game statistics",
 		["zh-cn"] = "收集、转换和显示游戏统计数据的框架",
@@ -87,6 +88,8 @@ return {
 		en = "YYYY/MM/DD",
 		["zh-cn"] = "年/月/日",
 	},
+
+	--Static UI
 	mloc_sessions = {
 		en = "Sessions",
 		["zh-cn"] = "会话",
@@ -155,46 +158,6 @@ return {
 		en = "Sessions",
 		["zh-cn"] = "会话",
 	},
-	mloc_attack_report = {
-		en = "Attack report",
-		["zh-cn"] = "攻击报告",
-	},
-	mloc_defense_report = {
-		en = "Defense report",
-		["zh-cn"] = "防御报告",
-	},
-	mloc_player_status_report = {
-		en = "Player status report",
-		["zh-cn"] = "玩家状态报告",
-	},
-	mloc_player_interactions_report = {
-		en = "Player interactions report",
-		["zh-cn"] = "玩家交互报告",
-	},
-	mloc_player_tagging_report = {
-		en = "Tagging report",
-		["zh-cn"] = "标记报告",
-	},
-	mloc_player_suppression_report = {
-		en = "Player suppression report",
-		["zh-cn"] = "玩家压制报告",
-	},
-	mloc_player_blocked_report = {
-		en = "Player blocked report",
-		["zh-cn"] = "玩家格挡报告",
-	},
-	mloc_player_slots_report = {
-		en = "Player slots report",
-		["zh-cn"] = "玩家装备栏报告",
-	},
-	mloc_player_abilities_report = {
-		en = "Player abilities report",
-		["zh-cn"] = "玩家技能报告",
-	},
-	mloc_player_buffs_report = {
-		en = "Player buffs report",
-		["zh-cn"] = "玩家状态效果报告",
-	},
 	mloc_none = {
 		en = "None",
 		["zh-cn"] = "无",
@@ -226,42 +189,6 @@ return {
 	mloc_report_type_name = {
 		en = "Report type:",
 		["zh-cn"] = "报告类型：",
-	},
-	mloc_dataset_attack_reports = {
-		en = "Attack reports",
-		["zh-cn"] = "攻击报告",
-	},
-	mloc_dataset_player_status = {
-		en = "Player status",
-		["zh-cn"] = "玩家状态",
-	},
-	mloc_dataset_player_interactions = {
-		en = "Player interactions",
-		["zh-cn"] = "玩家交互",
-	},
-	mloc_dataset_tagging = {
-		en = "Tagging",
-		["zh-cn"] = "标记",
-	},
-	mloc_dataset_player_supression = {
-		en = "Player suppression",
-		["zh-cn"] = "玩家压制",
-	},
-	mloc_dataset_blocked_attacks = {
-		en = "Blocked attacks",
-		["zh-cn"] = "格挡攻击",
-	},
-	mloc_dataset_slot_events = {
-		en = "Slots",
-		["zh-cn"] = "装备栏",
-	},
-	mloc_dataset_player_abilities = {
-		en = "Player abilities",
-		["zh-cn"] = "玩家技能",
-	},
-	mloc_dataset_player_buffs = {
-		en = "Player buffs",
-		["zh-cn"] = "玩家状态效果",
 	},
 	mloc_report_type_pivot_table = {
 		en = "Pivot table",
@@ -372,7 +299,120 @@ return {
 		["zh-cn"] = "可见：",
 	},
 
-	--Lookup table values
+	--Report template names
+	mloc_attack_report = {
+		en = "Attack report",
+		["zh-cn"] = "攻击报告",
+	},
+	mloc_defense_report = {
+		en = "Defense report",
+		["zh-cn"] = "防御报告",
+	},
+	mloc_player_status_report = {
+		en = "Player status report",
+		["zh-cn"] = "玩家状态报告",
+	},
+	mloc_player_interactions_report = {
+		en = "Player interactions report",
+		["zh-cn"] = "玩家交互报告",
+	},
+	mloc_player_tagging_report = {
+		en = "Tagging report",
+		["zh-cn"] = "标记报告",
+	},
+	mloc_player_suppression_report = {
+		en = "Player suppression report",
+		["zh-cn"] = "玩家压制报告",
+	},
+	mloc_player_blocked_report = {
+		en = "Player blocked report",
+		["zh-cn"] = "玩家格挡报告",
+	},
+	mloc_player_slots_report = {
+		en = "Player slots report",
+		["zh-cn"] = "玩家装备栏报告",
+	},
+	mloc_player_abilities_report = {
+		en = "Player abilities report",
+		["zh-cn"] = "玩家技能报告",
+	},
+	mloc_player_buffs_report = {
+		en = "Player buffs report",
+		["zh-cn"] = "玩家状态效果报告",
+	},
+
+	--Dataset template names
+	mloc_dataset_attack_reports = {
+		en = "Attack reports",
+		["zh-cn"] = "攻击报告",
+	},
+	mloc_dataset_player_status = {
+		en = "Player status",
+		["zh-cn"] = "玩家状态",
+	},
+	mloc_dataset_player_interactions = {
+		en = "Player interactions",
+		["zh-cn"] = "玩家交互",
+	},
+	mloc_dataset_tagging = {
+		en = "Tagging",
+		["zh-cn"] = "标记",
+	},
+	mloc_dataset_player_supression = {
+		en = "Player suppression",
+		["zh-cn"] = "玩家压制",
+	},
+	mloc_dataset_blocked_attacks = {
+		en = "Blocked attacks",
+		["zh-cn"] = "格挡攻击",
+	},
+	mloc_dataset_slot_events = {
+		en = "Slots",
+		["zh-cn"] = "装备栏",
+	},
+	mloc_dataset_player_abilities = {
+		en = "Player abilities",
+		["zh-cn"] = "玩家技能",
+	},
+	mloc_dataset_player_buffs = {
+		en = "Player buffs",
+		["zh-cn"] = "玩家状态效果",
+	},
+
+	--Custom lookup table values
+	mloc_other = {
+		en = "Other",
+		--["zh-cn"] = "",
+	},
+	mloc_melee_weapon_damage = {
+		en = "Melee weapon damage",
+		--["zh-cn"] = "",
+	},
+	mloc_ranged_weapon_damage = {
+		en = "Ranged weapon damage",
+		--["zh-cn"] = "",
+	},
+	mloc_blitz_damage = {
+		en = "Blitz damage",
+		--["zh-cn"] = "",
+	},
+	mloc_combat_ability_damage = {
+		en = "Combat ability damage",
+		--["zh-cn"] = "",
+	},
+	mloc_debuff_damage = {
+		--Note: damage from debuffs such as bleeding, burning ect
+		en = "Condition damage",
+		--["zh-cn"] = "",
+	},
+	mloc_environmental_damage = {
+		en = "Environmental damage",
+		--["zh-cn"] = "",
+	},
+	mloc_minion = {
+		en = "Minion",
+		--["zh-cn"] = "",
+	},
 	mloc_chaos_faction = {
 		en = "Chaos",
 		--["zh-cn"] = "",
@@ -457,6 +497,39 @@ return {
 		en = "Shooter",
 		--["zh-cn"] = "",
 	},
+	mloc_disabled_player_state = {
+		en = "Disabled",
+		--["zh-cn"] = "",
+	},
+	mloc_movement_player_state = {
+		en = "Movement",
+		--["zh-cn"] = "",
+	},
+	mloc_combat_ability = {
+		en = "Combat ability",
+		--["zh-cn"] = "",
+	},
+	mloc_blitz_ability = {
+		en = "Blitz ability",
+		--["zh-cn"] = "",
+	},
+	mloc_ability_charge_gained = {
+		en = "Charge gained",
+		--["zh-cn"] = "",
+	},
+	mloc_melee_weapon = {
+		en = "Melee weapon",
+		--["zh-cn"] = "",
+	},
+	mloc_ranged_weapon = {
+		en = "Ranged weapon",
+		--["zh-cn"] = "",
+	},
+	mloc_curio = {
+		en = "Curio",
+		--["zh-cn"] = "",
+	},
+
 	--Report template value labels
 	mloc_damage = {
 		en = "Damage",
@@ -510,5 +583,4 @@ return {
 		en = "Buff events",
 		--["zh-cn"] = "",
 	},
-
 }
