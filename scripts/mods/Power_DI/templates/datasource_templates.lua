@@ -72,7 +72,6 @@ local rpc_player_blocked_attack = function (self, channel_id, unit_id, attacking
 end
 local rpc_player_suppressed = function (self, channel_id, unit_id, num_suppression_hits)
     local output_table = data_locations.PlayerSuppressionExtension()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local player_unit = unit_spawner_manager:unit(unit_id)
     
@@ -88,7 +87,6 @@ end
 local rpc_interaction_started = function (self, channel_id, unit_id, is_level_unit, game_object_id)
     local output_table = data_locations.InteracteeSystem()
     local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactor_unit = unit_spawner_manager:unit(game_object_id, false)
     local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
@@ -113,7 +111,6 @@ end
 local rpc_interaction_stopped = function (self, channel_id, unit_id, is_level_unit, result)
     local output_table = data_locations.InteracteeSystem()
     local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
     local interactor_unit = active_interactions[unit_id]
@@ -139,7 +136,6 @@ end
 local rpc_interaction_set_missing_player = function (self, channel_id, unit_id, is_level_unit, is_missing)
     local output_table = data_locations.InteracteeSystem()
     local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactor_unit = active_interactions[unit_id]
     local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
@@ -159,8 +155,6 @@ local rpc_interaction_set_missing_player = function (self, channel_id, unit_id, 
 end
 local rpc_interaction_hot_join = function (self, channel_id, unit_id, is_level_unit, state, is_used, active_type_id)
     local output_table = data_locations.InteracteeSystem()
-    local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local active_type = active_type_id ~= 0 and NetworkLookup.interaction_type_strings[active_type_id] or nil
     local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
@@ -178,12 +172,10 @@ local rpc_interaction_hot_join = function (self, channel_id, unit_id, is_level_u
 end
 local rpc_player_unit_enter_coherency = function (self, channel_id, game_object_id, enter_game_object_id)
     local output_table = data_locations.HuskCoherencyExtension()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local player_unit = unit_spawner_manager:unit(game_object_id)
     local coherency_unit = unit_spawner_manager:unit(enter_game_object_id)
     local coherency_player_unit = managers_state.player_unit_spawn:owner(coherency_unit).player_unit
-    local coherency_player_unit_id = unit_spawner_manager:game_object_id(coherency_player_unit)
 
     local temp_table = {}
 
@@ -198,12 +190,10 @@ local rpc_player_unit_enter_coherency = function (self, channel_id, game_object_
 end
 local rpc_player_unit_exit_coherency = function (self, channel_id, game_object_id, exit_game_object_id)
     local output_table = data_locations.HuskCoherencyExtension()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local player_unit = unit_spawner_manager:unit(game_object_id)
     local coherency_unit = unit_spawner_manager:unit(exit_game_object_id)
     local coherency_player_unit = managers_state.player_unit_spawn:owner(coherency_unit).player_unit
-    local coherency_player_unit_id = unit_spawner_manager:game_object_id(coherency_player_unit)
 
     local temp_table = {}
 
@@ -324,7 +314,6 @@ local rpc_buff_proc_set_active_time = function(self, channel_id, game_object_id,
     temp_table.from_specialization = buff_lookup.from_specialization
     temp_table.activation_frame = activation_frame
 
-    --buff_lookup_table[server_index_uuid] = nil
     output_table[#output_table+1] = temp_table
 end
 local rpc_buff_set_start_time = function(self, channel_id, game_object_id, server_index, activation_frame)
@@ -355,16 +344,13 @@ local rpc_buff_set_start_time = function(self, channel_id, game_object_id, serve
     temp_table.from_specialization = buff_lookup.from_specialization
     temp_table.activation_frame = activation_frame
 
-    --buff_lookup_table[server_index_uuid] = nil
     output_table[#output_table+1] = temp_table
 end
 local rpc_player_collected_materials = function(self, channel_id, peer_id, material_type_lookup, material_size_lookup)
     local output_table = data_locations.PickupSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local player = Managers.player:player(peer_id, 1)
     local player_unit = player.player_unit
-    local player_unit_id = unit_spawner_manager:game_object_id(player_unit)
     
     local temp_table = {}
 
@@ -422,7 +408,6 @@ local add_network_unit = function(self, unit, game_object_id, is_husk)
 end
 local rpc_start_boss_encounter = function(self, channel_id, unit_id)
     local output_table = data_locations.BossSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local boss_unit = unit_spawner_manager:unit(unit_id)
 
@@ -437,7 +422,6 @@ end
 local rpc_start_pickup_animation = function (self, channel_id, pickup_id, pickup_is_level_unit, end_id, end_is_level_unit)
     local output_table = data_locations.PickupAnimationSystem()
 	local unit_spawner_manager = managers_state.unit_spawner
-    local game_session = managers_state.game_session:game_session()
 	local pickup_unit = unit_spawner_manager:unit(pickup_id, pickup_is_level_unit)
 	local player_unit = unit_spawner_manager:unit(end_id, end_is_level_unit)
 
@@ -454,7 +438,6 @@ local rpc_start_pickup_animation = function (self, channel_id, pickup_id, pickup
 end
 local rpc_start_place_animation = function (self, channel_id, pickup_id, pickup_is_level_unit, end_id, end_is_level_unit)
     local output_table = data_locations.PickupAnimationSystem()
-    local game_session = managers_state.game_session:game_session()
 	local unit_spawner_manager = managers_state.unit_spawner
 	local pickup_unit = unit_spawner_manager:unit(pickup_id, pickup_is_level_unit)
 	local player_unit = unit_spawner_manager:unit(end_id, end_is_level_unit)
@@ -472,7 +455,6 @@ local rpc_start_place_animation = function (self, channel_id, pickup_id, pickup_
 end
 local rpc_luggable_socket_luggable = function (self, channel_id, socket_id, socket_is_level_unit, socketed_id, socketed_is_level_unit)
     local output_table = data_locations.LuggableSocketSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
 	local socket_unit = unit_spawner_manager:unit(socket_id, socket_is_level_unit)
 	local socketed_unit = unit_spawner_manager:unit(socketed_id, socketed_is_level_unit)
@@ -487,11 +469,9 @@ local rpc_luggable_socket_luggable = function (self, channel_id, socket_id, sock
     temp_table.socketed_unit_position = get_position(socketed_unit)
 
     output_table[#output_table+1] = temp_table
-
 end
 local rpc_luggable_socket_unlock = function (self, channel_id, socket_id, socket_is_level_unit)
     local output_table = data_locations.LuggableSocketSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
 	local socket_unit = unit_spawner_manager:unit(socket_id, socket_is_level_unit)
 
@@ -506,7 +486,6 @@ local rpc_luggable_socket_unlock = function (self, channel_id, socket_id, socket
 end
 local rpc_luggable_socket_set_visibility = function (self, channel_id, socket_id, socket_is_level_unit, value)
     local output_table = data_locations.LuggableSocketSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
 	local socket_unit = unit_spawner_manager:unit(socket_id, socket_is_level_unit)
 
@@ -522,7 +501,6 @@ local rpc_luggable_socket_set_visibility = function (self, channel_id, socket_id
 end
 local rpc_player_wield_slot = function(self, channel_id, go_id, slot_id)
     local output_table = data_locations.VisualLoadoutSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local player_unit = unit_spawner_manager:unit(go_id)
 
@@ -538,7 +516,6 @@ local rpc_player_wield_slot = function(self, channel_id, go_id, slot_id)
 end
 local rpc_player_unwield_slot = function(self, channel_id, go_id, slot_id)
     local output_table = data_locations.VisualLoadoutSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local player_unit = unit_spawner_manager:unit(go_id)
 
@@ -582,7 +559,6 @@ local on_slot_unwielded = function(self, slot_name, t)
 end
 local rpc_player_equip_item_from_profile_to_slot = function(self, channel_id, go_id, slot_id, item_id)
     local output_table = data_locations.PlayerHuskVisualLoadoutExtension()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local player_unit = unit_spawner_manager:unit(go_id)
 
@@ -599,7 +575,6 @@ local rpc_player_equip_item_from_profile_to_slot = function(self, channel_id, go
 end
 local rpc_player_equip_item_to_slot = function(self, channel_id, go_id, slot_id, item_id, optional_existing_unit_3p_id)
     local output_table = data_locations.PlayerHuskVisualLoadoutExtension()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local player_unit = unit_spawner_manager:unit(go_id)
     local optional_existing_unit_3p = unit_spawner_manager:unit(optional_existing_unit_3p_id)
@@ -619,7 +594,6 @@ local rpc_player_equip_item_to_slot = function(self, channel_id, go_id, slot_id,
 end
 local rpc_player_unequip_item_from_slot = function(self, channel_id, go_id, slot_id)
     local output_table = data_locations.PlayerHuskVisualLoadoutExtension()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local player_unit = unit_spawner_manager:unit(go_id)
     local slot_name = NetworkLookup.player_inventory_slot_names[slot_id]
@@ -640,7 +614,6 @@ local rpc_player_unequip_item_from_slot = function(self, channel_id, go_id, slot
 end
 local rpc_health_station_use = function(self, channel_id, level_unit_id)
     local output_table = data_locations.HealthStationSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local health_station_unit = unit_spawner_manager:unit(level_unit_id, true)
     
@@ -655,7 +628,6 @@ local rpc_health_station_use = function(self, channel_id, level_unit_id)
 end
 local rpc_health_station_on_socket_spawned = function(self, channel_id, level_unit_id, socket_object_id)
     local output_table = data_locations.HealthStationSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local health_station_unit = unit_spawner_manager:unit(level_unit_id, true)
     local socket_unit = unit_spawner_manager:unit(socket_object_id, false)
@@ -673,7 +645,6 @@ local rpc_health_station_on_socket_spawned = function(self, channel_id, level_un
 end
 local rpc_health_station_on_battery_spawned = function(self, channel_id, level_unit_id, battery_id, battery_is_level_unit)
     local output_table = data_locations.HealthStationSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local health_station_unit = unit_spawner_manager:unit(level_unit_id, true)
     local battery_unit = unit_spawner_manager:unit(battery_id, battery_is_level_unit)
@@ -692,7 +663,6 @@ local rpc_health_station_on_battery_spawned = function(self, channel_id, level_u
 end
 local rpc_health_station_sync_charges = function(self, channel_id, level_unit_id, charge_amount)
     local output_table = data_locations.HealthStationSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local health_station_unit = unit_spawner_manager:unit(level_unit_id, true)
 
@@ -708,7 +678,6 @@ local rpc_health_station_sync_charges = function(self, channel_id, level_unit_id
 end
 local rpc_health_station_hot_join = function (self, channel_id, level_unit_id, charge_amount, socket_object_id, battery_id, battery_is_level_unit)
     local output_table = data_locations.HealthStationSystem()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
 	local health_station_unit = unit_spawner_manager:unit(level_unit_id, true)
 	local socket_unit
@@ -736,7 +705,6 @@ local rpc_health_station_hot_join = function (self, channel_id, level_unit_id, c
 end
 local rpc_servo_skull_do_pulse_fx = function (self, channel_id, game_object_id)
     local output_table = data_locations.ServoSkullEvents()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
 	local interactee_unit = unit_spawner_manager:unit(game_object_id, false)
     local temp_table = {}
@@ -750,7 +718,6 @@ local rpc_servo_skull_do_pulse_fx = function (self, channel_id, game_object_id)
 end
 local rpc_servo_skull_player_nearby = function (self, channel_id, game_object_id, player_nearby)
     local output_table = data_locations.ServoSkullEvents()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
 	local interactee_unit = unit_spawner_manager:unit(game_object_id, false)
     local temp_table = {}
@@ -765,7 +732,6 @@ local rpc_servo_skull_player_nearby = function (self, channel_id, game_object_id
 end
 local rpc_servo_skull_activator_set_visibility = function (self, channel_id, level_unit_id, value)
     local output_table = data_locations.ServoSkullEvents()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
 	local interactee_unit = unit_spawner_manager:unit(level_unit_id, true)
     local temp_table = {}
@@ -780,7 +746,6 @@ local rpc_servo_skull_activator_set_visibility = function (self, channel_id, lev
 end
 local rpc_servo_skull_set_scanning_active = function (self, channel_id, game_object_id, active)
     local output_table = data_locations.ServoSkullEvents()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
 	local interactee_unit = unit_spawner_manager:unit(game_object_id, false)
     local temp_table = {}
@@ -795,7 +760,6 @@ local rpc_servo_skull_set_scanning_active = function (self, channel_id, game_obj
 end
 local rpc_minigame_hot_join = function (self, channel_id, unit_id, is_level_unit, state_id)
     local output_table = data_locations.ServoSkullEvents()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
 	local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
     local temp_table = {}
@@ -811,7 +775,6 @@ end
 local rpc_minigame_sync_start = function (self, channel_id, unit_id, is_level_unit)
     local output_table = data_locations.ServoSkullEvents()
     local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
     local interactor_unit_id = active_interactions[unit_id]
@@ -830,7 +793,6 @@ end
 local rpc_minigame_sync_stop = function (self, channel_id, unit_id, is_level_unit)
     local output_table = data_locations.ServoSkullEvents()
     local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
     local interactor_unit_id = active_interactions[unit_id]
@@ -849,7 +811,6 @@ end
 local rpc_minigame_sync_completed = function (self, channel_id, unit_id, is_level_unit)
     local output_table = data_locations.ServoSkullEvents()
     local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
     local interactor_unit_id = active_interactions[unit_id]
@@ -867,7 +828,6 @@ local rpc_minigame_sync_completed = function (self, channel_id, unit_id, is_leve
 end
 local rpc_decoder_device_hot_join = function (self, channel_id, unit_id, unit_is_enabled, is_placed, started_decode, decoding_interrupted, is_finished)
     local output_table = data_locations.ServoSkullEvents()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
 	local interactee_unit = unit_spawner_manager:unit(unit_id, true)
     local temp_table = {}
@@ -886,7 +846,6 @@ local rpc_decoder_device_hot_join = function (self, channel_id, unit_id, unit_is
 end
 local rpc_decoder_device_enable_unit = function (self, channel_id, unit_id)
     local output_table = data_locations.ServoSkullEvents()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
 	local interactee_unit = unit_spawner_manager:unit(unit_id, true)
     local temp_table = {}
@@ -901,7 +860,6 @@ end
 local rpc_decoder_device_place_unit = function (self, channel_id, unit_id)
     local output_table = data_locations.ServoSkullEvents()
     local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactee_unit = unit_spawner_manager:unit(unit_id, true)
     local interactor_unit_id = active_interactions[unit_id]
@@ -920,7 +878,6 @@ end
 local rpc_decoder_device_start_decode = function (self, channel_id, unit_id)
     local output_table = data_locations.ServoSkullEvents()
     local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactee_unit = unit_spawner_manager:unit(unit_id, true)
     local interactor_unit_id = active_interactions[unit_id]
@@ -939,7 +896,6 @@ end
 local rpc_decoder_device_decode_interrupt = function (self, channel_id, unit_id)
     local output_table = data_locations.ServoSkullEvents()
     local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactee_unit = unit_spawner_manager:unit(unit_id, true)
     local interactor_unit_id = active_interactions[unit_id]
@@ -958,7 +914,6 @@ end
 local rpc_decoder_device_finished = function (self, channel_id, unit_id)
     local output_table = data_locations.ServoSkullEvents()
     local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactee_unit = unit_spawner_manager:unit(unit_id, true)
     local interactor_unit_id = active_interactions[unit_id]
@@ -977,7 +932,6 @@ end
 local rpc_scanning_device_finished = function (self, channel_id, unit_id)
     local output_table = data_locations.ServoSkullEvents()
     local active_interactions = mod.cache.active_interactions
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactee_unit = unit_spawner_manager:unit(unit_id, true)
     local interactor_unit_id = active_interactions[unit_id]
@@ -995,7 +949,6 @@ local rpc_scanning_device_finished = function (self, channel_id, unit_id)
 end
 local rpc_scanning_device_hot_join = function (self, channel_id, unit_id, past_spline_start_position, at_end_position, reached_end_of_spline)
     local output_table = data_locations.ServoSkullEvents()
-    local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
     local interactee_unit = unit_spawner_manager:unit(unit_id, true)
     local temp_table = {}
@@ -1013,7 +966,6 @@ end
 local rpc_set_smart_tag = function (self, channel_id, tag_id, template_name_id, tagger_game_object_id, target_game_object_id, target_level_index, target_location)
     local output_table = data_locations.SmartTagSystem()
     local active_smart_tags = mod.cache.active_smart_tags
-    local game_session = managers_state.game_session:game_session()
 	local unit_spawner_manager = managers_state.unit_spawner
     local template_name = NetworkLookup.smart_tag_templates[template_name_id]
 	local tagger_unit = tagger_game_object_id and unit_spawner_manager:unit(tagger_game_object_id)
@@ -1047,7 +999,6 @@ end
 local rpc_set_smart_tag_hot_join = function (self, channel_id, tag_id, template_name_id, tagger_game_object_id, target_game_object_id, target_level_index, target_location, replier_array, reply_name_id_array)
     local output_table = data_locations.SmartTagSystem()
     local active_smart_tags = mod.cache.active_smart_tags
-    local game_session = managers_state.game_session:game_session()
 	local unit_spawner_manager = managers_state.unit_spawner
     local template_name = NetworkLookup.smart_tag_templates[template_name_id]
 	local tagger_unit = tagger_game_object_id and unit_spawner_manager:unit(tagger_game_object_id)
@@ -1094,7 +1045,6 @@ local rpc_remove_smart_tag = function (self, channel_id, tag_id, reason_id)
     local output_table = data_locations.SmartTagSystem()
     local active_smart_tags = mod.cache.active_smart_tags
     local active_smart_tag = active_smart_tags and active_smart_tags[tag_id]
-    local game_session = managers_state.game_session:game_session()
 	local tagger_unit = active_smart_tag and active_smart_tag.tagger_unit
     local target_unit = active_smart_tag and active_smart_tag.target_unit
     local temp_table = {}
@@ -1117,8 +1067,6 @@ local rpc_smart_tag_reply = function (self, channel_id, tag_id, replier_game_obj
     local output_table = data_locations.SmartTagSystem()
     local active_smart_tags = mod.cache.active_smart_tags
     local active_smart_tag = active_smart_tags and active_smart_tags[tag_id]
-    local game_session = managers_state.game_session:game_session()
-    local reply_name = NetworkLookup.smart_tag_replies[reply_name_id]
     local replier_unit = managers_state.unit_spawner:unit(replier_game_object_id)
 	local tagger_unit = active_smart_tag and active_smart_tag.tagger_unit
     local target_unit = active_smart_tag and active_smart_tag.target_unit
@@ -1166,15 +1114,6 @@ local PUME_update = function (self, unit, dt, t)
 
     local weapon_action_component = unit_data_extension:read_component("weapon_action")
     local template_name = weapon_action_component.template_name
-
-    -- local current_action_name = weapon_action_component.current_action_name
-    -- local previous_frame_name_test = test_cache[unit_uuid]
-    -- if previous_frame_name_test ~= current_action_name then
-    --     print("-------")
-    --     print("template_name: "..tostring(template_name))
-    --     print("current_action_name: "..tostring(current_action_name))
-    --     test_cache[unit_uuid] = current_action_name
-    -- end
 
     if template_name == "psyker_smite" or template_name == "psyker_chain_lightning" then
         local current_action_name = weapon_action_component.current_action_name
@@ -1252,12 +1191,6 @@ local PlayerAbilityExtensionUpdate = function(self, unit, dt, t)
             local current_num_charges = component.num_charges
 
             if previous_num_charges ~= current_num_charges then
-
-                -- print("-------")
-                -- print("ability_type: "..tostring(ability_type))
-                -- print("previous_num_charges: "..tostring(previous_num_charges))
-                -- print("current_num_charges: "..tostring(current_num_charges))
-
                 local output_table = data_locations.PlayerAbilities()
                 local temp_table = {}
 
@@ -1277,7 +1210,6 @@ end
 --Datasource template array--
 datasource_templates = {
     {   name = "AttackReportManager",
-        ----data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.AttackReportManager,
@@ -1288,7 +1220,6 @@ datasource_templates = {
         },
     },
     {   name = "PlayerBlockedAttacks",
-        ----data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.WeaponSystem,
@@ -1299,7 +1230,6 @@ datasource_templates = {
         },
     },
     {   name = "PlayerSuppressionExtension",
-        ----data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerSuppressionExtension,
@@ -1310,7 +1240,6 @@ datasource_templates = {
         },
     },
     {   name = "InteracteeSystem",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.InteracteeSystem,
@@ -1324,7 +1253,6 @@ datasource_templates = {
         },
     },
     {   name = "HuskCoherencyExtension",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.HuskCoherencyExtension,
@@ -1336,7 +1264,6 @@ datasource_templates = {
         },
     },
     {   name = "PlayerBuffExtension",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerUnitBuffExtension,
@@ -1360,7 +1287,6 @@ datasource_templates = {
         },
     },
     {   name = "MinionBuffExtension",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.MinionBuffExtension,
@@ -1375,7 +1301,6 @@ datasource_templates = {
         },
     },
     {   name = "UnitSpawnerManager",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.UnitSpawnerManager,
@@ -1386,11 +1311,9 @@ datasource_templates = {
         },
     },
     {   name = "PlayerProfiles",
-        --data_structure = {},
         hook_templates = {},
     },
     {   name = "PickupSystem",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PickupSystem,
@@ -1401,7 +1324,6 @@ datasource_templates = {
         },
     },
     {   name = "BossSystem",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.BossSystem,
@@ -1412,7 +1334,6 @@ datasource_templates = {
         },
     },
     {   name = "PickupAnimationSystem",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PickupAnimationSystem,
@@ -1424,7 +1345,6 @@ datasource_templates = {
         },
     },
     {   name = "LuggableSocketSystem",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.LuggableSocketSystem,
@@ -1437,7 +1357,6 @@ datasource_templates = {
         },
     },
     {   name = "VisualLoadoutSystem",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.VisualLoadoutSystem,
@@ -1456,7 +1375,6 @@ datasource_templates = {
         },
     },
     {   name = "PlayerHuskVisualLoadoutExtension",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerHuskVisualLoadoutExtension,
@@ -1469,7 +1387,6 @@ datasource_templates = {
         },
     },
     {   name = "HealthStationSystem",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.HealthStationSystem,
@@ -1484,7 +1401,6 @@ datasource_templates = {
         },
     },
     {   name = "ServoSkullEvents",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.ServoSkullSystem,
@@ -1525,7 +1441,6 @@ datasource_templates = {
         },
     },
     {   name = "SmartTagSystem",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.SmartTagSystem,
@@ -1539,7 +1454,6 @@ datasource_templates = {
         },
     },
     {   name = "PlayerUnitStatus",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerUnitMoodExtension,
@@ -1550,7 +1464,6 @@ datasource_templates = {
         },
     },
     {   name = "PlayerUnitMoodExtension",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerUnitMoodExtension,
@@ -1561,7 +1474,6 @@ datasource_templates = {
         },
     },
     {   name = "PlayerAbilities",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerUnitAbilityExtension,
@@ -1580,7 +1492,6 @@ datasource_templates = {
         },
     },
     {   name = "MinionDeathManager",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.MinionDeathManager,
@@ -1591,7 +1502,6 @@ datasource_templates = {
         },
     },
     {   name = "MinionSuppressionHuskExtension",
-        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.MinionSuppressionHuskExtension,
@@ -1602,7 +1512,6 @@ datasource_templates = {
         },
     },
     {   name = "Players",
-    --data_structure = {},
     hook_templates = {},
 },
 }
