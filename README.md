@@ -119,5 +119,5 @@ Example:
 * Date format. Select the date format used when displaying dates.
 
 # API
-For information regarding the API please check the wiki:
-[Power DI Wiki - API](https://github.com/OvenProofMars/Power_DI/wiki/2.-API).
+For information regarding the API please check the wiki:<br />
+[Power DI Wiki](https://github.com/OvenProofMars/Power_DI/wiki/2.-API).
