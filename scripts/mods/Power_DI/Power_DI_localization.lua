@@ -517,6 +517,10 @@ return {
 		en = "Charge gained",
 		--["zh-cn"] = "",
 	},
+	mloc_ability_charge_used = {
+		en = "Charge used",
+		--["zh-cn"] = "",
+	},
 	mloc_melee_weapon = {
 		en = "Melee weapon",
 		--["zh-cn"] = "",

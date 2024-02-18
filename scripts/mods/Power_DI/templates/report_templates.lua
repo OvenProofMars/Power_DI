@@ -207,7 +207,7 @@ report_templates = {
                 format = "number"
             },
         },
-        filters = {"event_type = \"Charge used\" and player ~ nil"},
+        filters = {"event_type = \""..mod:localize("mloc_ability_charge_used").."\" and player ~ nil"},
     },
     player_buffs_report = {
         name = "mloc_player_buffs_report",
