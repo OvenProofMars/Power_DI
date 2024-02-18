@@ -616,4 +616,282 @@ return {
 		en = "Buff events",
 		--["zh-cn"] = "",
 	},
+	--Dataset field labels
+	attacker_player = {
+		en = "Attacking player",
+		--["zh-cn"] = "",
+	},
+	defender_player = {
+		en = "Defending player",
+		--["zh-cn"] = "",
+	},
+	damage_efficiency = {
+		en = "Damage efficiency",
+		--["zh-cn"] = "",
+	},
+	weakspot_hit = {
+		en = "Weakspot hit",
+		--["zh-cn"] = "",
+	},
+	defender_faction = {
+		en = "Defender faction",
+		--["zh-cn"] = "",
+	},
+	attack_result = {
+		en = "Attack result",
+		--["zh-cn"] = "",
+	},
+	defender_name = {
+		en = "Defender name",
+		--["zh-cn"] = "",
+	},
+	attacker_name = {
+		en = "Attacker_name",
+		--["zh-cn"] = "",
+	},
+	damage_category = {
+		en = "Damage category",
+		--["zh-cn"] = "",
+	},
+	time = {
+		en = "Time",
+		--["zh-cn"] = "",
+	},
+	defender_attack_type = {
+		en = "Defender attack type",
+		--["zh-cn"] = "",
+	},
+	attacker_armor_type = {
+		en = "Attacker armor type",
+		--["zh-cn"] = "",
+	},
+	defender_armor_type = {
+		en = "Defender armor type",
+		--["zh-cn"] = "",
+	},
+	defender_type = {
+		en = "Defender type",
+		--["zh-cn"] = "",
+	},
+	attacker_type = {
+		en = "Attacker type",
+		--["zh-cn"] = "",
+	},
+	critical_hit = {
+		en = "Critical hit",
+		--["zh-cn"] = "",
+	},
+	attacker_faction = {
+		en = "Attacker faction",
+		--["zh-cn"] = "",
+	},
+	damage_profile_name = {
+		en = "Damage profile",
+		--["zh-cn"] = "",
+	},
+	attacker_attack_type = {
+		en = "Attacker attack type",
+		--["zh-cn"] = "",
+	},
+	killed = {
+		en = "Killed",
+		--["zh-cn"] = "",
+	},
+	damage = {
+		en = "Damage",
+		--["zh-cn"] = "",
+	},
+	attack_type = {
+		en = "Attack type",
+		--["zh-cn"] = "",
+	},
+	defender_max_health = {
+		en = "Defender max health",
+		--["zh-cn"] = "",
+	},
+	health_damage = {
+		en = "Health damage",
+		--["zh-cn"] = "",
+	},
+	attacker_class = {
+		en = "Attacker class",
+		--["zh-cn"] = "",
+	},
+	defender_class = {
+		en = "Defender class",
+		--["zh-cn"] = "",
+	},
+	player_name = {
+		en = "Player name",
+		--["zh-cn"] = "",
+	},
+	player = {
+		en = "Player",
+		--["zh-cn"] = "",
+	},
+	state_category = {
+		en = "State category",
+		--["zh-cn"] = "",
+	},
+	state_name = {
+		en = "State name",
+		--["zh-cn"] = "",
+	},
+	previous_state_name = {
+		en = "Previous state name",
+		--["zh-cn"] = "",
+	},
+	interactor_name = {
+		en = "Interactor name",
+		--["zh-cn"] = "",
+	},
+	interactee_name = {
+		en = "Interactee name",
+		--["zh-cn"] = "",
+	},
+	interactor_player = {
+		en = "Interactor player",
+		--["zh-cn"] = "",
+	},
+	interactee_player = {
+		en = "Interactee player",
+		--["zh-cn"] = "",
+	},
+	interaction_type = {
+		en = "Interaction type",
+		--["zh-cn"] = "",
+	},
+	event = {
+		en = "Event",
+		--["zh-cn"] = "",
+	},
+	result = {
+		en = "Result",
+		--["zh-cn"] = "",
+	},
+
+	target_name = {
+		en = "Target name",
+		--["zh-cn"] = "",
+	},
+	target_type = {
+		en = "Target type",
+		--["zh-cn"] = "",
+	},
+	target_class = {
+		en = "Target class",
+		--["zh-cn"] = "",
+	},
+	tag_type = {
+		en = "Tagg type",
+		--["zh-cn"] = "",
+	},
+	reason = {
+		en = "Reason",
+		--["zh-cn"] = "",
+	},
+	tag_id = {
+		en = "Tag ID",
+		--["zh-cn"] = "",
+	},
+	suppression_type = {
+		en = "Suppression type",
+		--["zh-cn"] = "",
+	},
+	enemy_name = {
+		en = "Enemy name",
+		--["zh-cn"] = "",
+	},
+	enemy_attack_type = {
+		en = "Enemy attack type",
+		--["zh-cn"] = "",
+	},
+	enemy_faction = {
+		en = "Enemy faction",
+		--["zh-cn"] = "",
+	},
+	enemy_type = {
+		en = "Enemy type",
+		--["zh-cn"] = "",
+	},
+	enemy_class = {
+		en = "Enemy class",
+		--["zh-cn"] = "",
+	},
+	enemy_armor_type = {
+		en = "Enemy armor type",
+		--["zh-cn"] = "",
+	},
+	weapon_template_name = {
+		en = "Weapon template name",
+		--["zh-cn"] = "",
+	},
+	slot_name = {
+		en = "Slot name",
+		--["zh-cn"] = "",
+	},
+	ability_type = {
+		en = "Ability type",
+		--["zh-cn"] = "",
+	},
+	charge_delta = {
+		en = "Charge delta",
+		--["zh-cn"] = "",
+	},
+	event_type = {
+		en = "Event type",
+		--["zh-cn"] = "",
+	},
+	template_name = {
+		en = "Template name",
+		--["zh-cn"] = "",
+	},
+	buff_category = {
+		en = "Buff category",
+		--["zh-cn"] = "",
+	},
+	class_name = {
+		en = "Class name",
+		--["zh-cn"] = "",
+	},
+	icon = {
+		en = "Icon",
+		--["zh-cn"] = "",
+	},
+	parent_template_name = {
+		en = "Parent template name",
+		--["zh-cn"] = "",
+	},
+	parent_buff_category = {
+		en = "Parent buff category",
+		--["zh-cn"] = "",
+	},
+	parent_class_name = {
+		en = "Parent class name",
+		--["zh-cn"] = "",
+	},
+	parent_icon = {
+		en = "Parent icon",
+		--["zh-cn"] = "",
+	},
+	source_category = {
+		en = "Source category",
+		--["zh-cn"] = "",
+	},
+	source_sub_category = {
+		en = "Source subcategory",
+		--["zh-cn"] = "",
+	},
+	source_item_name = {
+		en = "Source item name",
+		--["zh-cn"] = "",
+	},
+	source_icon = {
+		en = "Source icon",
+		--["zh-cn"] = "",
+	},
+	source_name = {
+		en = "Source name",
+		--["zh-cn"] = "",
+	},
 }

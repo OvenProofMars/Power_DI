@@ -22,7 +22,7 @@ local input_manager = Managers.input
 local input_service = input_manager and input_manager:get_input_service("View")
 
 local UIManager = Managers.ui
-local PDI, render_settings, sizes, packages_loaded, main_view_instance, selected_session_id, load_session, loaded_session, selected_report_id, load_report, loaded_report, user_reports, loading, load_edit, edit_mode_cache, error_message, in_game, focussed_hotspot, localize, delete_animation_progress
+local PDI, render_settings, sizes, packages_loaded, main_view_instance, selected_session_id, load_session, loaded_session, selected_report_id, load_report, loaded_report, user_reports, loading, load_edit, edit_mode_cache, error_message, in_game, focussed_hotspot, localize, delete_animation_progress, active_scenegraph
 local force_report_generation = false
 
 local ui_manager = {}
@@ -2307,6 +2307,9 @@ end
 local function destroy_scenegraphs_for_transition_to(scenegraph_name)
     focussed_hotspot = nil
     error_message = nil
+    load_report = false
+    load_session = false
+    active_scenegraph = scenegraph_name
     local scenegraph_array_lookup = {}
     scenegraph_array_lookup.reports = {"sessions", "edit_report_settings", "edit_pivot_table"}
     scenegraph_array_lookup.sessions = {"reports", "report_rows_order", "pivot_table"}
@@ -2582,7 +2585,9 @@ local function handle_changes()
         :next(
             function(data)
                 loaded_session = data
-                ui_manager.setup_reports()
+                if active_scenegraph == "sessions" then
+                    ui_manager.setup_reports()
+                end
             end,
             function(err)
                 PDI.debug("handle_changes_load_session", err)
@@ -2620,7 +2625,7 @@ local function handle_changes()
         )
         :next(
             function()
-                if edit_mode_cache then
+                if active_scenegraph ~= "reports" then
                     return
                 end
                 ui_manager.setup_pivot_table()
@@ -3260,6 +3265,7 @@ ui_manager.open_ui = function(instance)
 end
 --Function to handle closing the UI
 ui_manager.close_ui = function()
+    active_scenegraph = nil
     main_view_instance = nil
     destroy_all_widgets()
     destroy_renderers()
@@ -4885,7 +4891,10 @@ ui_manager.setup_report_rows_order = function()
     for _, row_name in ipairs(report_template_rows) do
         local item_template = get_item_template()
         item_template.name = row_name
-        item_template.passes[1].value = row_name
+        local test = PDI.utilities.localize(row_name)
+        print(test)
+        print(mod:localize("test1"))
+        item_template.passes[1].value = PDI.utilities.localize(row_name)
         widget_templates[#widget_templates+1] = item_template 
     end
 

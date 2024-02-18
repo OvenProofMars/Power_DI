@@ -254,10 +254,14 @@ utilities.localize = function(input_string)
     local prefix = string.sub(input_string,1,4)
     if prefix == "loc_" then
         return Localize(input_string)
-    elseif prefix == "mloc" then
-        return mod:localize(input_string)
     else
-        return input_string
+        local localized_string = mod:localize(input_string)
+        local starting_character = string.sub(localized_string,1,1)
+        if starting_character == "<" then
+            return input_string
+        else
+            return localized_string
+        end
     end
 end
 

@@ -2,8 +2,6 @@ local mod = get_mod("Power_DI")
 local PDI, user_reports
 local report_manager = {}
 report_manager.registered_reports = {}
-local legend_cache
---local blank_value = "nil"
 
 --Generate the filter function from a string, function will be run in separate environment--
 local function generate_filter_function (template)
@@ -466,9 +464,9 @@ report_manager.prepare_session = function(session)
 end
 
 --Function to create a legend of the values of the fields in a dataset, currently not used--
-report_manager.generate_legend_cache = function(template)
-    return PDI.coroutine_manager.new(generate_legend_cache_coroutine, template)
-end
+-- report_manager.generate_legend_cache = function(template)
+--     return PDI.coroutine_manager.new(generate_legend_cache_coroutine, template)
+-- end
 
 report_manager.check_report_template_hash = function(report_template)
     local report_id = report_template.id
