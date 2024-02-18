@@ -791,7 +791,7 @@ return {
 		--["zh-cn"] = "",
 	},
 	tag_type = {
-		en = "Tagg type",
+		en = "Tag type",
 		--["zh-cn"] = "",
 	},
 	reason = {
