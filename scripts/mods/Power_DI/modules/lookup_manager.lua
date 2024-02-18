@@ -75,6 +75,7 @@ lookup_manager.register_lookup_table = function(lookup_template)
         error("Lookup template does not contain a valid lookup table")
     end
     registered_lookup_tables[lookup_template_name] = lookup_template_lookup_table
+    return true
 end
 
 --Function to get a list of all the available lookup tables, available via the API--

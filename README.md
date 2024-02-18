@@ -1,10 +1,23 @@
 # Power DI
+## Introduction
+![Power DI](https://i.imgur.com/dMMECKK.png "Power DI")
+Power DI is a framework for collecting, transforming and displaying Darktide statistics.
 
-A framework for collection, transforming, and displaying game statistics.
+## Notable features
+* Allows users to customize reports to their liking, or even create them from scratch, all from within the UI.
+* Records events as source data, which means you can create new reports even after a mission is complete.
+* While in a mission the auto save feature will periodically save all recorded data to disk, so in the event of a game crash you can continue recording where you left off.
+* Records players gear and build, which allows you to inspect what a player was using during a specific session.
+* API available for adding new data sources, datasets and report templates to Power DI.
 
-## Reports screen
+## Core concepts
+Power DI is build around the following three core concepts:
+1. Data sources. Events are recorded to data sources, these data sources will usually only have the minimum needed data available, and are usually in a form that need additional transformations to make them readable.
+2. Data sets. One more data sources can be combined to create a dataset. A dataset is a formatted table containing all the information needed to create reports.
+3. Reports. A report is generated from a dataset, and creates a specific view of that data by displaying it in a structured way.
+
+# Reports screen
 ![Reports screen](https://i.imgur.com/xS1P0Nw.png "Reports screen")
-
 The reports screen, for selecting and viewing reports. 
 
 1. Sessions tab. Press to transition to the sessions screen.
@@ -16,18 +29,16 @@ The reports screen, for selecting and viewing reports.
 7. Report rows. Depending on the field type it will show the sum or average of all child rows. Press a row to expand it and show it's child rows (if available).
 8. Exit Power DI. Press to close the UI.
 
-## Sessions screen
+# Sessions screen
 ![Sessions screen](https://i.imgur.com/yCNzJC5.png "Sessions screen")
-
 The sessions screen. Shows an overview of your recorded sessions.
 
 1. Reports tab. Press to transition to the report screen.
 2. Sessions list. Select a session to load it (will automatically transition you to the reports screen)
 3. Exit Power DI. Press to close the UI.
 
-## Edit screen
+# Edit screen
 ![Edit screen](https://i.imgur.com/BzzdjD3.png "Edit screen")
-
 The edit screen. Allows for creating or editing a report.
 
 1. Report name. Fill in the desired name for the report.
@@ -50,11 +61,35 @@ The edit screen. Allows for creating or editing a report.
 18. Pivot table settings. Currently unused, but will have setting specific to the pivot table report.
 19. Exit Power DI. Press to close the UI.
 
-#### Formulas
+## Report templates
+The following report templates are available by default:
+* Attack report
+* Defense report
+* Player abilities report
+* Player blocked report
+* Player buffs report
+* Player interactions report
+* Player slots report
+* Player status report
+* Player suppression report
+* Tagging report
+
+## Dataset templates
+The following dataset templates are available by default:
+* Attack reports
+* Blocked attacks
+* Player abilities
+* Player buffs
+* Player interactions
+* Player status
+* Player suppression
+* Slots
+* Tagging
+
+## Formulas
 Formulas are used for both the calculated fields and the data filter. Formulas use a simplified lua, and are run in a separate environment. For the calculated fields you have to compare to the labels of the values you entered. For the data filter you have to compare to the field names as shown in the dataset fields list.
 
-Available options:
-
+Available symbols:
 Symbol | Function
  --- | ---
 `=`|equal
@@ -70,7 +105,7 @@ Symbol | Function
 Example:
 `attacker_type = "Player" and damage > 0`
 
-## Settings
+# Settings
 ![Settings](https://i.imgur.com/OGeBBM7.png "Settings")
 
 * Open Power DI. Create a keybind used to open the Power DI UI.
