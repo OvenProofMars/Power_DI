@@ -74,7 +74,7 @@ local function generate_field_format_functions (template)
     PDI.debug("generate_field_format_functions", "start")
 
     local field_format_functions = {}
-    local registered_dataset = PDI.dataset_manager.get_dataset_template(template.dataset_name)
+    --local registered_dataset = PDI.dataset_manager.get_dataset_template(template.dataset_name)
     local value_templates = template.values
 
     for _, value_template in ipairs(value_templates) do
