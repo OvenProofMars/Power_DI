@@ -457,9 +457,58 @@ return {
 		en = "Shooter",
 		--["zh-cn"] = "",
 	},
-
-	
-
-	
+	--Report template value labels
+	mloc_damage = {
+		en = "Damage",
+		--["zh-cn"] = "",
+	},
+	mloc_kills = {
+		en = "Kills",
+		--["zh-cn"] = "",
+	},
+	mloc_crit_percent = {
+		en = "Crit percent",
+		--["zh-cn"] = "",
+	},
+	mloc_weakspot_percent = {
+		en = "Weakspot percent",
+		--["zh-cn"] = "",
+	},
+	mloc_damage_received = {
+		en = "Damage received",
+		--["zh-cn"] = "",
+	},
+	mloc_states = {
+		en = "States",
+		--["zh-cn"] = "",
+	},
+	mloc_interactions = {
+		en = "Interactions",
+		--["zh-cn"] = "",
+	},
+	mloc_total_tags = {
+		en = "Total tags",
+		--["zh-cn"] = "",
+	},
+	mloc_suppression = {
+		en = "Suppression",
+		--["zh-cn"] = "",
+	},
+	mloc_blocked_attacks = {
+		en = "Blocked attacks",
+		--["zh-cn"] = "",
+	},
+	mloc_slot_changes = {
+		en = "Slot changes",
+		--["zh-cn"] = "",
+	},
+	mloc_player_abilities = {
+		en = "Player abilities",
+		--["zh-cn"] = "",
+	},
+	mloc_buff_events = {
+		en = "Buff events",
+		--["zh-cn"] = "",
+	},
 
 }

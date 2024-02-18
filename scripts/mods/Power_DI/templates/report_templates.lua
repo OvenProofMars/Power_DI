@@ -6,7 +6,6 @@ local report_templates
 report_templates = {
     player_attack_report = {
         name = "mloc_attack_report",
-        --label = "Attack report",
         dataset_name = "mloc_dataset_attack_reports",
         report_type = "pivot_table",
         columns = {"attacker_player"},
@@ -15,14 +14,14 @@ report_templates = {
             {
                 field_name = "health_damage",
                 type = "sum",
-                label = "Damage",
+                label = mod:localize("mloc_damage"),
                 visible = true,
                 format = "number"
             },
             {
                 field_name = "killed",
                 type = "sum",
-                label = "Kills",
+                label = mod:localize("mloc_kills"),
                 visible = true,
                 format = "number"
             },
@@ -49,26 +48,25 @@ report_templates = {
             },
             {
                 type = "calculated_field",
-                label = "Crit percent",
+                label = mod:localize("mloc_crit_percent"),
                 visible = true,
                 format = "percentage",
                 function_string = "critical_hit_sum/hit_count"
             },
             {
                 type = "calculated_field",
-                label = "Weakspot percent",
+                label = mod:localize("mloc_weakspot_percent"),
                 visible = true,
                 format = "percentage",
                 function_string = "weakspot_hit_sum/hit_count"
             },
         },
         filters = {
-            "attacker_type = \"Player\" and damage > 0 and attacker_player ~ nil and defender_type ~ nil"
+            "attacker_type = \"" ..mod:localize("mloc_player").."\" and damage > 0 and attacker_player ~ nil and defender_type ~ nil"
         },
     },
     player_defense_report = {
         name = "mloc_defense_report",
-        --label = "Defense report",
         dataset_name = "mloc_dataset_attack_reports",
         report_type = "pivot_table",
         columns = {"defender_player"},
@@ -77,18 +75,17 @@ report_templates = {
             {
                 field_name = "health_damage",
                 type = "sum",
-                label = "Damage received",
+                label = mod:localize("mloc_damage_received"),
                 visible = true,
                 format = "number"
             },
         },
         filters = {
-            "defender_type = \"Player\" and damage>0 and attacker_class ~ nil and defender_player ~ nil"
+            "defender_type = \""..mod:localize("player").."\" and damage>0 and attacker_class ~ nil and defender_player ~ nil"
         },
     },
     player_status_report = {
         name = "mloc_player_status_report",
-        --label = "Player status report",
         dataset_name = "mloc_dataset_player_status", 
         report_type = "pivot_table",
         columns = {"player"},
@@ -97,7 +94,7 @@ report_templates = {
             {
                 field_name = "state_name",
                 type = "count",
-                label = "States",
+                label = mod:localize("mloc_states"),
                 visible = true,
                 format = "number"
             },
@@ -108,7 +105,6 @@ report_templates = {
     },
     player_interactions_report = {
         name = "mloc_player_interactions_report",
-        --label = "Interactions report",
         dataset_name = "mloc_dataset_player_interactions",
         report_type = "pivot_table",
         columns = {"interactor_player"},
@@ -117,7 +113,7 @@ report_templates = {
             {
                 field_name = "interaction_type",
                 type = "count",
-                label = "Interactions",
+                label = mod:localize("mloc_interactions"),
                 visible = true,
                 format = "number"
             },
@@ -128,7 +124,6 @@ report_templates = {
     },
     player_tagging_report = {
         name = "mloc_player_tagging_report",
-        --label = "Tagging report",
         dataset_name = "mloc_dataset_tagging",
         report_type = "pivot_table",
         columns = {"player"},
@@ -137,7 +132,7 @@ report_templates = {
             {
                 field_name = "target_name",
                 type = "count",
-                label = "Total tags",
+                label = mod:localize("mloc_total_tags"),
                 visible = true,
                 format = "number"
             },
@@ -148,7 +143,6 @@ report_templates = {
     },
     player_suppression_report = {
         name = "mloc_player_suppression_report",
-        --label = "Suppression report",
         dataset_name = "mloc_dataset_player_supression",
         report_type = "pivot_table",
         columns = {"player"},
@@ -157,7 +151,7 @@ report_templates = {
             {
                 field_name = "player",
                 type = "count",
-                label = "Suppression",
+                label = mod:localize("mloc_suppression"),
                 visible = true,
                 format = "number"
             },
@@ -166,7 +160,6 @@ report_templates = {
     },
     player_blocked_report = {
         name = "mloc_player_blocked_report",
-        --label = "Block report",
         dataset_name = "mloc_dataset_blocked_attacks",
         report_type = "pivot_table",
         columns = {"player"},
@@ -175,7 +168,7 @@ report_templates = {
             {
                 field_name = "player",
                 type = "count",
-                label = "Blocks",
+                label = mod:localize("mloc_blocked_attacks"),
                 visible = true,
                 format = "number"
             },
@@ -184,7 +177,6 @@ report_templates = {
     },
     player_slots_report = {
         name = "mloc_player_slots_report",
-        --label = "Slots report",
         dataset_name = "mloc_dataset_slot_events",
         report_type = "pivot_table",
         columns = {"player"},
@@ -193,7 +185,7 @@ report_templates = {
             {
                 field_name = "player",
                 type = "count",
-                label = "Slots",
+                label = mod:localize("mloc_slot_changes"),
                 visible = true,
                 format = "number"
             },
@@ -202,7 +194,6 @@ report_templates = {
     },
     player_abilities_report = {
         name = "mloc_player_abilities_report",
-        --label = "Player abilities report",
         dataset_name = "mloc_dataset_player_abilities",
         report_type = "pivot_table",
         columns = {"player"},
@@ -211,7 +202,7 @@ report_templates = {
             {
                 field_name = "player",
                 type = "count",
-                label = "Player abilities",
+                label = mod:localize("mloc_player_abilities"),
                 visible = true,
                 format = "number"
             },
@@ -229,7 +220,7 @@ report_templates = {
             {
                 field_name = "player",
                 type = "count",
-                label = "Buffs",
+                label = mod:localize("mloc_buff_events"),
                 visible = true,
                 format = "number"
             },
