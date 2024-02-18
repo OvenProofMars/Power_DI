@@ -77,15 +77,15 @@ for category_name, category_array in pairs(damage_profile_templates) do
 end
 
 --Overwrites, because FS is inconsistent
-damage_categories["heavy_tank"] = "Melee weapon damage"
-damage_categories["default_powersword_heavy"] = "Melee weapon damage"
-damage_categories["ogryn_thumper_p1_m2_default"] = "Ranged weapon damage"
-damage_categories["force_staff_demolition_default"] = "Ranged weapon damage"
-damage_categories["ogryn_thumper_p1_m2_default_instant"] = "Ranged weapon damage"
-damage_categories["ogryn_thumper_p1_m2_close"] = "Ranged weapon damage"
-damage_categories["ogryn_thumper_p1_m2_close_instant"] = "Ranged weapon damage"
-damage_categories["force_staff_demolition_close"] = "Ranged weapon damage"
-damage_categories["plasma_demolition"] = "Ranged weapon damage"
+damage_categories["heavy_tank"] = "mloc_melee_weapon_damage"
+damage_categories["default_powersword_heavy"] = "mloc_melee_weapon_damage"
+damage_categories["ogryn_thumper_p1_m2_default"] = "mloc_ranged_weapon_damage"
+damage_categories["force_staff_demolition_default"] = "mloc_ranged_weapon_damage"
+damage_categories["ogryn_thumper_p1_m2_default_instant"] = "mloc_ranged_weapon_damage"
+damage_categories["ogryn_thumper_p1_m2_close"] = "mloc_ranged_weapon_damage"
+damage_categories["ogryn_thumper_p1_m2_close_instant"] = "mloc_ranged_weapon_damage"
+damage_categories["force_staff_demolition_close"] = "mloc_ranged_weapon_damage"
+damage_categories["plasma_demolition"] = "mloc_ranged_weapon_damage"
 
 damage_profile_templates = nil
 

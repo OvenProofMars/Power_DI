@@ -1,3 +1,4 @@
+local DMF = get_mod("DMF")
 local ArchetypeTalents = require("scripts/settings/ability/archetype_talents/archetype_talents")
 local buff_to_talent = {}
 
@@ -24,5 +25,7 @@ for _, table in pairs(ArchetypeTalents) do
         end
     end
 end
+
+DMF:dtf(buff_to_talent, "buff_to_talent", 20)
 
 return buff_to_talent
