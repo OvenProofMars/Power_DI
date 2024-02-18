@@ -409,32 +409,36 @@ return {
 		en = "Other",
 		--["zh-cn"] = "",
 	},
-	mloc_melee_weapon_damage = {
+	mloc_1_melee_weapon_damage = {
 		en = "Melee weapon damage",
 		--["zh-cn"] = "",
 	},
-	mloc_ranged_weapon_damage = {
+	mloc_2_ranged_weapon_damage = {
 		en = "Ranged weapon damage",
 		--["zh-cn"] = "",
 	},
-	mloc_blitz_damage = {
+	mloc_3_blitz_damage = {
 		en = "Blitz damage",
 		--["zh-cn"] = "",
 	},
-	mloc_combat_ability_damage = {
+	mloc_4_combat_ability_damage = {
 		en = "Combat ability damage",
 		--["zh-cn"] = "",
 	},
-	mloc_debuff_damage = {
+	mloc_5_debuff_damage = {
 		--Note: damage from debuffs such as bleeding, burning ect
 		en = "Condition damage",
 		--["zh-cn"] = "",
 	},
-	mloc_environmental_damage = {
+	mloc_6_environmental_damage = {
 		en = "Environmental damage",
 		--["zh-cn"] = "",
 	},
-	mloc_minion = {
+	mloc_7_other_damage = {
+		en = "Other damage",
+		--["zh-cn"] = "",
+	},
+	mloc_8_minion = {
 		en = "Minion",
 		--["zh-cn"] = "",
 	},

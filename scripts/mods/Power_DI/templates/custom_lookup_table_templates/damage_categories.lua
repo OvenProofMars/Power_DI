@@ -1,7 +1,7 @@
 local damage_categories = {}
 
 local damage_profile_templates = {
-    ["mloc_melee_weapon_damage"] = {
+    ["mloc_1_melee_weapon_damage"] = {
         require("scripts/settings/equipment/weapon_templates/chain_swords/settings_templates/chain_sword_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/chain_swords/settings_templates/chain_sword_2h_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/chain_axes/settings_templates/chain_axe_damage_profile_templates"),
@@ -20,7 +20,7 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/ninjafencer_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/luggable_damage_profile_templates"),
     },
-    ["mloc_ranged_weapon_damage"] = {
+    ["mloc_2_ranged_weapon_damage"] = {
         require("scripts/settings/equipment/weapon_templates/force_staffs/settings_templates/force_staff_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/flamers/settings_templates/flamer_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/spraynpray_damage_profile_templates"),
@@ -41,28 +41,29 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/killshot_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/tank_damage_profile_templates"),
     },
-    ["mloc_blitz_damage"] = {
+    ["mloc_3_blitz_damage"] = {
         require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/psyker_smite_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/smiter_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/zealot_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/demolitions_damage_profile_templates"),
     },
-    ["mloc_combat_ability_damage"] = {
+    ["mloc_4_combat_ability_damage"] = {
         require("scripts/settings/damage/damage_profiles/ability_damage_profile_templates"),
     },
-    ["mloc_debuff_damage"] = {
+    ["mloc_5_debuff_damage"] = {
         require("scripts/settings/damage/damage_profiles/buff_damage_profile_templates"),
     },
-    ["Environmental damage"] = {
+    ["mloc_6_environmental_damage"] = {
         require("scripts/settings/damage/damage_profiles/prop_damage_profile_templates"),
     },
-    ["mloc_minion"] = {
-        require("scripts/settings/damage/damage_profiles/minion_damage_profile_templates"),
-    },
-    ["mloc_other"] = {
+    ["mloc_7_other_damage"] = {
         require("scripts/settings/damage/damage_profiles/common_damage_profile_templates"),
     },
+    ["mloc_8_minion"] = {
+        require("scripts/settings/damage/damage_profiles/minion_damage_profile_templates"),
+    },
+
 }
 
 for category_name, category_array in pairs(damage_profile_templates) do
@@ -77,15 +78,15 @@ for category_name, category_array in pairs(damage_profile_templates) do
 end
 
 --Overwrites, because FS is inconsistent
-damage_categories["heavy_tank"] = "mloc_melee_weapon_damage"
-damage_categories["default_powersword_heavy"] = "mloc_melee_weapon_damage"
-damage_categories["ogryn_thumper_p1_m2_default"] = "mloc_ranged_weapon_damage"
-damage_categories["force_staff_demolition_default"] = "mloc_ranged_weapon_damage"
-damage_categories["ogryn_thumper_p1_m2_default_instant"] = "mloc_ranged_weapon_damage"
-damage_categories["ogryn_thumper_p1_m2_close"] = "mloc_ranged_weapon_damage"
-damage_categories["ogryn_thumper_p1_m2_close_instant"] = "mloc_ranged_weapon_damage"
-damage_categories["force_staff_demolition_close"] = "mloc_ranged_weapon_damage"
-damage_categories["plasma_demolition"] = "mloc_ranged_weapon_damage"
+damage_categories["heavy_tank"] = "mloc_1_melee_weapon_damage"
+damage_categories["default_powersword_heavy"] = "mloc_1_melee_weapon_damage"
+damage_categories["ogryn_thumper_p1_m2_default"] = "mloc_2_ranged_weapon_damage"
+damage_categories["force_staff_demolition_default"] = "mloc_2_ranged_weapon_damage"
+damage_categories["ogryn_thumper_p1_m2_default_instant"] = "mloc_2_ranged_weapon_damage"
+damage_categories["ogryn_thumper_p1_m2_close"] = "mloc_2_ranged_weapon_damage"
+damage_categories["ogryn_thumper_p1_m2_close_instant"] = "mloc_2_ranged_weapon_damage"
+damage_categories["force_staff_demolition_close"] = "mloc_2_ranged_weapon_damage"
+damage_categories["plasma_demolition"] = "mloc_2_ranged_weapon_damage"
 
 damage_profile_templates = nil
 

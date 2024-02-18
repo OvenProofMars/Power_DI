@@ -5495,6 +5495,10 @@ ui_manager.setup_pivot_table = function()
 
         local utilities_localize = PDI.utilities.localize
 
+        if level ~= 0 then
+            table.sort(input_table,function(v1,v2) return v1.name < v2.name end)
+        end
+
         for index, value in ipairs(input_table) do
             local current_index = #row_widget_templates+1
             last_child_index = current_index
