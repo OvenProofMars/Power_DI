@@ -129,7 +129,10 @@ function mod.debug_dump()
 end
 --Function to clear all user report templates--
 function mod.clear_user_reports()
-    PDI.data.save_data.report_templates = {}
+    local user_reports = PDI.data.save_data.report_templates
+    for key, value in pairs(user_reports) do
+        user_reports[key] = nil
+    end
     PDI.save_manager.save("save_data", PDI.data.save_data)
     :next(function()mod:notify(mod:localize("mloc_notification_user_reports_cleared"))end)
 end
