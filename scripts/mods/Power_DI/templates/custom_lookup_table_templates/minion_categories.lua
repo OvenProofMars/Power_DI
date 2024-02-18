@@ -242,7 +242,7 @@ local minion_categories = {
 		attack_type = "loc_contract_task_weapon_type_melee",
 		faction = "mloc_chaos_faction",
 		type = "mloc_specialist",
-		class = "mloc_burtser",
+		class = "mloc_burster",
 		display_name = "loc_breed_display_name_chaos_poxwalker_bomber",
 		armor_type = "loc_weapon_stats_display_disgustingly_resilient",
 	},
