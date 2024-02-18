@@ -117,3 +117,7 @@ Example:
 * Maximum cycles. Maximum number of loops the calculations will be allowed to do per frame. Higher numbers could impact fps.
 * Debug mode. Enable to print additional info to the console.
 * Date format. Select the date format used when displaying dates.
+
+# API
+For information regarding the API please check the wiki:
+[Power DI Wiki - API](https://github.com/OvenProofMars/Power_DI/wiki/2.-API).
