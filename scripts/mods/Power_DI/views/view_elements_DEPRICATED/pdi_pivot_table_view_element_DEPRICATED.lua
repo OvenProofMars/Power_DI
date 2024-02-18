@@ -1353,12 +1353,7 @@ PdiPivotTableViewElement.draw = function (self, dt, t, ui_renderer, render_setti
 	PdiPivotTableViewElement.super.draw(self, dt, t, ui_renderer, render_settings, input_service)
 end
 
-PdiPivotTableViewElement._draw_widgets = function (self, dt, t, input_service, ui_renderer, render_settings)
-    if test_toggle then
-        DMF:dtf(render_settings,"render_settings_PdiPivotTableViewElement",15)
-        test_toggle = false
-    end
-    
+PdiPivotTableViewElement._draw_widgets = function (self, dt, t, input_service, ui_renderer, render_settings)   
     for _, widget in ipairs(data.column.banding_widgets) do
         UIWidget.draw(widget, ui_renderer)
     end

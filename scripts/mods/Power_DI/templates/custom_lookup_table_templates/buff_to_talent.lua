@@ -26,6 +26,4 @@ for _, table in pairs(ArchetypeTalents) do
     end
 end
 
-DMF:dtf(buff_to_talent, "buff_to_talent", 20)
-
 return buff_to_talent
