@@ -1,7 +1,7 @@
 # Power DI
 ## Introduction
 ![Power DI](https://i.imgur.com/dMMECKK.png "Power DI")
-Power DI is a framework for collecting, transforming and displaying Darktide statistics.
+Power DI is a framework for collecting, transforming and displaying Darktide statistical data.
 
 ## Notable features
 * Allows users to customize reports to their liking, or even create them from scratch, all from within the UI.
