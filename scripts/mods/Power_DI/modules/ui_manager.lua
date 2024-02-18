@@ -2553,6 +2553,9 @@ end
 local function generate_temp_report_template()
     local temp_report_template = table.clone(user_reports[selected_report_id])
     local grid_settings = scenegraphs_data.report_rows_order.grids.report_rows_order
+    if not grid_settings then
+        return temp_report_template
+    end
     local row_oder_widgets = grid_settings.widgets
     local temp_rows = {}
     for _, widget in ipairs(row_oder_widgets) do

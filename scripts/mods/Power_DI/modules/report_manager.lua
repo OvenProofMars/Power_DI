@@ -100,23 +100,23 @@ local function generate_field_format_functions (template)
 end
 
 --Coroutine that generates a legend of the values of the fields in a dataset, currently not used--
-local function generate_legend_cache_coroutine(template)
-    PDI.debug("generate_legend_cache_coroutine", "start")
-    legend_cache = {}
-    local dataset = PDI.data.session_data.datasets[template.dataset_name]
-    for _, item in pairs(dataset) do
-        for value_name, value in pairs(item) do
-            if PDI.coroutine_manager.must_yield() then
-                coroutine:yield()
-            end
-            legend_cache[value_name] = legend_cache[value_name] or {}
-            legend_cache[value_name].type = type(value)
-            legend_cache[value_name].values = legend_cache[value_name].values or {}
-            legend_cache[value_name].values[value] = legend_cache[value_name].values[value] and legend_cache[value_name].values[value] +1 or 1
-        end
-    end
-    PDI.debug("generate_legend_cache_coroutine", "end")
-end
+-- local function generate_legend_cache_coroutine(template)
+--     PDI.debug("generate_legend_cache_coroutine", "start")
+--     legend_cache = {}
+--     local dataset = PDI.data.session_data.datasets[template.dataset_name]
+--     for _, item in pairs(dataset) do
+--         for value_name, value in pairs(item) do
+--             if PDI.coroutine_manager.must_yield() then
+--                 coroutine:yield()
+--             end
+--             legend_cache[value_name] = legend_cache[value_name] or {}
+--             legend_cache[value_name].type = type(value)
+--             legend_cache[value_name].values = legend_cache[value_name].values or {}
+--             legend_cache[value_name].values[value] = legend_cache[value_name].values[value] and legend_cache[value_name].values[value] +1 or 1
+--         end
+--     end
+--     PDI.debug("generate_legend_cache_coroutine", "end")
+-- end
 
 --Coroutine that generates a pivot table from a dataset--
 local function generate_pivot_table_report_coroutine(template)
