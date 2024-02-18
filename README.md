@@ -33,11 +33,11 @@ The edit screen. Allows for creating or editing a report.
 1. Report name. Fill in the desired name for the report.
 2. Template. Select a template to use it as a basis for editing. Select "none" to create a report from scratch. (Only editable when creating a new report)
 3. Dataset. Select the dataset you want to use for this report. (Only editable when creating a new report)
-4. Report type. Select the report type you want to sue. Currently only pivot table is available (Only editable when creating a new report) 
+4. Report type. Select the report type you want to use. Currently only pivot table is available (Only editable when creating a new report) 
 5. Exit without saving. Return to the reports screen without saving.
 6. Save and exit. Save the report and return to the reports screen. (Only available when minimum requirements are met)
 7. Dataset field. List of all the fields available in the dataset. Fields can be dragged and dropped to the column, rows and values sections.
-8. Column. Drag and drop de desired field to be used as the columns here. (Only one column can be selected)
+8. Column. Drag and drop the desired field to be used as the column here. (Only one column can be selected)
 9. Rows. Drag and drop the desired fields to be used as rows here. Rows can be ordered by drag and drop as well.
 10. Values. Drag and drop the desired fields to be used as values here. Values can be ordered by drag and drop as well.
 11. Expand value settings. Press to expand a value and show the settings for that value.
