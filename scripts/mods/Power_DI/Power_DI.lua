@@ -140,7 +140,7 @@ end
 --Function to toggle forcing report generation, avoiding cache
 function mod.toggle_force_report_generation()
     local new_state = PDI.ui_manager.toggle_force_report_generation()
-    local state_string = new_state and "mloc_true" or "mloc_false"
+    local state_string = new_state and "mloc_enabled" or "mloc_disabled"
     mod:notify(mod:localize("mloc_notification_toggle_force_report_generation")..mod:localize(state_string))
 end
 

@@ -13,7 +13,15 @@ return {
 		--["zh-cn"] = "",
 	},
 	mloc_notification_toggle_force_report_generation = {
-		en = "PDI: Force report generation set to ",
+		en = "PDI: Force report generation",
+		--["zh-cn"] = "",
+	},
+	mloc_enabled = {
+		en = "enabled",
+		--["zh-cn"] = "",
+	},
+	mloc_disabled = {
+		en = "disabled",
 		--["zh-cn"] = "",
 	},
 	--Mod settings
