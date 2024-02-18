@@ -122,8 +122,6 @@ local function generate_pivot_table_report_coroutine(template)
     local filter_function = generate_filter_function(template)
     local dataset_template = PDI.dataset_manager.get_dataset_template(template.dataset_name)
     local column_type = dataset_template.legend[template.columns[1]]
-    print("------BBB")
-    print(column_type)
     local dataset = PDI.data.session_data.datasets[template.dataset_name]
     local report_output = {}
     report_output.data = {}

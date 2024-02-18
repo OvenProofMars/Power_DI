@@ -1284,7 +1284,7 @@ end
 --Datasource template array--
 datasource_templates = {
     {   name = "AttackReportManager",
-        data_structure = {},
+        ----data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.AttackReportManager,
@@ -1295,7 +1295,7 @@ datasource_templates = {
         },
     },
     {   name = "PlayerBlockedAttacks",
-        data_structure = {},
+        ----data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.WeaponSystem,
@@ -1306,7 +1306,7 @@ datasource_templates = {
         },
     },
     {   name = "PlayerSuppressionExtension",
-        data_structure = {},
+        ----data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerSuppressionExtension,
@@ -1317,7 +1317,7 @@ datasource_templates = {
         },
     },
     {   name = "InteracteeSystem",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.InteracteeSystem,
@@ -1331,7 +1331,7 @@ datasource_templates = {
         },
     },
     {   name = "HuskCoherencyExtension",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.HuskCoherencyExtension,
@@ -1343,7 +1343,7 @@ datasource_templates = {
         },
     },
     {   name = "PlayerBuffExtension",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerUnitBuffExtension,
@@ -1367,7 +1367,7 @@ datasource_templates = {
         },
     },
     {   name = "MinionBuffExtension",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.MinionBuffExtension,
@@ -1382,7 +1382,7 @@ datasource_templates = {
         },
     },
     {   name = "UnitSpawnerManager",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.UnitSpawnerManager,
@@ -1393,11 +1393,11 @@ datasource_templates = {
         },
     },
     {   name = "PlayerProfiles",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {},
     },
     {   name = "PickupSystem",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PickupSystem,
@@ -1408,7 +1408,7 @@ datasource_templates = {
         },
     },
     {   name = "BossSystem",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.BossSystem,
@@ -1419,7 +1419,7 @@ datasource_templates = {
         },
     },
     {   name = "PickupAnimationSystem",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PickupAnimationSystem,
@@ -1431,7 +1431,7 @@ datasource_templates = {
         },
     },
     {   name = "LuggableSocketSystem",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.LuggableSocketSystem,
@@ -1444,7 +1444,7 @@ datasource_templates = {
         },
     },
     {   name = "VisualLoadoutSystem",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.VisualLoadoutSystem,
@@ -1463,7 +1463,7 @@ datasource_templates = {
         },
     },
     {   name = "PlayerHuskVisualLoadoutExtension",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerHuskVisualLoadoutExtension,
@@ -1476,7 +1476,7 @@ datasource_templates = {
         },
     },
     {   name = "HealthStationSystem",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.HealthStationSystem,
@@ -1491,7 +1491,7 @@ datasource_templates = {
         },
     },
     {   name = "ServoSkullEvents",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.ServoSkullSystem,
@@ -1532,7 +1532,7 @@ datasource_templates = {
         },
     },
     {   name = "SmartTagSystem",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.SmartTagSystem,
@@ -1546,7 +1546,7 @@ datasource_templates = {
         },
     },
     {   name = "PlayerUnitStatus",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerUnitMoodExtension,
@@ -1557,7 +1557,7 @@ datasource_templates = {
         },
     },
     {   name = "PlayerUnitMoodExtension",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerUnitMoodExtension,
@@ -1568,7 +1568,7 @@ datasource_templates = {
         },
     },
     {   name = "PlayerAbilities",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.PlayerUnitAbilityExtension,
@@ -1587,7 +1587,7 @@ datasource_templates = {
         },
     },
     {   name = "MinionDeathManager",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.MinionDeathManager,
@@ -1598,7 +1598,7 @@ datasource_templates = {
         },
     },
     {   name = "MinionSuppressionHuskExtension",
-        data_structure = {},
+        --data_structure = {},
         hook_templates = {
             {
                 hook_class = CLASS.MinionSuppressionHuskExtension,
@@ -1609,7 +1609,7 @@ datasource_templates = {
         },
     },
     {   name = "Players",
-    data_structure = {},
+    --data_structure = {},
     hook_templates = {},
 },
 }

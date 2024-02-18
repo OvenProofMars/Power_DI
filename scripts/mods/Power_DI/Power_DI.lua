@@ -135,5 +135,5 @@ end
 
 --Testing function--
 function mod.testing()
-
+DMF:dump(mod.datasources.get_available_datasources())
 end

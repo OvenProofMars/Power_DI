@@ -109,8 +109,8 @@ datasource_manager.add_datasources = function(session)
 
     for _, datasource_template in pairs(datasource_manager.registered_datasources) do
         local datasource_name = datasource_template.name
-        local data_structure = utilities.copy(datasource_template.data_structure)
-        session.datasources[datasource_name] = data_structure
+        --local data_structure = utilities.copy(datasource_template.data_structure)
+        session.datasources[datasource_name] = {}
     end
 end
 
