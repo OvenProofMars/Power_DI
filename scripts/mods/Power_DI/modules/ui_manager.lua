@@ -4892,8 +4892,6 @@ ui_manager.setup_report_rows_order = function()
         local item_template = get_item_template()
         item_template.name = row_name
         local test = PDI.utilities.localize(row_name)
-        print(test)
-        print(mod:localize("test1"))
         item_template.passes[1].value = PDI.utilities.localize(row_name)
         widget_templates[#widget_templates+1] = item_template 
     end
