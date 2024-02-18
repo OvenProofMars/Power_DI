@@ -371,4 +371,95 @@ return {
 		en = "Visible:",
 		["zh-cn"] = "可见：",
 	},
+
+	--Lookup table values
+	mloc_chaos_faction = {
+		en = "Chaos",
+		--["zh-cn"] = "",
+	},
+	mloc_imperium_faction = {
+		en = "Imperium",
+		--["zh-cn"] = "",
+	},
+	mloc_player = {
+		en = "Player",
+		["zh-cn"] = "玩家",
+	},
+	mloc_toughness = {
+		en = "Toughness",
+		--["zh-cn"] = "",
+	},
+	mloc_elite = {
+		en = "Elite",
+		--["zh-cn"] = "",
+	},
+	mloc_specialist = {
+		en = "Specialist",
+		--["zh-cn"] = "",
+	},
+	mloc_monstrosity = {
+		en = "Monstrosity",
+		--["zh-cn"] = "",
+	},
+	mloc_horde = {
+		en = "Horde",
+		--["zh-cn"] = "",
+	},
+	mloc_mauler = {
+		en = "Mauler",
+		--["zh-cn"] = "",
+	},
+	mloc_gunner = {
+		en = "Gunner",
+		--["zh-cn"] = "",
+	},
+	mloc_hound = {
+		en = "Hound",
+		--["zh-cn"] = "",
+	},
+	mloc_trapper = {
+		en = "Trapper",
+		--["zh-cn"] = "",
+	},
+	mloc_sniper = {
+		en = "Sniper",
+		--["zh-cn"] = "",
+	},
+	mloc_rager = {
+		en = "Rager",
+		--["zh-cn"] = "",
+	},
+	mloc_bomber = {
+		en = "Bomber",
+		--["zh-cn"] = "",
+	},
+	mloc_stalker = {
+		en = "Stalker",
+		--["zh-cn"] = "",
+	},
+	mloc_bruiser = {
+		en = "Bruiser",
+		--["zh-cn"] = "",
+	},
+	mloc_basic = {
+		en = "Basic",
+		--["zh-cn"] = "",
+	},
+	mloc_flamer = {
+		en = "Flamer",
+		--["zh-cn"] = "",
+	},
+	mloc_burster = {
+		en = "Burster",
+		--["zh-cn"] = "",
+	},
+	mloc_shooter = {
+		en = "Shooter",
+		--["zh-cn"] = "",
+	},
+
+	
+
+	
+
 }

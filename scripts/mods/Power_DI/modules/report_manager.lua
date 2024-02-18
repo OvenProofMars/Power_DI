@@ -22,7 +22,7 @@ local function generate_filter_function (template)
                 end
             end
             for field_name, _ in pairs(registered_dataset.legend) do
-                function_string = string.gsub(function_string,field_name,"arg1."..field_name)
+                function_string = string.gsub(function_string,field_name,"localize(arg1."..field_name..")")
             end
             function_string = string.gsub(function_string,"=","==")
             function_string = string.gsub(function_string,"~","~=")
@@ -32,7 +32,11 @@ local function generate_filter_function (template)
         end
     end
     local filter_function = Mods.lua.loadstring(function_string)
-    setfenv(filter_function, {select=select})
+    local functions_table = {
+        select=select,
+        localize = PDI.utilities.localize
+    }
+    setfenv(filter_function, functions_table)
     PDI.debug("generate_filter_function", "start")
     return filter_function
 end

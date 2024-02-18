@@ -2593,7 +2593,8 @@ local function handle_changes()
         destroy_scenegraph("pivot_table")
         loading = true
         local temp_report_template = generate_temp_report_template()
-        PDI.report_manager.generate_report(temp_report_template, in_game)
+        --PDI.report_manager.generate_report(temp_report_template, in_game)
+        PDI.report_manager.generate_report(temp_report_template, true)
         :next(
             function(data)
                 local report = data[1]

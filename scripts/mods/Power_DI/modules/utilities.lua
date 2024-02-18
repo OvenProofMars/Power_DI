@@ -254,6 +254,9 @@ end
 
 --Function to handle localization--
 utilities.localize = function(input_string)
+    if not input_string then
+        return
+    end
     local prefix = string.sub(input_string,1,4)
     if prefix == "loc_" then
         return Localize(input_string)

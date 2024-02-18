@@ -29,25 +29,21 @@ local attack_reports = function(data)
                     if attacker_lookup then
                         local attacker_name = attacker_lookup.unit_name
                         local attacker_template_name = attacker_lookup.unit_template_name
-                        if attacker_template_name == "player_character" then
+                        local is_player = attacker_template_name == "player_character"
+                        local lookup_value = is_player and "player" or attacker_name
+                        local lookup = minion_categories[lookup_value]
+                        if lookup then
+                            v.attacker_attack_type = lookup.attack_type
+                            v.attacker_faction = lookup.faction
+                            v.attacker_type = lookup.type
+                            v.attacker_class = lookup.class
+                            v.attacker_armor_type = lookup.armor_type
+                            v.attacker_name = lookup.display_name
+                        end
+                        if is_player then
                             local player_profile = PlayerProfiles[attacking_unit_uuid]
                             v.attacker_player = player_profile and player_profile.character_id
                             v.attacker_name = player_profile and player_profile.name
-                            v.attacker_attack_type = "Player"
-                            v.attacker_faction = "Imperium"
-                            v.attacker_type = "Player"
-                            v.attacker_class = player_profile and player_profile.archetype.name
-                            v.attacker_armor_type = "Player"
-                        else
-                            local lookup = minion_categories[attacker_name]
-                            if lookup then
-                                v.attacker_attack_type = lookup.attack_type
-                                v.attacker_faction = lookup.faction
-                                v.attacker_type = lookup.type
-                                v.attacker_class = lookup.class
-                                v.attacker_armor_type = lookup.armor_type
-                                v.attacker_name = lookup.display_name
-                            end
                         end
                     end
                     local defending_unit_uuid = v.attacked_unit_uuid
@@ -55,30 +51,28 @@ local attack_reports = function(data)
                     if defender_lookup then
                         local defender_name = defender_lookup.unit_name
                         local defender_template_name = defender_lookup.unit_template_name
-                        local defender_max_health = defender_lookup.max_health
 
-                        if defender_template_name == "player_character" then
+                        local is_player = defender_template_name == "player_character"
+                        local lookup_value = is_player and "player" or defender_name
+                        local lookup = minion_categories[lookup_value]
+                        local defender_max_health = defender_lookup.max_health
+                        
+                        if lookup then
+                            v.defender_attack_type = lookup.attack_type
+                            v.defender_faction = lookup.faction
+                            v.defender_type = lookup.type
+                            v.defender_class = lookup.class
+                            v.defender_armor_type = lookup.armor_type
+                            v.defender_name = lookup.display_name
+                            v.defender_max_health = defender_max_health
+                        end
+
+                        if is_player then
                             local player_profile = PlayerProfiles[defending_unit_uuid]
                             v.defender_player = player_profile and player_profile.character_id
                             v.defender_name = player_profile and player_profile.name
-                            v.defender_attack_type = "Player"
-                            v.defender_faction = "Imperium"
-                            v.defender_type = "Player"
-                            v.defender_class = player_profile and player_profile.archetype.name
-                            v.defender_armor_type = "Player"
-                            v.defender_max_health = defender_max_health
-                        else
-                            local lookup = minion_categories[defender_name]
-                            if lookup then
-                                v.defender_attack_type = lookup.attack_type
-                                v.defender_faction = lookup.faction
-                                v.defender_type = lookup.type
-                                v.defender_class = lookup.class
-                                v.defender_armor_type = lookup.armor_type
-                                v.defender_name = lookup.display_name
-                                v.defender_max_health = defender_max_health
-                            end
                         end
+
                         if v.attack_result == "died" then
                             v.killed = 1
                             if defender_max_health then
