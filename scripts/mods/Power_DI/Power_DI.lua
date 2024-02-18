@@ -53,7 +53,8 @@ PDI.utilities.init(PDI)
 PDI.save_manager.init(PDI)
 :next(
     function()
-        mod:notify("PDI: Save files loaded")        
+        mod:notify(mod:localize("mloc_notification_save_files_loaded"))
+        PDI.save_files_loaded = true        
     end
 )
 PDI.api_manager.init(PDI)
@@ -124,13 +125,19 @@ end
 function mod.debug_dump()
     local datetime_string = os.date('%d_%m_%y_%H_%M_%S')
     DMF:dtf(PDI.data, "PDI_data_dump_"..datetime_string, 20)
-    mod:notify("Data dump successful")
+    mod:notify(mod:localize("mloc_notification_data_dup_successful"))
 end
 --Function to clear all user report templates--
 function mod.clear_user_reports()
     PDI.data.save_data.report_templates = {}
     PDI.save_manager.save("save_data", PDI.data.save_data)
-    :next(function()mod:echo("User report templates cleared successfully, requires restart to show")end)
+    :next(function()mod:notify(mod:localize("mloc_notification_user_reports_cleared"))end)
+end
+
+--Function to toggle forcing report generation, avoiding cache
+function mod.toggle_force_report_generation()
+    local new_state = PDI.ui_manager.toggle_force_report_generation()
+    mod:notify(mod:localize("mloc_notification_toggle_force_report_generation")..tostring(new_state))
 end
 
 --Testing function--

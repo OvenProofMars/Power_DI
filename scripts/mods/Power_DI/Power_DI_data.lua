@@ -28,6 +28,16 @@ return {
                 function_name = "debug_dump"
             },
             {
+                setting_id = "toggle_force_report_generation",
+                title = "toggle_force_report_generation_title",
+                tooltip = "toggle_force_report_generation_tooltip",
+                type = "keybind",
+                default_value = {},
+                keybind_trigger = "pressed",
+                keybind_type = "function_call",
+                function_name = "toggle_force_report_generation"
+            },
+            {
                 setting_id = "clear_user_reports",
                 title = "clear_user_reports_title",
                 tooltip = "clear_user_reports_tooltip",
@@ -36,16 +46,6 @@ return {
                 keybind_trigger = "pressed",
                 keybind_type = "function_call",
                 function_name = "clear_user_reports"
-            },
-            {
-                setting_id = "testing",
-                title = "testing_title",
-                tooltip = "testing_tooltip",
-                type = "keybind",
-                default_value = {},
-                keybind_trigger = "pressed",
-                keybind_type = "function_call",
-                function_name = "testing"
             },
             {
                 setting_id = "auto_save",
@@ -96,6 +96,16 @@ return {
                   },
                 default_value = "%d/%m/%Y",
             },
+            -- {
+            --     setting_id = "testing",
+            --     title = "testing_title",
+            --     tooltip = "testing_tooltip",
+            --     type = "keybind",
+            --     default_value = {},
+            --     keybind_trigger = "pressed",
+            --     keybind_type = "function_call",
+            --     function_name = "testing"
+            -- },
 		}
 	}
 }

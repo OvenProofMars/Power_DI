@@ -1,4 +1,21 @@
 return {
+	--Power DI notifications
+	mloc_notification_save_files_loaded = {
+		en = "PDI: Save files loaded",
+		--["zh-cn"] = "",
+	},
+	mloc_notification_data_dup_successful = {
+		en = "PDI: Data dump successful",
+		--["zh-cn"] = "",
+	},
+	mloc_notification_user_reports_cleared = {
+		en = "PDI: User report templates cleared successfully",
+		--["zh-cn"] = "",
+	},
+	mloc_notification_toggle_force_report_generation = {
+		en = "PDI: Force report generation set to ",
+		--["zh-cn"] = "",
+	},
 	--Mod settings
 	mod_description = {
 		en = "Framework for collection, transforming, and displaying game statistics",
@@ -87,6 +104,14 @@ return {
 	YYYY_MM_DD = {
 		en = "YYYY/MM/DD",
 		["zh-cn"] = "年/月/日",
+	},
+	toggle_force_report_generation_title = {
+		en = "Toggle force report generation",
+		--["zh-cn"] = "",
+	},
+	toggle_force_report_generation_tooltip = {
+		en = "Forces Power DI to generate reports from scratch, bypassing the cache",
+		--["zh-cn"] = "",
 	},
 
 	--Static UI

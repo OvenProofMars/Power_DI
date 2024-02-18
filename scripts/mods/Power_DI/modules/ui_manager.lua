@@ -23,6 +23,8 @@ local input_service = input_manager and input_manager:get_input_service("View")
 
 local UIManager = Managers.ui
 local PDI, render_settings, sizes, packages_loaded, main_view_instance, selected_session_id, load_session, loaded_session, selected_report_id, load_report, loaded_report, user_reports, loading, load_edit, edit_mode_cache, error_message, in_game, focussed_hotspot, localize, delete_animation_progress
+local force_report_generation = false
+
 local ui_manager = {}
 
 local renderers = {}
@@ -2592,8 +2594,9 @@ local function handle_changes()
         destroy_scenegraph("pivot_table")
         loading = true
         local temp_report_template = generate_temp_report_template()
+        local force = force_report_generation or in_game
         --PDI.report_manager.generate_report(temp_report_template, in_game)
-        PDI.report_manager.generate_report(temp_report_template, true)
+        PDI.report_manager.generate_report(temp_report_template, force)
         :next(
             function(data)
                 local report = data[1]
@@ -3219,6 +3222,12 @@ ui_manager.toggle_view = function()
     elseif restricted_views_check() and not UIManager:chat_using_input() then
         Managers.ui:open_view("pdi_main_view", nil,nil,nil,nil, PDI)
     end
+end
+--Function to toggle force report generation, avoiding cache
+ui_manager.toggle_force_report_generation = function()
+    local new_state = not force_report_generation
+    force_report_generation = new_state
+    return new_state
 end
 --Function to handle starting the UI
 ui_manager.open_ui = function(instance)
