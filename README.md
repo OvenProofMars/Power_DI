@@ -4,15 +4,15 @@
 Power DI is a framework for collecting, transforming and displaying Darktide statistical data.
 
 ## Notable features
-* Allows users to customize reports to their liking, or even create them from scratch, all from within the UI.
-* Records events as source data, which means you can create new reports even after a mission is complete.
-* While in a mission the auto save feature will periodically save all recorded data to disk, so in the event of a game crash you can continue recording where you left off.
-* Records players gear and build, which allows you to inspect what a player was using during a specific session.
+* Customize reports to your liking, or even create them from scratch, all from within the ui.
+* Records events as source data, which means you can create new reports and gain new insights even after a mission has concluded.
+* While in a mission the auto save feature will periodically save all recorded data to disk, so in the event of a game crash or disconnect you can just continue where you left off.
+* Inspect what gear and build players were using in any of your recorded sessions.
 * API available for adding new data sources, datasets and report templates to Power DI.
 
 ## Core concepts
 Power DI is build around the following three core concepts:
-1. Data sources. Events are recorded to data sources, these data sources will usually only have the minimum needed data available, and are usually in a form that need additional transformations to make them readable.
+1. Data sources. Events are recorded to data sources, which is the source data in it's rawest form, and requires additional transformations to make them readable.
 2. Data sets. One more data sources can be combined to create a dataset. A dataset is a formatted table containing all the information needed to create reports.
 3. Reports. A report is generated from a dataset, and creates a specific view of that data by displaying it in a structured way.
 
@@ -27,7 +27,7 @@ The reports screen, for selecting and viewing reports.
 5. Edit report button. Press to edit the currently selected report.
 6. Report columns. When the field type of the column is of type "player" the player names can be clicked on to view the gear and build that player used during that specific match.
 7. Report rows. Depending on the field type it will show the sum or average of all child rows. Press a row to expand it and show it's child rows (if available).
-8. Exit Power DI. Press to close the UI.
+8. Exit Power DI. Press to close the ui.
 
 # Sessions screen
 ![Sessions screen](https://i.imgur.com/yCNzJC5.png "Sessions screen")
@@ -35,7 +35,7 @@ The sessions screen. Shows an overview of your recorded sessions.
 
 1. Reports tab. Press to transition to the report screen.
 2. Sessions list. Select a session to load it (will automatically transition you to the reports screen)
-3. Exit Power DI. Press to close the UI.
+3. Exit Power DI. Press to close the ui.
 
 # Edit screen
 ![Edit screen](https://i.imgur.com/BzzdjD3.png "Edit screen")
@@ -59,7 +59,7 @@ The edit screen. Allows for creating or editing a report.
 16. Add calculated field. Press to add a calculated field to the values list.
 17. Data filter. Allows you to enter a formula used to filter the dataset. (See formulas section below for more information)
 18. Pivot table settings. Currently unused, but will have setting specific to the pivot table report.
-19. Exit Power DI. Press to close the UI.
+19. Exit Power DI. Press to close the ui.
 
 ## Report templates
 The following report templates are available by default:
@@ -106,12 +106,14 @@ Example:
 `attacker_type = "Player" and damage > 0`
 
 # Settings
-![Settings](https://i.imgur.com/OGeBBM7.png "Settings")
+![Settings](https://i.imgur.com/ZUSsxC9.png "Settings")
+Mod settings screen
 
-* Open Power DI. Create a keybind used to open the Power DI UI.
-* Dump data. Create a keybind used to dump the session and user data to a file. ("\Warhammer 40,000 DARKTIDE\binaries\dump")
-* Clear user reports templates. Create a keybind used to delete all user reports.
-* Development testing. Keybind used during development, shouldn't be used.
+* Open Power DI. Create a keybinding used to open the Power DI UI.
+* Dump data. Create a keybinding used to dump the session and user data to a file. ("\Warhammer 40,000 DARKTIDE\binaries\dump")
+* Toggle force report generation. When enabled will force Power DI to always generate the report, bypassing the cache.
+* Clear user reports templates. Create a keybinding used to delete all user reports.
+* Development testing. Keybinding used during development, shouldn't be used.
 * Auto save. Enable to periodical saving of the recorded data during a mission. Can have a performance impact.
 * Auto save interval. Interval between auto saves, in seconds.
 * Maximum cycles. Maximum number of loops the calculations will be allowed to do per frame. Higher numbers could impact fps.

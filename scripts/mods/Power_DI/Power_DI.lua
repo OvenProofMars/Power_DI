@@ -2,7 +2,7 @@ local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 local PDI = {}
 --local MasterItems = require("scripts/backend/master_items")
-mod.version = "0.9.6"
+mod.version = "1.0"
 mod.cache = {}
 PDI.promise = require("scripts/foundation/utilities/promise")
 PDI.utilities = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\utilities]])
@@ -141,10 +141,10 @@ end
 function mod.toggle_force_report_generation()
     local new_state = PDI.ui_manager.toggle_force_report_generation()
     local state_string = new_state and "mloc_enabled" or "mloc_disabled"
-    mod:notify(mod:localize("mloc_notification_toggle_force_report_generation")..mod:localize(state_string))
+    mod:notify(mod:localize("mloc_notification_toggle_force_report_generation").." "..mod:localize(state_string))
 end
 
 --Testing function--
-function mod.testing()
-DMF:dump(mod.datasources.get_available_datasources())
-end
+-- function mod.testing()
+
+-- end
