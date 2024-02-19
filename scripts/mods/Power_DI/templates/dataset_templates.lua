@@ -225,7 +225,7 @@ local tagging = function(data)
                     local unit_name = target_lookup.unit_name
                     local minion_lookup = unit_name and minion_categories[unit_name]
                     if minion_lookup then
-                        v.target_name = minion_lookup.en_name
+                        v.target_name = minion_lookup.display_name
                         v.target_type = minion_lookup.type
                         v.target_class = minion_lookup.class
                     else
@@ -610,7 +610,6 @@ end
 dataset_templates = {
     attack_reports = {
         name = "mloc_dataset_attack_reports",
-        --label = "Attack reports",
         dataset_function = attack_reports,
         required_datasources = {
             "AttackReportManager",
@@ -648,7 +647,6 @@ dataset_templates = {
     },
     player_status = {
         name = "mloc_dataset_player_status",
-        --label = "Player status",
         dataset_function = player_status,
         required_datasources = {
             "PlayerUnitStatus",
@@ -665,7 +663,6 @@ dataset_templates = {
     },
     player_interactions = {
         name = "mloc_dataset_player_interactions",
-        --label = "Player interactions",
         dataset_function = player_interactions,
         required_datasources = {
             "InteracteeSystem",
@@ -707,7 +704,6 @@ dataset_templates = {
     },
     player_suppression = {
         name = "mloc_dataset_player_supression",
-        --label = "Suppression",
         dataset_function = player_suppression,
         required_datasources = {
             "PlayerUnitMoodExtension",
@@ -722,7 +718,6 @@ dataset_templates = {
     },
     blocked_attacks = {
         name = "mloc_dataset_blocked_attacks",
-        --label = "Blocked",
         dataset_function = blocked_attacks,
         required_datasources = {
             "PlayerBlockedAttacks",
@@ -744,7 +739,6 @@ dataset_templates = {
     },
     slot_events = {
         name = "mloc_dataset_slot_events",
-        --label = "Slots",
         dataset_function = slots,
         required_datasources = {
             "VisualLoadoutSystem",
@@ -760,7 +754,6 @@ dataset_templates = {
     },
     player_abilities = {
         name = "mloc_dataset_player_abilities",
-        --label = "Player abilities",
         dataset_function = player_abilities,
         required_datasources = {
             "PlayerAbilities",
@@ -777,7 +770,6 @@ dataset_templates = {
     },
     player_buffs = {
         name = "mloc_dataset_player_buffs",
-        --label = "Player buffs",
         dataset_function = player_buffs,
         required_datasources = {
             "PlayerBuffExtension",
