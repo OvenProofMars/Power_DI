@@ -50,8 +50,8 @@ return {
 		["zh-cn"] = "清空用户报告模板",
 	},
 	clear_user_reports_tooltip = {
-		en = "Will clear all user created and edited reports, will require restart for them to disapear from the ui",
-		["zh-cn"] = "将会清空所有由用户创建和编辑的报告，需要重启使它们从界面上消失",
+		en = "Will clear all user created and edited reports",
+		["zh-cn"] = "将会清空所有由用户创建和编辑的报告",
 	},
 	testing_title = {
 		en = "Development testing",
