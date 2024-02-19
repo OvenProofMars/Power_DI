@@ -2,32 +2,32 @@ return {
 	--Power DI notifications
 	mloc_notification_save_files_loaded = {
 		en = "PDI: Save files loaded",
-		--["zh-cn"] = "",
+		["zh-cn"] = "PDI：已加载存档文件",
 	},
 	mloc_notification_data_dup_successful = {
 		en = "PDI: Data dump successful",
-		--["zh-cn"] = "",
+		["zh-cn"] = "PDI：数据转储成功",
 	},
 	mloc_notification_user_reports_cleared = {
 		en = "PDI: User report templates cleared successfully",
-		--["zh-cn"] = "",
+		["zh-cn"] = "PDI：清空用户报告模板成功",
 	},
 	mloc_notification_toggle_force_report_generation = {
 		en = "PDI: Force report generation",
-		--["zh-cn"] = "",
+		["zh-cn"] = "PDI：强制报告生成",
 	},
 	mloc_enabled = {
 		en = "enabled",
-		--["zh-cn"] = "",
+		["zh-cn"] = "启用",
 	},
 	mloc_disabled = {
 		en = "disabled",
-		--["zh-cn"] = "",
+		["zh-cn"] = "禁用",
 	},
 	--Mod settings
 	mod_description = {
 		en = "Framework for collection, transforming, and displaying game statistics",
-		["zh-cn"] = "收集、转换和显示游戏统计数据的框架",
+		["zh-cn"] = "用来收集、转换和显示游戏统计数据的框架",
 	},
 	open_pdi_view_title = {
 		en = "Open Power DI",
@@ -115,11 +115,11 @@ return {
 	},
 	toggle_force_report_generation_title = {
 		en = "Toggle force report generation",
-		--["zh-cn"] = "",
+		["zh-cn"] = "开关强制报告生成",
 	},
 	toggle_force_report_generation_tooltip = {
 		en = "Forces Power DI to generate reports from scratch, bypassing the cache",
-		--["zh-cn"] = "",
+		["zh-cn"] = "强制 Power DI 跳过缓存，从零开始生成报告",
 	},
 
 	--Static UI
@@ -165,7 +165,7 @@ return {
 	},
 	mloc_session_resumed = {
 		en = "Resumed: ",
-		["zh-cn"] = "已恢复：",
+		["zh-cn"] = "被恢复：",
 	},
 	mloc_true = {
 		en = "True",
@@ -249,7 +249,7 @@ return {
 	},
 	mloc_expand_first_level = {
 		en = "Expand first level:",
-		["zh-cn"] = "展开第一层",
+		["zh-cn"] = "展开第一层：",
 	},
 	mloc_dataset_fields = {
 		en = "Dataset fields",
@@ -297,7 +297,7 @@ return {
 	},
 	mloc_add_calculated_field = {
 		en = "Add calculated field",
-		["zh-cn"] = "添加计算字段 calculated field",
+		["zh-cn"] = "添加计算字段",
 	},
 	mloc_edit_item_label = {
 		en = "Label:",
@@ -415,48 +415,48 @@ return {
 	--Custom lookup table values
 	mloc_other = {
 		en = "Other",
-		--["zh-cn"] = "",
+		["zh-cn"] = "其他",
 	},
 	mloc_1_melee_weapon_damage = {
 		en = "Melee weapon damage",
-		--["zh-cn"] = "",
+		["zh-cn"] = "近战武器伤害",
 	},
 	mloc_2_ranged_weapon_damage = {
 		en = "Ranged weapon damage",
-		--["zh-cn"] = "",
+		["zh-cn"] = "远程武器伤害",
 	},
 	mloc_3_blitz_damage = {
 		en = "Blitz damage",
-		--["zh-cn"] = "",
+		["zh-cn"] = "闪击伤害",
 	},
 	mloc_4_combat_ability_damage = {
 		en = "Combat ability damage",
-		--["zh-cn"] = "",
+		["zh-cn"] = "主动技能伤害",
 	},
 	mloc_5_debuff_damage = {
 		--Note: damage from debuffs such as bleeding, burning ect
 		en = "Condition damage",
-		--["zh-cn"] = "",
+		["zh-cn"] = "状态效果伤害",
 	},
 	mloc_6_environmental_damage = {
 		en = "Environmental damage",
-		--["zh-cn"] = "",
+		["zh-cn"] = "环境伤害",
 	},
 	mloc_7_other_damage = {
 		en = "Other damage",
-		--["zh-cn"] = "",
+		["zh-cn"] = "其他伤害",
 	},
 	mloc_8_minion = {
 		en = "Minion",
-		--["zh-cn"] = "",
+		["zh-cn"] = "敌人",
 	},
 	mloc_chaos_faction = {
 		en = "Chaos",
-		--["zh-cn"] = "",
+		["zh-cn"] = "混沌",
 	},
 	mloc_imperium_faction = {
 		en = "Imperium",
-		--["zh-cn"] = "",
+		["zh-cn"] = "帝国",
 	},
 	mloc_player = {
 		en = "Player",
@@ -464,442 +464,442 @@ return {
 	},
 	mloc_toughness = {
 		en = "Toughness",
-		--["zh-cn"] = "",
+		["zh-cn"] = "韧性",
 	},
 	mloc_elite = {
 		en = "Elite",
-		--["zh-cn"] = "",
+		["zh-cn"] = "精英",
 	},
 	mloc_specialist = {
 		en = "Specialist",
-		--["zh-cn"] = "",
+		["zh-cn"] = "专家",
 	},
 	mloc_monstrosity = {
 		en = "Monstrosity",
-		--["zh-cn"] = "",
+		["zh-cn"] = "怪物",
 	},
 	mloc_horde = {
 		en = "Horde",
-		--["zh-cn"] = "",
+		["zh-cn"] = "群怪",
 	},
 	mloc_mauler = {
 		en = "Mauler",
-		--["zh-cn"] = "",
+		["zh-cn"] = "重锤兵",
 	},
 	mloc_gunner = {
 		en = "Gunner",
-		--["zh-cn"] = "",
+		["zh-cn"] = "炮手",
 	},
 	mloc_hound = {
 		en = "Hound",
-		--["zh-cn"] = "",
+		["zh-cn"] = "猎犬",
 	},
 	mloc_trapper = {
 		en = "Trapper",
-		--["zh-cn"] = "",
+		["zh-cn"] = "陷阱手",
 	},
 	mloc_sniper = {
 		en = "Sniper",
-		--["zh-cn"] = "",
+		["zh-cn"] = "狙击手",
 	},
 	mloc_rager = {
 		en = "Rager",
-		--["zh-cn"] = "",
+		["zh-cn"] = "狂暴者",
 	},
 	mloc_bomber = {
 		en = "Bomber",
-		--["zh-cn"] = "",
+		["zh-cn"] = "轰炸者",
 	},
 	mloc_stalker = {
 		en = "Stalker",
-		--["zh-cn"] = "",
+		["zh-cn"] = "潜行者",
 	},
 	mloc_bruiser = {
 		en = "Bruiser",
-		--["zh-cn"] = "",
+		["zh-cn"] = "格斗兵",
 	},
 	mloc_basic = {
 		en = "Basic",
-		--["zh-cn"] = "",
+		["zh-cn"] = "基础",
 	},
 	mloc_flamer = {
 		en = "Flamer",
-		--["zh-cn"] = "",
+		["zh-cn"] = "火焰兵",
 	},
 	mloc_burster = {
 		en = "Burster",
-		--["zh-cn"] = "",
+		["zh-cn"] = "爆破手",
 	},
 	mloc_shooter = {
 		en = "Shooter",
-		--["zh-cn"] = "",
+		["zh-cn"] = "枪手",
 	},
 	mloc_disabled_player_state = {
 		en = "Disabled",
-		--["zh-cn"] = "",
+		["zh-cn"] = "被控",
 	},
 	mloc_movement_player_state = {
 		en = "Movement",
-		--["zh-cn"] = "",
+		["zh-cn"] = "移动",
 	},
 	mloc_combat_ability = {
 		en = "Combat ability",
-		--["zh-cn"] = "",
+		["zh-cn"] = "主动技能",
 	},
 	mloc_blitz_ability = {
 		en = "Blitz ability",
-		--["zh-cn"] = "",
+		["zh-cn"] = "闪击技能",
 	},
 	mloc_ability_charge_gained = {
 		en = "Charge gained",
-		--["zh-cn"] = "",
+		["zh-cn"] = "获得使用次数",
 	},
 	mloc_ability_charge_used = {
 		en = "Charge used",
-		--["zh-cn"] = "",
+		["zh-cn"] = "消耗使用次数",
 	},
 	mloc_melee_weapon = {
 		en = "Melee weapon",
-		--["zh-cn"] = "",
+		["zh-cn"] = "近战武器",
 	},
 	mloc_ranged_weapon = {
 		en = "Ranged weapon",
-		--["zh-cn"] = "",
+		["zh-cn"] = "远程武器",
 	},
 	mloc_curio = {
 		en = "Curio",
-		--["zh-cn"] = "",
+		["zh-cn"] = "附件",
 	},
 
 	--Report template value labels
 	mloc_damage = {
 		en = "Damage",
-		--["zh-cn"] = "",
+		["zh-cn"] = "伤害",
 	},
 	mloc_kills = {
 		en = "Kills",
-		--["zh-cn"] = "",
+		["zh-cn"] = "击杀",
 	},
 	mloc_crit_percent = {
 		en = "Crit percent",
-		--["zh-cn"] = "",
+		["zh-cn"] = "暴击百分比",
 	},
 	mloc_weakspot_percent = {
 		en = "Weakspot percent",
-		--["zh-cn"] = "",
+		["zh-cn"] = "弱点百分比",
 	},
 	mloc_damage_received = {
 		en = "Damage received",
-		--["zh-cn"] = "",
+		["zh-cn"] = "受到伤害",
 	},
 	mloc_states = {
 		en = "States",
-		--["zh-cn"] = "",
+		["zh-cn"] = "状态",
 	},
 	mloc_interactions = {
 		en = "Interactions",
-		--["zh-cn"] = "",
+		["zh-cn"] = "交互",
 	},
 	mloc_total_tags = {
 		en = "Total tags",
-		--["zh-cn"] = "",
+		["zh-cn"] = "总标记",
 	},
 	mloc_suppression = {
 		en = "Suppression",
-		--["zh-cn"] = "",
+		["zh-cn"] = "压制",
 	},
 	mloc_blocked_attacks = {
 		en = "Blocked attacks",
-		--["zh-cn"] = "",
+		["zh-cn"] = "格挡攻击",
 	},
 	mloc_slot_changes = {
 		en = "Slot changes",
-		--["zh-cn"] = "",
+		["zh-cn"] = "装备栏切换",
 	},
 	mloc_player_abilities = {
 		en = "Player abilities",
-		--["zh-cn"] = "",
+		["zh-cn"] = "玩家技能",
 	},
 	mloc_buff_events = {
 		en = "Buff events",
-		--["zh-cn"] = "",
+		["zh-cn"] = "状态效果事件",
 	},
 	--Dataset field labels
 	attacker_player = {
 		en = "Attacking player",
-		--["zh-cn"] = "",
+		["zh-cn"] = "攻击者玩家",
 	},
 	defender_player = {
 		en = "Defending player",
-		--["zh-cn"] = "",
+		["zh-cn"] = "防御者玩家",
 	},
 	damage_efficiency = {
 		en = "Damage efficiency",
-		--["zh-cn"] = "",
+		["zh-cn"] = "伤害效率",
 	},
 	weakspot_hit = {
 		en = "Weakspot hit",
-		--["zh-cn"] = "",
+		["zh-cn"] = "弱点命中",
 	},
 	defender_faction = {
 		en = "Defender faction",
-		--["zh-cn"] = "",
+		["zh-cn"] = "防御者阵营",
 	},
 	attack_result = {
 		en = "Attack result",
-		--["zh-cn"] = "",
+		["zh-cn"] = "攻击结果",
 	},
 	defender_name = {
 		en = "Defender name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "防御者名称",
 	},
 	attacker_name = {
-		en = "Attacker_name",
-		--["zh-cn"] = "",
+		en = "Attacker name",
+		["zh-cn"] = "攻击者名称",
 	},
 	damage_category = {
 		en = "Damage category",
-		--["zh-cn"] = "",
+		["zh-cn"] = "伤害类别",
 	},
 	time = {
 		en = "Time",
-		--["zh-cn"] = "",
+		["zh-cn"] = "时间",
 	},
 	defender_attack_type = {
 		en = "Defender attack type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "防御者攻击类型",
 	},
 	attacker_armor_type = {
 		en = "Attacker armor type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "攻击者护甲类型",
 	},
 	defender_armor_type = {
 		en = "Defender armor type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "防御者护甲类型",
 	},
 	defender_type = {
 		en = "Defender type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "防御者类型",
 	},
 	attacker_type = {
 		en = "Attacker type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "攻击者类型",
 	},
 	critical_hit = {
 		en = "Critical hit",
-		--["zh-cn"] = "",
+		["zh-cn"] = "暴击命中",
 	},
 	attacker_faction = {
 		en = "Attacker faction",
-		--["zh-cn"] = "",
+		["zh-cn"] = "攻击者阵营",
 	},
 	damage_profile_name = {
 		en = "Damage profile",
-		--["zh-cn"] = "",
+		["zh-cn"] = "伤害档案",
 	},
 	attacker_attack_type = {
 		en = "Attacker attack type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "攻击者攻击类型",
 	},
 	killed = {
 		en = "Killed",
-		--["zh-cn"] = "",
+		["zh-cn"] = "击杀",
 	},
 	damage = {
 		en = "Damage",
-		--["zh-cn"] = "",
+		["zh-cn"] = "伤害",
 	},
 	attack_type = {
 		en = "Attack type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "攻击类型",
 	},
 	defender_max_health = {
 		en = "Defender max health",
-		--["zh-cn"] = "",
+		["zh-cn"] = "防御者最大生命值",
 	},
 	health_damage = {
 		en = "Health damage",
-		--["zh-cn"] = "",
+		["zh-cn"] = "生命值伤害",
 	},
 	attacker_class = {
 		en = "Attacker class",
-		--["zh-cn"] = "",
+		["zh-cn"] = "攻击者分类",
 	},
 	defender_class = {
 		en = "Defender class",
-		--["zh-cn"] = "",
+		["zh-cn"] = "防御者分类",
 	},
 	player_name = {
 		en = "Player name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "玩家名称",
 	},
 	player = {
 		en = "Player",
-		--["zh-cn"] = "",
+		["zh-cn"] = "玩家",
 	},
 	state_category = {
 		en = "State category",
-		--["zh-cn"] = "",
+		["zh-cn"] = "状态类别",
 	},
 	state_name = {
 		en = "State name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "状态名称",
 	},
 	previous_state_name = {
 		en = "Previous state name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "上一个状态名称",
 	},
 	interactor_name = {
 		en = "Interactor name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "交互者名称",
 	},
 	interactee_name = {
 		en = "Interactee name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "交互物名称",
 	},
 	interactor_player = {
 		en = "Interactor player",
-		--["zh-cn"] = "",
+		["zh-cn"] = "交互者玩家",
 	},
 	interactee_player = {
 		en = "Interactee player",
-		--["zh-cn"] = "",
+		["zh-cn"] = "交互物玩家",
 	},
 	interaction_type = {
 		en = "Interaction type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "交互类型",
 	},
 	event = {
 		en = "Event",
-		--["zh-cn"] = "",
+		["zh-cn"] = "事件",
 	},
 	result = {
 		en = "Result",
-		--["zh-cn"] = "",
+		["zh-cn"] = "结果",
 	},
 
 	target_name = {
 		en = "Target name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "目标名称",
 	},
 	target_type = {
 		en = "Target type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "目标类型",
 	},
 	target_class = {
 		en = "Target class",
-		--["zh-cn"] = "",
+		["zh-cn"] = "目标分类",
 	},
 	tag_type = {
 		en = "Tag type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "标记类型",
 	},
 	reason = {
 		en = "Reason",
-		--["zh-cn"] = "",
+		["zh-cn"] = "原因",
 	},
 	tag_id = {
 		en = "Tag ID",
-		--["zh-cn"] = "",
+		["zh-cn"] = "标记 ID",
 	},
 	suppression_type = {
 		en = "Suppression type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "压制类型",
 	},
 	enemy_name = {
 		en = "Enemy name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "敌人名称",
 	},
 	enemy_attack_type = {
 		en = "Enemy attack type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "敌人攻击类型",
 	},
 	enemy_faction = {
 		en = "Enemy faction",
-		--["zh-cn"] = "",
+		["zh-cn"] = "敌人阵营",
 	},
 	enemy_type = {
 		en = "Enemy type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "敌人类型",
 	},
 	enemy_class = {
 		en = "Enemy class",
-		--["zh-cn"] = "",
+		["zh-cn"] = "敌人分类",
 	},
 	enemy_armor_type = {
 		en = "Enemy armor type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "敌人护甲类型",
 	},
 	weapon_template_name = {
 		en = "Weapon template name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "武器模板名称",
 	},
 	slot_name = {
 		en = "Slot name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "装备栏名称",
 	},
 	ability_type = {
 		en = "Ability type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "技能类型",
 	},
 	charge_delta = {
 		en = "Charge delta",
-		--["zh-cn"] = "",
+		["zh-cn"] = "使用次数差值",
 	},
 	event_type = {
 		en = "Event type",
-		--["zh-cn"] = "",
+		["zh-cn"] = "事件类型",
 	},
 	template_name = {
 		en = "Template name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "模板名称",
 	},
 	buff_category = {
 		en = "Buff category",
-		--["zh-cn"] = "",
+		["zh-cn"] = "状态效果类别",
 	},
 	class_name = {
 		en = "Class name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "分类名",
 	},
 	icon = {
 		en = "Icon",
-		--["zh-cn"] = "",
+		["zh-cn"] = "图标",
 	},
 	parent_template_name = {
 		en = "Parent template name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "父模板名称",
 	},
 	parent_buff_category = {
 		en = "Parent buff category",
-		--["zh-cn"] = "",
+		["zh-cn"] = "父状态效果类别",
 	},
 	parent_class_name = {
 		en = "Parent class name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "父分类名称",
 	},
 	parent_icon = {
 		en = "Parent icon",
-		--["zh-cn"] = "",
+		["zh-cn"] = "父图标",
 	},
 	source_category = {
 		en = "Source category",
-		--["zh-cn"] = "",
+		["zh-cn"] = "来源类别",
 	},
 	source_sub_category = {
 		en = "Source subcategory",
-		--["zh-cn"] = "",
+		["zh-cn"] = "来源子类别",
 	},
 	source_item_name = {
 		en = "Source item name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "来源物品名称",
 	},
 	source_icon = {
 		en = "Source icon",
-		--["zh-cn"] = "",
+		["zh-cn"] = "来源图标",
 	},
 	source_name = {
 		en = "Source name",
-		--["zh-cn"] = "",
+		["zh-cn"] = "来源名称",
 	},
 }
