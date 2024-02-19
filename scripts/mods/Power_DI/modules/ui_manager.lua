@@ -11,6 +11,7 @@ local UIAnimation = require("scripts/managers/ui/ui_animation")
 local UISoundEvents = require("scripts/settings/ui/ui_sound_events")
 local WorldRenderUtils = require("scripts/utilities/world_render")
 local ScriptWorld = require("scripts/foundation/utilities/script_world")
+local PlayerInfo = require("scripts/managers/data_service/services/social/player_info")
 
 local circumstance_templates = require("scripts/settings/circumstance/circumstance_templates")
 local ScrollbarPassTemplates = require("scripts/ui/pass_templates/scrollbar_pass_templates")
@@ -3281,9 +3282,9 @@ ui_manager.view_player_profile = function(player_profile)
     local local_player = Managers.player:local_player(1)
     local local_player_peer_id = local_player:peer_id()
     local local_player_account_id = local_player:account_id()
-    local data_service_social = Managers.data_service.social
-    local player_info = data_service_social:get_player_info_by_account_id(local_player_account_id)
-    
+    local player_info = PlayerInfo:new()
+    player_info:set_account(local_player_account_id)
+
     player_info.local_player_id = function()
         return 1
     end
