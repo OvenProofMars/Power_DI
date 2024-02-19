@@ -101,6 +101,10 @@ Symbol | Function
 `(`|bracket open
 `)`|bracket close
 `""`|string
+`+`|addition
+`-`|subtraction
+`*`|multiplication
+`/`|division
 
 Example:
 `attacker_type = "Player" and damage > 0`
