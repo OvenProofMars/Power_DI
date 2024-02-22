@@ -117,7 +117,8 @@ local function auto_save_coroutine()
     local function iterative_save()
         local data_sources = PDI.data.session_data.datasources
         for data_source_name, data_source_table in pairs(data_sources) do
-            save_manager.save("auto_save_"..data_source_name, table.clone(data_source_table))
+            --save_manager.save("auto_save_"..data_source_name, table.clone(data_source_table))
+            save_manager.save("auto_save_"..data_source_name, data_source_table)
             :next(
                 function()
                     coroutine.resume(auto_save_coroutine) 

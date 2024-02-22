@@ -25,7 +25,7 @@ local function shading_callback(world, shading_env, viewport, default_shading_en
 	end
 end
 
-local world_layer = 50
+local world_layer = 500
 local viewport_layer = 1
 local renderer_templates = {}
 

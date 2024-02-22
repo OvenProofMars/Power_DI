@@ -121,6 +121,12 @@ return {
 		en = "Forces Power DI to generate reports from scratch, bypassing the cache",
 		["zh-cn"] = "强制 Power DI 跳过缓存，从零开始生成报告",
 	},
+	open_ui_on_end_screen_title = {
+		en = "Open Power DI on end screen",
+	},
+	open_ui_on_end_screen_tooltip = {
+		en = "If enabled will automatically open the Power DI ui when entering the end screen.",
+	},
 
 	--Static UI
 	mloc_sessions = {

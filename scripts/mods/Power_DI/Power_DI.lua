@@ -17,7 +17,7 @@ PDI.ui_manager = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\ui_manag
 
 local debug = mod:get("debug_mode")
 --Function to set debug mode--
-PDI.set_debug_mode = function (value)
+PDI.set_debug_mode = function(value)
     debug = value
 end
 --Function to print certain steps for debugging--
@@ -35,6 +35,11 @@ PDI.debug = function(function_name, context)
     end
 end
 
+local open_ui_on_end_screen = mod:get("open_ui_on_end_screen")
+PDI.set_open_ui_on_end_screen = function(value)
+    open_ui_on_end_screen = value
+end
+
 --Setting functions table--
 local setting_functions = {
     max_cycles = PDI.coroutine_manager.set_max_cycles,
@@ -42,6 +47,7 @@ local setting_functions = {
     auto_save =  PDI.save_manager.set_auto_save,
     auto_save_interval =  PDI.save_manager.set_auto_save_interval,
     date_format = PDI.ui_manager.set_date_format,
+    open_ui_on_end_screen = PDI.open_ui_on_end_screen
 }
 
 --Create main data table--
@@ -106,11 +112,14 @@ function mod.on_game_state_changed(status, state_name)
         PDI.session_manager.update_current_session_info({["end_time"] = end_time})
         PDI.session_manager.save_all_data()
         PDI.save_manager.clear_auto_save_cache()
+
+        if open_ui_on_end_screen then
+            PDI.ui_manager.toggle_view()
+        end
 	end
     if PDI.data.session_data and PDI.utilities.in_game() then
         local game_mode_state = Managers.state.game_mode:game_mode_state()
         PDI.session_manager.update_current_session_info({["status"] = game_mode_state})
-        --PDI.data.session_data.info.status = Managers.state.game_mode:game_mode_state()
     end
     previous_state_name = state_name
     previous_status = status
@@ -152,6 +161,9 @@ end
 
 --Testing function--
 function mod.testing()
-
+local UIManager = Managers.ui
+local active_views = UIManager:active_views()
+print("-----")
+DMF:dump(active_views)
 end
 

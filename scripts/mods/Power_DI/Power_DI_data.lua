@@ -1,5 +1,7 @@
 local mod = get_mod("Power_DI")
 
+local dev_mode = true
+
 local mod_settings_data = {
 	name = "Power DI",
 	description = mod:localize("mod_description"),
@@ -48,6 +50,13 @@ local mod_settings_data = {
                 function_name = "clear_user_reports"
             },
             {
+                setting_id = "open_ui_on_end_screen",
+                title = "open_ui_on_end_screen_title",
+                tooltip = "open_ui_on_end_screen_tooltip",
+                type = "checkbox",
+                default_value = true,
+            },
+            {
                 setting_id = "auto_save",
                 title = "auto_save_title",
                 tooltip = "auto_save_tooltip",
@@ -78,13 +87,6 @@ local mod_settings_data = {
                 decimals_number = 0
             },
             {
-                setting_id = "debug_mode",
-                title = "debug_mode_title",
-                tooltip = "debug_mode_tooltip",
-                type = "checkbox",
-                default_value = false,
-            },
-            {
                 setting_id = "date_format",
                 title = "date_format_title",
                 tooltip = "date_format_tooltip",
@@ -95,6 +97,13 @@ local mod_settings_data = {
                     {text = "YYYY_MM_DD",   value = "%Y/%m/%d"},
                   },
                 default_value = "%d/%m/%Y",
+            },
+            {
+                setting_id = "debug_mode",
+                title = "debug_mode_title",
+                tooltip = "debug_mode_tooltip",
+                type = "checkbox",
+                default_value = false,
             },
 		}
 	}
@@ -110,8 +119,6 @@ local test_function_keybind_widget_definition = {
     keybind_type = "function_call",
     function_name = "testing"
 }
-
-local dev_mode = false
 
 if dev_mode then
     local widget_definitions = mod_settings_data.options.widgets
