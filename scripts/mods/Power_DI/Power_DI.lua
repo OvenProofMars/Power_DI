@@ -82,6 +82,7 @@ function mod.on_setting_changed(setting_id)
 end
 
 local previous_state_name
+local previous_status
 
 --Triggers for initializing and finalizing a session--
 function mod.on_game_state_changed(status, state_name)
@@ -97,6 +98,11 @@ function mod.on_game_state_changed(status, state_name)
         PDI.session_manager.save_all_data()
         PDI.save_manager.clear_auto_save_cache()
     elseif state_name == "StateGameScore" and status == "enter" then
+        if previous_state_name ~= "GameplayStateRun" and previous_status ~= "exit" then
+            PDI.session_manager.resume_or_create_session()
+            PDI.session_manager.save_all_data()
+            PDI.save_manager.clear_auto_save_cache()
+        end
         local end_time = os.time()
         PDI.session_manager.update_current_session_info({["end_time"] = end_time})
         PDI.session_manager.save_all_data()
@@ -108,6 +114,7 @@ function mod.on_game_state_changed(status, state_name)
         --PDI.data.session_data.info.status = Managers.state.game_mode:game_mode_state()
     end
     previous_state_name = state_name
+    previous_status = status
 end
 
 --Hook to check if a session has ended, to update info in the save files--
@@ -144,7 +151,16 @@ function mod.toggle_force_report_generation()
     mod:notify(mod:localize("mloc_notification_toggle_force_report_generation").." "..mod:localize(state_string))
 end
 
+
+
+-- mod:hook_safe(CLASS.ProcBuff, "init", function(self, context, template, start_time, instance_id, ...)
+--     if template.name == "psyker_dodge_after_crits" then
+--         print("ProcBuff for psyker_dodge_after_crits created")
+--     end
+-- end)
+
 --Testing function--
--- function mod.testing()
--- end
+function mod.testing()
+    DMF:dtf(mod.ProcBuff, "ProcBuff", 15)
+end
 

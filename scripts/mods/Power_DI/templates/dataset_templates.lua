@@ -7,6 +7,7 @@ local attack_reports = function(data)
     local PlayerProfiles = {}
     local minion_categories = data.lookup_proxies.minion_categories
     local damage_categories = data.lookup_proxies.damage_categories
+    local is_local_session = Managers.connection:session_id() == nil
     data:append_dataset("AttackReportManager")
     :next(
         function()
@@ -72,8 +73,11 @@ local attack_reports = function(data)
 
                         if v.attack_result == "died" then
                             v.killed = 1
-                            if defender_max_health then
-                                v.health_damage = defender_max_health - v.attacked_unit_damage_taken
+                            local attacked_unit_damage_taken = v.attacked_unit_damage_taken
+                            if defender_max_health and not is_local_session then
+                                v.health_damage = defender_max_health - attacked_unit_damage_taken
+                            elseif defender_max_health and is_local_session then
+                                v.health_damage = defender_max_health - attacked_unit_damage_taken + v.damage
                             else
                                 v.health_damage = 1
                             end

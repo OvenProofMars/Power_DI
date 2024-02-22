@@ -508,7 +508,7 @@ report_manager.generate_report = function(template, force)
                 return PDI.coroutine_manager.new(generate_pivot_table_report_coroutine, template)
             end,
             function(err)
-                promise:reject(err)
+                return promise:reject(err)
             end
         )
         :next(
@@ -523,11 +523,11 @@ report_manager.generate_report = function(template, force)
                         report_hash_lookup[report_id] = hash
                     end
                     
-                    promise:resolve({data, false})
+                    return promise:resolve({data, false})
                 end
             end,
             function(err)
-                promise:reject(err)
+                return promise:reject(err)
             end
         )
         return promise

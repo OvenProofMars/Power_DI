@@ -138,7 +138,7 @@ local minion_categories = {
 		attack_type = "loc_contract_task_weapon_type_melee",
 		faction = "mloc_chaos_faction",
 		type = "mloc_monstrosity",
-		class = "loc_breed_display_name_chaos_spawn Spawn",
+		class = "loc_breed_display_name_chaos_spawn",
 		display_name = "loc_breed_display_name_chaos_spawn",
 		armor_type = "loc_glossary_armour_type_resistant",
 	},

@@ -207,6 +207,7 @@ local rpc_player_unit_exit_coherency = function (self, channel_id, game_object_i
     output_table[#output_table+1] = temp_table
 end
 local rpc_add_buff = function(self, channel_id, game_object_id, buff_template_id, server_index, optional_lerp_value, optional_item_slot_id, optional_parent_buff_template_id, from_specialization)
+
     local class_name = self.__class_name
     local output_table = buff_data_location_lookup(class_name)
     local buff_lookup_table = mod.cache.buffs
@@ -233,6 +234,7 @@ local rpc_add_buff = function(self, channel_id, game_object_id, buff_template_id
     output_table[#output_table+1] = temp_table
 end
 local rpc_add_buff_with_stacks = function(self, channel_id, game_object_id, buff_template_id, server_index_array, optional_lerp_value, optional_item_slot_id, optional_parent_buff_template_id)
+
     local class_name = self.__class_name
     local output_table = buff_data_location_lookup(class_name)
     local buff_lookup_table = mod.cache.buffs
@@ -329,7 +331,7 @@ local rpc_buff_set_start_time = function(self, channel_id, game_object_id, serve
     if not buff_lookup then
         return
     end
-
+    
     local temp_table = {}
 
     temp_table.event = "buff_set_start_time"
