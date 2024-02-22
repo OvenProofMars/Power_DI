@@ -379,6 +379,9 @@ return {
 		en = "Player buffs report",
 		["zh-cn"] = "玩家状态效果报告",
 	},
+	mloc_player_shots_blocked_report = {
+		en = "Player shots blocked report",
+	},
 
 	--Dataset template names
 	mloc_dataset_attack_reports = {
@@ -629,6 +632,9 @@ return {
 	mloc_buff_events = {
 		en = "Buff events",
 		["zh-cn"] = "状态效果事件",
+	},
+	mloc_player_shots_blocked = {
+		en = "Player shots blocked",
 	},
 	--Dataset field labels
 	attacker_player = {

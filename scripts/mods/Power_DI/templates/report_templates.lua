@@ -84,6 +84,25 @@ report_templates = {
             "defender_type = \""..mod:localize("player").."\" and damage>0 and attacker_class ~ nil and defender_player ~ nil"
         },
     },
+    player_shots_blocked_report = {
+        name = "mloc_player_shots_blocked_report",
+        dataset_name = "mloc_dataset_attack_reports",
+        report_type = "pivot_table",
+        columns = {"defender_player"},
+        rows = {"attacker_name"},
+        values = {
+            {
+                field_name = "defender_name",
+                type = "count",
+                label = mod:localize("mloc_player_shots_blocked"),
+                visible = true,
+                format = "number"
+            },
+        },
+        filters = {
+            "attack_result = \"friendly_fire\" and damage = 0 and defender_name ~ nil"
+        },
+    },
     player_status_report = {
         name = "mloc_player_status_report",
         dataset_name = "mloc_dataset_player_status", 
