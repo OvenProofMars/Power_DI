@@ -1,6 +1,6 @@
 local mod = get_mod("Power_DI")
 
-local dev_mode = true
+local dev_mode = false
 
 local mod_settings_data = {
 	name = "Power DI",

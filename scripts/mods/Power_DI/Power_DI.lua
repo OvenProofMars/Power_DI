@@ -144,15 +144,13 @@ function mod.debug_dump()
 end
 --Function to clear all user report templates--
 function mod.clear_user_reports()
-    print("test")
     local user_reports = PDI.data.save_data.report_templates
-    for key, value in pairs(user_reports) do
+    for key, _ in pairs(user_reports) do
         user_reports[key] = nil
     end
     PDI.save_manager.save("save_data", PDI.data.save_data)
     :next(
         function()
-            print("test2")
             mod:notify(mod:localize("mloc_notification_user_reports_cleared"))
         end
     )
@@ -167,9 +165,5 @@ end
 
 --Testing function--
 function mod.testing()
-local UIManager = Managers.ui
-local active_views = UIManager:active_views()
-print("-----")
-DMF:dump(active_views)
 end
 
