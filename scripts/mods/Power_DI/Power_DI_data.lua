@@ -1,6 +1,8 @@
 local mod = get_mod("Power_DI")
 
-return {
+print("TEST DATA")
+
+local mod_settings_data = {
 	name = "Power DI",
 	description = mod:localize("mod_description"),
 	is_togglable = true,
@@ -96,16 +98,26 @@ return {
                   },
                 default_value = "%d/%m/%Y",
             },
-            -- {
-            --     setting_id = "testing",
-            --     title = "testing_title",
-            --     tooltip = "testing_tooltip",
-            --     type = "keybind",
-            --     default_value = {},
-            --     keybind_trigger = "pressed",
-            --     keybind_type = "function_call",
-            --     function_name = "testing"
-            -- },
 		}
 	}
 }
+
+local test_function_keybind_widget_definition = {
+    setting_id = "testing",
+    title = "testing_title",
+    tooltip = "testing_tooltip",
+    type = "keybind",
+    default_value = {},
+    keybind_trigger = "pressed",
+    keybind_type = "function_call",
+    function_name = "testing"
+}
+
+local dev_mode = false
+
+if dev_mode then
+    local widget_definitions = mod_settings_data.options.widgets
+    widget_definitions[#widget_definitions+1] = test_function_keybind_widget_definition
+end
+
+return mod_settings_data

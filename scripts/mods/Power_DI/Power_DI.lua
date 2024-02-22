@@ -1,7 +1,10 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 local PDI = {}
---local MasterItems = require("scripts/backend/master_items")
+
+print("TEST MAIN")
+
+
 mod.version = "1.0.2"
 mod.cache = {}
 PDI.promise = require("scripts/foundation/utilities/promise")
@@ -151,16 +154,8 @@ function mod.toggle_force_report_generation()
     mod:notify(mod:localize("mloc_notification_toggle_force_report_generation").." "..mod:localize(state_string))
 end
 
-
-
--- mod:hook_safe(CLASS.ProcBuff, "init", function(self, context, template, start_time, instance_id, ...)
---     if template.name == "psyker_dodge_after_crits" then
---         print("ProcBuff for psyker_dodge_after_crits created")
---     end
--- end)
-
 --Testing function--
 function mod.testing()
-    DMF:dtf(mod.ProcBuff, "ProcBuff", 15)
+
 end
 
