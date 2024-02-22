@@ -1,10 +1,6 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 local PDI = {}
-
-print("TEST MAIN")
-
-
 mod.version = "1.0.2"
 mod.cache = {}
 PDI.promise = require("scripts/foundation/utilities/promise")

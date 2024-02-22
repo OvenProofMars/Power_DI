@@ -1,7 +1,5 @@
 local mod = get_mod("Power_DI")
 
-print("TEST DATA")
-
 local mod_settings_data = {
 	name = "Power DI",
 	description = mod:localize("mod_description"),

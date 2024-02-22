@@ -408,7 +408,6 @@ local function get_definitions(self)
     return definitions
 end
 PdiMainView_DEPRICATED.cb_shading_callback = function (self, world, shading_env, viewport, default_shading_environment_name)
-    print("SHADING CALLBACK")
 	local gamma = Application.user_setting("gamma") or 0
 
 	ShadingEnvironment.set_scalar(shading_env, "exposure_compensation", ShadingEnvironment.scalar(shading_env, "exposure_compensation") + gamma)
