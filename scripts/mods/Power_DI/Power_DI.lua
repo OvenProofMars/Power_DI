@@ -1,7 +1,7 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 local PDI = {}
-mod.version = "1.0.3"
+mod.version = "1.0.4"
 mod.cache = {}
 PDI.promise = require("scripts/foundation/utilities/promise")
 PDI.utilities = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\utilities]])
@@ -36,6 +36,7 @@ PDI.debug = function(function_name, context)
 end
 
 local open_ui_on_end_screen = mod:get("open_ui_on_end_screen")
+--Function to set the open_ui_on_end_screen settings
 PDI.set_open_ui_on_end_screen = function(value)
     open_ui_on_end_screen = value
 end

@@ -23,7 +23,7 @@ local input_manager = Managers.input
 local input_service = input_manager and input_manager:get_input_service("View")
 
 local UIManager = Managers.ui
-local PDI, render_settings, sizes, packages_loaded, main_view_instance, selected_session_id, load_session, loaded_session, selected_report_id, load_report, loaded_report, user_reports, loading, load_edit, edit_mode_cache, error_message, in_game, focussed_hotspot, localize, delete_animation_progress, active_scenegraph
+local PDI, render_settings, sizes, packages_loaded, main_view_instance, selected_session_id, load_session, loaded_session, delete_session, selected_report_id, load_report, loaded_report, user_reports, loading, load_edit, edit_mode_cache, error_message, in_game, focussed_hotspot, localize, delete_animation_progress, active_scenegraph
 local force_report_generation = false
 
 local ui_manager = {}
@@ -2299,19 +2299,14 @@ local function destroy_scenegraph(scenegraph_name)
         return
     end
     local scenegraph = scenegraph_settings.scenegraph
-    for _, renderer_names in ipairs(renderer_order) do
-        local renderer_settings = renderers[renderer_names]
+    for _, renderer_name in ipairs(renderer_order) do
+        local renderer_settings = renderers[renderer_name]
         renderer_settings.scenegraphs[scenegraph] = nil
     end
     scenegraphs_data[scenegraph_name] = nil
 end
 --Function to facilitate transitions between UI components
 local function destroy_scenegraphs_for_transition_to(scenegraph_name)
-    focussed_hotspot = nil
-    error_message = nil
-    load_report = false
-    load_session = false
-    active_scenegraph = scenegraph_name
     local scenegraph_array_lookup = {}
     scenegraph_array_lookup.reports = {"sessions", "edit_report_settings", "edit_pivot_table"}
     scenegraph_array_lookup.sessions = {"reports", "report_rows_order", "pivot_table"}
@@ -2322,6 +2317,12 @@ local function destroy_scenegraphs_for_transition_to(scenegraph_name)
     for _, scenegraph_name in ipairs(scenegraph_array) do
         destroy_scenegraph(scenegraph_name)
     end
+
+    focussed_hotspot = nil
+    error_message = nil
+    load_report = false
+    load_session = false
+    active_scenegraph = scenegraph_name
 end
 --Function to create a grid
 local function generate_grid(grid_name, scenegraph_name, widgets, widgets_by_name, grid_scenegraph_id, grid_direction, grid_padding_size, optional_scrollbar_name, pivot_scenegraph_id, optional_scroll_area_scenegraph_id)
@@ -2349,14 +2350,10 @@ local function generate_grid(grid_name, scenegraph_name, widgets, widgets_by_nam
 end
 --Function for handeling the color/size changes of passes when hovering etc, used by most normal passes
 local function item_standard_change_function (content, style)
-    if focussed_hotspot then
-        return
-    end
-
     local content = content.parent or content
-
     local hotspot = content.hotspot
-    if not hotspot or focussed_hotspot then
+
+    if focussed_hotspot and focussed_hotspot ~= hotspot then
         return
     end
 
@@ -2437,13 +2434,19 @@ local function item_no_font_size_change_function (content, style)
         return
     end
 
-    local hotspot = content.hotspot or content.parent.hotspot
+    local content = content.parent or content
+    local hotspot = content.hotspot
     if not hotspot then
         return
     end
     local is_hover = hotspot.is_hover
     local is_selected  = hotspot.is_selected
-    if is_selected and is_hover then
+    local deleting_active = content.deleting_active
+    if deleting_active then
+        style.color = delete_color
+        style.text_color = delete_color
+        style.font_size = style.default_font_size        
+    elseif is_selected and is_hover then
         style.color = gold_highlight_color
         style.text_color = gold_highlight_color
     elseif is_selected then
@@ -2481,11 +2484,16 @@ local function item_alpha_change_function (content, style)
 end
 --Function for handeling changes for the gradient passes
 local function item_gradient_standard_change_function(content, style)
-    if focussed_hotspot then
+    local content = content.parent or content
+    local hotspot = content.hotspot
+    local is_selected  = hotspot.is_selected
+
+    if focussed_hotspot and focussed_hotspot ~= hotspot then
+        if not is_selected then
+            style.color = Color.terminal_background_gradient(0, true)
+        end
         return
     end
-
-
 
     local is_disabled = content.disabled
 
@@ -2493,9 +2501,8 @@ local function item_gradient_standard_change_function(content, style)
         return
     end
 
-    local hotspot = content.hotspot
     local is_hover = hotspot.is_hover
-    local is_selected  = hotspot.is_selected
+    
     local deleting_active = content.deleting_active
 
     if deleting_active then
@@ -2595,6 +2602,43 @@ local function handle_changes()
                 PDI.debug("handle_changes_load_session", err)
             end
         )
+    elseif delete_session then
+        delete_session = nil
+        loaded_session = nil
+        local current_selected_session_id = selected_session_id
+
+        local sessions_grid_settings = scenegraphs_data.sessions.grids.sessions
+        local sessions_grid = sessions_grid_settings.grid
+        local selected_grid_index = sessions_grid:selected_grid_index()
+        local sessions_grid_widgets = sessions_grid_settings.widgets
+        table.remove(sessions_grid_widgets, selected_grid_index)
+        for index, widget in ipairs(sessions_grid_widgets) do
+            widget.content.current_grid_index = index
+        end
+        sessions_grid:select_grid_index(selected_grid_index)
+        local new_selected_widget = sessions_grid_widgets[selected_grid_index]
+        selected_session_id = new_selected_widget.content.session_id.text
+        sessions_grid:force_update_list_size()
+
+        local save_data = PDI.data.save_data
+        save_data.sessions[current_selected_session_id] = nil
+        local save_data_sessions_index = save_data.sessions_index
+        local save_data_session_index
+        for index, session_id in ipairs(save_data_sessions_index) do
+            if session_id == current_selected_session_id then
+                save_data_session_index = index
+                break
+            end
+        end
+        if save_data_session_index then
+            table.remove(save_data_sessions_index, save_data_session_index)
+        end
+        PDI.save_manager.save("save_data", save_data)
+        :next(
+            function()
+                load_session = true
+            end
+        )
     elseif load_report then
         if not loaded_session then
             return
@@ -2605,7 +2649,6 @@ local function handle_changes()
         loading = true
         local temp_report_template = generate_temp_report_template()
         local force = force_report_generation or in_game
-        --PDI.report_manager.generate_report(temp_report_template, in_game)
         PDI.report_manager.generate_report(temp_report_template, force)
         :next(
             function(data)
@@ -3187,10 +3230,6 @@ ui_manager.draw_widgets = function(dt, t)
         return
     end
 
-    -- if Managers.ui:active_top_view() ~= view_name then
-    --     return
-    -- end
-
     for _, renderer_name in ipairs(renderer_order) do
         local renderer_settings = renderers[renderer_name]
         local renderer = renderer_settings.renderer
@@ -3639,6 +3678,15 @@ ui_manager.setup_sessions = function()
     local scenegraph_name = "sessions"
     destroy_scenegraphs_for_transition_to(scenegraph_name)
 
+    local function report_type_logic_function(pass, ui_renderer, ui_style, content, position, size)
+        if active_scenegraph ~= "sessions" then
+            return
+        end
+        local hotspot = content.hotspot
+        local is_hover = hotspot.is_hover
+        focussed_hotspot = is_hover and hotspot
+    end
+
     local widget_templates = {
         reports_tab = {
             passes = {
@@ -3679,9 +3727,8 @@ ui_manager.setup_sessions = function()
                         offset = {-0.5*sizes.padding,1,0}
                     },
                 },
-                {
+                {   style_id = "frame_l",
                     pass_type = "rect",
-                    style_id = "frame_l",
                     style = {
                         vertical_alignment = "center",
                         horizontal_alignment = "left",
@@ -3695,9 +3742,15 @@ ui_manager.setup_sessions = function()
                     pass_type = "hotspot",
                     content = {
                         use_is_focused = true,
+                        test = true
                     },
                     change_function = callback(on_clicked_callback_hotspot_change_function, ui_manager.setup_reports)
                 },
+                {
+                    value_id = "report_tab_logic",
+                    pass_type  = "logic",
+                    value = report_type_logic_function
+                }
             },
             scenegraph_id = "reports_tab"
         },
@@ -3764,7 +3817,7 @@ ui_manager.setup_sessions = function()
                         horizontal_alignment = "center",
                         color = {255,255,255,255},
                         offset = {0,0,0},
-                        size_addition = {10,10}
+                        size_addition = {0,0}
                     },
                     {   content_id = "frame",
                         value_id = "material_name",
@@ -3794,6 +3847,67 @@ ui_manager.setup_sessions = function()
     update_font_sizes(widgets, scenegraph_name)
 
     local item_size = get_block_size(6,2,1,sizes.scrollbar_width,sizes.header_2_height)
+
+    local function delete_session_logic(pass, ui_renderer, ui_style, content, position, size)
+        if delete_session then
+            return
+        end
+        local grid = content.grid
+        local selected_grid_index = grid:selected_grid_index()
+        local current_grid_index = content.current_grid_index
+
+        if selected_grid_index ~= current_grid_index then
+            return
+        end
+
+        local discard_button_pressed = input_service:get("hotkey_item_discard_pressed") 
+        local discard_button_held = input_service:get("hotkey_item_discard")
+
+        local animation_time = 1
+        local timer_background_style = ui_style.parent.timer_background
+        local default_size_addition_x = timer_background_style.default_size_addition[1]
+
+        if discard_button_pressed then
+            content.deleting_active = true
+            delete_animation_progress = animation_time
+            timer_background_style.size_addition[1] = default_size_addition_x
+            timer_background_style.visible = true
+        end
+
+        if content.deleting_active and discard_button_held then
+            if delete_animation_progress <= 0 then
+                delete_animation_progress = nil
+                content.is_active = false
+                delete_session = true
+                return
+            end
+
+            local size_addition_multiplier = delete_animation_progress /  animation_time
+            timer_background_style.size_addition[1] = default_size_addition_x * size_addition_multiplier
+        else
+            delete_animation_progress = nil
+            content.deleting_active = nil
+            timer_background_style.visible = false
+        end
+    end
+
+    local function delete_session_terminal_green_change_function (content, style)
+        local content = content.parent or content
+        local default_font_size = style.default_font_size
+        local deleting_active = content.deleting_active
+    
+        if deleting_active then
+            style.color = delete_color
+            style.text_color = delete_color
+            style.font_size = default_font_size               
+        else
+            style.color = terminal_green_color
+            style.text_color = font_color
+            style.font_size = default_font_size
+        end
+    end
+
+    local session_item_size = scenegraph.sessions_item_inner.size
 
     local function get_item_template()
         local item_template = {
@@ -3956,6 +4070,7 @@ ui_manager.setup_sessions = function()
                         color = font_color,
                         size_addition = {-10,-10}
                     },
+                    change_function = delete_session_terminal_green_change_function,
                     scenegraph_id = "sessions_item_difficulty_icon"
                 },
                 {   content_id = "difficulty_bar_1",
@@ -3970,6 +4085,7 @@ ui_manager.setup_sessions = function()
                         color = font_color,
                         size_addition = {0,-10}
                     },
+                    change_function = delete_session_terminal_green_change_function,
                     scenegraph_id = "sessions_item_difficulty_bar"
                 },
                 {   content_id = "difficulty_bar_2",
@@ -3985,6 +4101,7 @@ ui_manager.setup_sessions = function()
                         size_addition = {0,-10},
                         offset = {20,0}
                     },
+                    change_function = delete_session_terminal_green_change_function,
                     scenegraph_id = "sessions_item_difficulty_bar"
                 },
                 {   content_id = "difficulty_bar_3",
@@ -4000,6 +4117,7 @@ ui_manager.setup_sessions = function()
                         size_addition = {0,-10},
                         offset = {40,0}
                     },
+                    change_function = delete_session_terminal_green_change_function,
                     scenegraph_id = "sessions_item_difficulty_bar"
                 },
                 {   content_id = "difficulty_bar_4",
@@ -4015,6 +4133,7 @@ ui_manager.setup_sessions = function()
                         size_addition = {0,-10},
                         offset = {60,0}
                     },
+                    change_function = delete_session_terminal_green_change_function,
                     scenegraph_id = "sessions_item_difficulty_bar"
                 },
                 {   content_id = "difficulty_bar_5",
@@ -4030,6 +4149,7 @@ ui_manager.setup_sessions = function()
                         size_addition = {0,-10},
                         offset = {80,0}
                     },
+                    change_function = delete_session_terminal_green_change_function,
                     scenegraph_id = "sessions_item_difficulty_bar"
                 },
                 {   content_id = "session_info",
@@ -4047,6 +4167,7 @@ ui_manager.setup_sessions = function()
                         text_color = font_color,
                         offset = {0,0,10},
                     },
+                    change_function = delete_session_terminal_green_change_function,
                     scenegraph_id = "sessions_item_info"
                 },
                 {   content_id = "session_id_frame",
@@ -4093,6 +4214,7 @@ ui_manager.setup_sessions = function()
                         on_hover_sound = UISoundEvents.default_mouse_hover,
                         on_complete_sound = UISoundEvents.default_click
                     },
+                    visibility_function = function() return focussed_hotspot ~= true end
                 },
                 {   value_id = "background_gradient",
                     style_id = "background_gradient",
@@ -4104,6 +4226,21 @@ ui_manager.setup_sessions = function()
                         color = {0,0,0,0},
                         offset = {0,0,-2},
                     },
+                },
+                {   value_id = "timer_background",
+                    style_id = "timer_background",
+                    pass_type = "rect",
+                    style = {
+                        color = delete_color_background,
+                        offset = {0,0,-1},
+                        size_addition = {-1* session_item_size[1],0},
+                        default_size_addition = {-1* session_item_size[1],0},
+                        visible = false
+                    },
+                },
+                {   value_id = "delete_session_logic",
+                    pass_type = "logic",
+                    value = delete_session_logic
                 },
             },
             scenegraph_id = "sessions_item_inner",
@@ -4214,13 +4351,15 @@ ui_manager.setup_sessions = function()
 
     update_font_sizes(widgets, scenegraph_name)
 
-    for _, widget in ipairs(widgets) do
-        widget.content.size = scenegraph.sessions_item_inner.size
-    end
-
     renderers.offscreen_renderer_2.scenegraphs[scenegraph] = widgets
 
     local grid = generate_grid(scenegraph_name, scenegraph_name, widgets, widgets_by_name, "workspace_inner", "down", {sizes.padding,sizes.padding}, "sessions_scrollbar", "sessions_pivot")
+
+    for index, widget in ipairs(widgets) do
+        widget.content.size = scenegraph.sessions_item_inner.size
+        widget.content.current_grid_index = index
+        widget.content.grid = grid
+    end
 
     local widget_index = widget_lookup[selected_session_id]
 
