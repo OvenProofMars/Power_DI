@@ -3229,7 +3229,6 @@ ui_manager.draw_widgets = function(dt, t)
     if not main_view_instance or not packages_loaded then
         return
     end
-
     for _, renderer_name in ipairs(renderer_order) do
         local renderer_settings = renderers[renderer_name]
         local renderer = renderer_settings.renderer

@@ -36,6 +36,7 @@ The sessions screen. Shows an overview of your recorded sessions.
 1. Reports tab. Press to transition to the report screen.
 2. Sessions list. Select a session to load it (will automatically transition you to the reports screen)
 3. Exit Power DI. Press to close the ui.
+4. Delete session (not shown in image). To delete the currently selected session press and hold the key assigned to "discard item".
 
 # Edit screen
 ![Edit screen](https://i.imgur.com/BzzdjD3.png "Edit screen")
@@ -60,6 +61,7 @@ The edit screen. Allows for creating or editing a report.
 17. Data filter. Allows you to enter a formula used to filter the dataset. (See formulas section below for more information)
 18. Pivot table settings. Currently unused, but will have setting specific to the pivot table report.
 19. Exit Power DI. Press to close the ui.
+20. Delete report (not shown in image), When editing an existing report there is a "Delete report" button available, visible above "Exit without saving" button.
 
 ## Report templates
 The following report templates are available by default:
