@@ -123,9 +123,11 @@ return {
 	},
 	open_ui_on_end_screen_title = {
 		en = "Open Power DI on end screen",
+		["zh-cn"] = "在结算界面打开 Power DI",
 	},
 	open_ui_on_end_screen_tooltip = {
 		en = "If enabled will automatically open the Power DI ui when entering the end screen.",
+		["zh-cn"] = "启用时，将会在进入结算界面时自动打开 Power DI 界面。",
 	},
 
 	--Static UI
@@ -381,6 +383,7 @@ return {
 	},
 	mloc_player_shots_blocked_report = {
 		en = "Player shots blocked report",
+		["zh-cn"] = "玩家射击受阻报告",
 	},
 
 	--Dataset template names
@@ -635,6 +638,7 @@ return {
 	},
 	mloc_player_shots_blocked = {
 		en = "Player shots blocked",
+		["zh-cn"] = "玩家射击受阻",
 	},
 	--Dataset field labels
 	attacker_player = {
