@@ -109,20 +109,35 @@ local mod_settings_data = {
 	}
 }
 
-local test_function_keybind_widget_definition = {
-    setting_id = "testing",
-    title = "testing_title",
-    tooltip = "testing_tooltip",
-    type = "keybind",
-    default_value = {},
-    keybind_trigger = "pressed",
-    keybind_type = "function_call",
-    function_name = "testing"
+local test_functions_keybind_widget_definitions = {
+    {
+        setting_id = "testing",
+        title = "testing_title",
+        tooltip = "testing_tooltip",
+        type = "keybind",
+        default_value = {},
+        keybind_trigger = "pressed",
+        keybind_type = "function_call",
+        function_name = "testing"
+    },
+    {
+        setting_id = "testing2",
+        title = "testing_title",
+        tooltip = "testing_tooltip",
+        type = "keybind",
+        default_value = {},
+        keybind_trigger = "pressed",
+        keybind_type = "function_call",
+        function_name = "testing2"
+    }
 }
 
 if dev_mode then
     local widget_definitions = mod_settings_data.options.widgets
-    widget_definitions[#widget_definitions+1] = test_function_keybind_widget_definition
+    for _, widget_definition in ipairs(test_functions_keybind_widget_definitions) do
+        widget_definitions[#widget_definitions+1] = widget_definition
+    end
+    
 end
 
 return mod_settings_data

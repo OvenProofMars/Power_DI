@@ -1,4 +1,5 @@
 local ItemUtils = require("scripts/utilities/items")
+local mod = get_mod("Power_DI")
 
 local dataset_templates
 
@@ -7,7 +8,7 @@ local attack_reports = function(data)
     local PlayerProfiles = {}
     local minion_categories = data.lookup_proxies.minion_categories
     local damage_categories = data.lookup_proxies.damage_categories
-    local is_local_session = Managers.connection:session_id() == nil
+    local is_local_session = mod.get_loaded_session_id() == "local"
     data:append_dataset("AttackReportManager")
     :next(
         function()
@@ -99,7 +100,7 @@ local attack_reports = function(data)
                     v.attacked_unit_position = nil
                     v.attacking_unit_uuid = nil
                     v.attacking_unit_position = nil
-                    v.attacked_unit_damage_taken = nil 
+                    --v.attacked_unit_damage_taken = nil 
                 end
             )
         end

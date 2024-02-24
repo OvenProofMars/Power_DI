@@ -1,7 +1,7 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 local PDI = {}
-mod.version = "1.1"
+mod.version = "1.1.1"
 mod.cache = {}
 PDI.promise = require("scripts/foundation/utilities/promise")
 PDI.utilities = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\utilities]])
@@ -71,6 +71,8 @@ PDI.report_manager.init(PDI)
 PDI.lookup_manager.init(PDI)
 PDI.session_manager.init(PDI)
 PDI.ui_manager.init(PDI)
+
+mod.get_loaded_session_id = PDI.session_manager.get_loaded_session_id
 
 --Main update loop--
 function mod.update(dt)
@@ -164,7 +166,9 @@ function mod.toggle_force_report_generation()
     mod:notify(mod:localize("mloc_notification_toggle_force_report_generation").." "..mod:localize(state_string))
 end
 
---Testing function--
+
+--Testing functions--
 function mod.testing()
 end
-
+function mod.testing2()
+end
