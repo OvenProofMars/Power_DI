@@ -188,7 +188,7 @@ end
 
 --Function to get the local auto save data variable--
 save_manager.get_loaded_auto_save_data = function()
-    if not next(auto_save_data) then
+    if not auto_save_data or not next(auto_save_data) then
         return
     end
     local has_data
