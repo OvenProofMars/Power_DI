@@ -68,7 +68,7 @@ local minion_categories = {
 		attack_type = "loc_contract_task_weapon_type_melee",
 		faction = "mloc_chaos_faction",
 		type = "mloc_monstrosity",
-		class = "loc_breed_display_name_chaos_plage_ogryn Ogryn",
+		class = "loc_breed_display_name_chaos_plage_ogryn",
 		display_name = "loc_breed_display_name_chaos_plage_ogryn",
 		armor_type = "loc_glossary_armour_type_resistant",
 	},
