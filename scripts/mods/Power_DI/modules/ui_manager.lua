@@ -4354,9 +4354,6 @@ ui_manager.setup_sessions = function()
 
     local widgets, widgets_by_name = generate_widgets(widget_templates)
 
-    PDI.utilities.DMF:dtf(widgets, "widgets_test", 15)
-
-
     update_font_sizes(widgets, scenegraph_name)
 
     renderers.offscreen_renderer_2.scenegraphs[scenegraph] = widgets
