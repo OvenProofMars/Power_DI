@@ -4822,11 +4822,17 @@ ui_manager.setup_reports = function()
         if report_id == selected_report_id then
             return
         end
+        local grid = scenegraphs_data.reports.grids.reports.grid
+        grid:select_grid_index(widget_index)
+    end
+
+    local function report_selected_callback(report_id)
+        if report_id == selected_report_id then
+            return
+        end
 
         set_report_title(report_id)
 
-        local grid = scenegraphs_data.reports.grids.reports.grid
-        grid:select_grid_index(widget_index)
         selected_report_id = report_id
         
         ui_manager.setup_report_rows_order()
@@ -4845,6 +4851,7 @@ ui_manager.setup_reports = function()
 
         local select_report_callback = callback(select_report, index, report_id)
         item_template.passes[3].change_function = callback(on_clicked_callback_hotspot_change_function, select_report_callback)
+        item_template.passes[3].content.selected_callback = callback(report_selected_callback, report_id)
 
         widget_templates[#widget_templates+1] = item_template
         widget_lookup[report_id] = index
