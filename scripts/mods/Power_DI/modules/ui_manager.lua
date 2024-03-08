@@ -4331,12 +4331,18 @@ ui_manager.setup_sessions = function()
                     local grid = scenegraphs_data.sessions.grids.sessions.grid
                     local scroll_percentage = grid:get_scrollbar_percentage_by_index(widget_index)
                     grid:select_grid_index(widget_index, scroll_percentage, true)
-                    selected_session_id = session_id
                 end
-                load_session = true
+            end
+
+            local session_selected_callback = function()
+                if session_id ~= selected_session_id then
+                    selected_session_id = session_id
+                    load_session = true
+                end
             end
 
             item_template.passes[20].change_function = callback(on_clicked_callback_hotspot_change_function, session_on_clicked_callback)
+            item_template.passes[20].content.selected_callback = session_selected_callback
 
             item_template.name = session.session_id
 
@@ -4347,6 +4353,9 @@ ui_manager.setup_sessions = function()
     end
 
     local widgets, widgets_by_name = generate_widgets(widget_templates)
+
+    PDI.utilities.DMF:dtf(widgets, "widgets_test", 15)
+
 
     update_font_sizes(widgets, scenegraph_name)
 
