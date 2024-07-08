@@ -19,6 +19,8 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/linesman_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/ninjafencer_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/luggable_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/ogryn_axes_2h/settings_templates/ogryn_pickaxe_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/power_mauls/settings_templates/power_maul_damage_profile_templates"),
     },
     ["mloc_2_ranged_weapon_damage"] = {
         require("scripts/settings/equipment/weapon_templates/force_staffs/settings_templates/force_staff_damage_profile_templates"),
@@ -40,6 +42,7 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/bfg_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/killshot_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/tank_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/bolt_pistols/settings_templates/boltpistol_damage_profile_templates"),
     },
     ["mloc_3_blitz_damage"] = {
         require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),
@@ -56,13 +59,14 @@ local damage_profile_templates = {
     },
     ["mloc_6_environmental_damage"] = {
         require("scripts/settings/damage/damage_profiles/prop_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/minion_damage_profile_templates"),
     },
     ["mloc_7_other_damage"] = {
         require("scripts/settings/damage/damage_profiles/common_damage_profile_templates"),
     },
-    ["mloc_8_minion"] = {
-        require("scripts/settings/damage/damage_profiles/minion_damage_profile_templates"),
-    },
+    -- ["mloc_8_minion"] = {
+        
+    -- },
 
 }
 

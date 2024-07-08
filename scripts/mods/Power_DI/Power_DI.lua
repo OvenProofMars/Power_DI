@@ -1,7 +1,7 @@
 local mod = get_mod("Power_DI")
 local DMF = get_mod("DMF")
 local PDI = {}
-mod.version = "1.1.3"
+mod.version = "1.1.4"
 mod.cache = {}
 PDI.promise = require("scripts/foundation/utilities/promise")
 PDI.utilities = mod:io_dofile([[Power_DI\scripts\mods\Power_DI\modules\utilities]])
@@ -142,6 +142,8 @@ end
 --Dump data for debugging--
 function mod.debug_dump()
     local datetime_string = os.date('%d_%m_%y_%H_%M_%S')
+    local filename = "PDI_data_dump_"..datetime_string
+    PDI.utilities.dump(PDI.data, filename)
     DMF:dtf(PDI.data, "PDI_data_dump_"..datetime_string, 20)
     mod:notify(mod:localize("mloc_notification_data_dup_successful"))
 end
