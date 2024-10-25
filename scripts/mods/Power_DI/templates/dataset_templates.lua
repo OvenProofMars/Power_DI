@@ -38,6 +38,8 @@ local attack_reports = function(data)
                             v.attacker_class = lookup.class
                             v.attacker_armor_type = lookup.armor_type
                             v.attacker_name = lookup.display_name
+                        else
+                            print(lookup_value)
                         end
                         if is_player then
                             local player_profile = PlayerProfiles[attacking_unit_uuid]
@@ -444,10 +446,14 @@ local player_buffs = function(data)
     local item_types_lookup = {WEAPON_MELEE = "mloc_melee_weapon", WEAPON_RANGED = "mloc_ranged_weapon", GADGET = "mloc_curio"}
     local player_items = {}
     local master_items = data.lookup_proxies.MasterItems
+
+    if not master_items then
+        local items_cache = Managers.backend.interfaces.master_data:items_cache()
+        master_items = items_cache and items_cache:get_cached()
+    end
     local weapon_trait_templates = data.lookup_proxies.weapon_trait_templates
     local BuffTemplates = data.lookup_proxies.BuffTemplates
     local buff_to_talent = data.lookup_proxies.buff_to_talent
-    local UnitSpawnerManager = data.datasource_proxies.UnitSpawnerManager
     local buff_templates = data.lookup_proxies.buff_templates
     data:append_dataset("PlayerBuffExtension")
     :next(
@@ -469,60 +475,57 @@ local player_buffs = function(data)
                             local item_type = slot_item.item_type
                             local perks = slot_item.perks
                             local traits = slot_item.traits
+                            if perks then
+                                for _, perk in ipairs(perks) do
+                                    local perk_id = perk.id
+                                    local perk_rarity = perk.rarity
+                                    local perk_value = perk.value
+                                    local perk_item = master_items[perk_id]
+                                    local weapon_perk_id = perk_item.trait
+                                    local weapon_perk_icon = perk_item.icon
+                                    local buff_template_id = next(weapon_trait_templates[weapon_perk_id].buffs)
+                                    local buff_template = BuffTemplates[buff_template_id]
+                                    local buff_name = buff_template and buff_template.name
+                                    local child_buff_name = buff_template and buff_template.child_buff_template
+                                    local display_name = ItemUtils.perk_description(perk_item, perk_rarity, perk_value)
+                                    display_name = string.gsub(display_name,"%%", " percent")
+                                    local item_data = {}
+                                    item_data.item_type = item_types_lookup[item_type]
+                                    item_data.item_display_name = item_display_name
+                                    item_data.type = "Perk"
+                                    item_data.display_name = display_name
+                                    item_data.icon = weapon_perk_icon
 
-                            for _, perk in ipairs(perks) do
-                                local perk_id = perk.id
-                                local perk_rarity = perk.rarity
-                                local perk_value = perk.value
-                                local perk_item = master_items[perk_id]
-                                local weapon_perk_id = perk_item.trait
-                                local weapon_perk_icon = perk_item.icon
-                                local buff_template_id = next(weapon_trait_templates[weapon_perk_id])
-                                local buff_template = BuffTemplates[buff_template_id]
-                                local buff_name = buff_template.name
-                                local child_buff_name = buff_template.child_buff_template
-                                local display_name = ItemUtils.perk_description(perk_item, perk_rarity, perk_value)
-                                display_name = string.gsub(display_name,"%%", " percent")
-                                local item_data = {}
-                                item_data.item_type = item_types_lookup[item_type]
-                                item_data.item_display_name = item_display_name
-                                item_data.type = "Perk"
-                                item_data.display_name = display_name
-                                item_data.icon = weapon_perk_icon
-
-                                player_items_table[buff_name] = item_data
-                                if child_buff_name then
-                                    player_items_table[child_buff_name] = item_data
+                                    player_items_table[buff_name] = item_data
+                                    if child_buff_name then
+                                        player_items_table[child_buff_name] = item_data
+                                    end
                                 end
                             end
 
-                            for _, trait in ipairs(traits) do
-                                local trait_id = trait.id
-                                local trait_rarity = trait.rarity
-                                local trait_value = trait.value
-                                local trait_item = master_items[trait_id]
-                                local weapon_trait_id = trait_item.trait
-                                local weapon_trait_icon = trait_item.icon
-                                local weapon_trait_template = weapon_trait_templates[weapon_trait_id]
-                                local buff_template_id = weapon_trait_template and next(weapon_trait_template)
-                                if not buff_template_id then
-                                    buff_template_id = weapon_trait_id
-                                end
-                                local buff_template = BuffTemplates[buff_template_id]
-                                local buff_template = BuffTemplates[buff_template_id]
-                                local buff_name = buff_template.name
-                                local child_buff_name = buff_template.child_buff_template
-                                local display_name = ItemUtils.display_name(trait_item)
-                                local item_data = {}
-                                item_data.item_type = item_types_lookup[item_type]
-                                item_data.item_display_name = item_display_name
-                                item_data.type = "Blessing"
-                                item_data.display_name = display_name
-                                item_data.icon = weapon_trait_icon
-
-                                player_items_table[buff_name] = item_data
-                                if child_buff_name then
-                                    player_items_table[child_buff_name] = item_data
+                            if traits then
+                                for _, trait in ipairs(traits) do
+                                    local trait_id = trait.id
+                                    local trait_item = master_items[trait_id]
+                                    local weapon_trait_id = trait_item.trait
+                                    local weapon_trait_icon = trait_item.icon
+                                    local weapon_trait_template = weapon_trait_templates[weapon_trait_id]
+                                    local buff_template_id = weapon_trait_template and next(weapon_trait_template.buffs) or weapon_trait_id
+                                    local buff_template = BuffTemplates[buff_template_id]
+                                    local buff_name = buff_template and buff_template.name
+                                    local child_buff_name = buff_template and buff_template.child_buff_template
+                                    local display_name = ItemUtils.display_name(trait_item)
+                                    local item_data = {}
+                                    item_data.item_type = item_types_lookup[item_type]
+                                    item_data.item_display_name = item_display_name
+                                    item_data.type = "Blessing"
+                                    item_data.display_name = display_name
+                                    item_data.icon = weapon_trait_icon
+                                    player_items_table[buff_name] = item_data
+                                    if child_buff_name then
+                                        player_items_table[child_buff_name] = item_data
+                                    end
+                                    
                                 end
                             end
                         end
