@@ -285,6 +285,30 @@ local minion_categories = {
 		class = "mloc_hound",
 		display_name = "loc_breed_display_name_chaos_hound",
 		armor_type = "loc_weapon_stats_display_disgustingly_resilient",
-	}
+	},
+	cultist_grenadier = {
+		attack_type = "loc_contract_task_weapon_type_ranged",
+		faction = "mloc_chaos_faction",
+		type = "mloc_specialist",
+		class = "Bomber",
+		display_name = "loc_breed_display_name_cultist_grenadier",
+		armor_type = "loc_weapon_stats_display_unarmored",
+	},
+	chaos_mutated_poxwalker = {
+		attack_type = "loc_contract_task_weapon_type_melee",
+		faction = "mloc_chaos_faction",
+		type = "mloc_horde",
+		class = "mloc_basic",
+		display_name = "loc_breed_display_name_chaos_mutated_poxwalker",
+		armor_type = "loc_weapon_stats_display_disgustingly_resilient",
+	},
+	chaos_lesser_mutated_poxwalker = {
+		attack_type = "loc_contract_task_weapon_type_melee",
+		faction = "mloc_chaos_faction",
+		type = "mloc_horde",
+		class = "mloc_basic",
+		display_name = "loc_breed_display_name_chaos_lesser_mutated_poxwalker",
+		armor_type = "loc_weapon_stats_display_disgustingly_resilient",
+	},
 }
  return minion_categories
