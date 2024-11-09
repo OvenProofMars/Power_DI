@@ -39,7 +39,7 @@ local attack_reports = function(data)
                             v.attacker_armor_type = lookup.armor_type
                             v.attacker_name = lookup.display_name
                         else
-                            print(lookup_value)
+                            --print(lookup_value)
                         end
                         if is_player then
                             local player_profile = PlayerProfiles[attacking_unit_uuid]
