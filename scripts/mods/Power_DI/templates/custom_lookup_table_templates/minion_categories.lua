@@ -294,6 +294,26 @@ local minion_categories = {
 		display_name = "loc_breed_display_name_cultist_grenadier",
 		armor_type = "loc_weapon_stats_display_unarmored",
 	},
+    -- Infected Moebian 21st
+    -- scripts/settings/breed/breeds/chaos/chaos_armored_infected_breed.lua
+    chaos_armored_infected = {
+		attack_type = "loc_contract_task_weapon_type_melee",
+		faction = "mloc_chaos_faction",
+		type = "mloc_horde",
+		class = "mloc_basic", -- horde enemies based on Groaners, even though they have Bruiser hp
+		display_name = "loc_breed_display_name_chaos_newly_infected", -- I assumed it'd be 'loc_breed_display_name_chaos_armored_infected' but this is what the source code says so i guess so. groaner name so it kinda makes sense
+		armor_type = "loc_weapon_stats_display_armored",
+	},
+    -- Cultist Captain - Rolling Steel
+    -- scripts/settings/breed/breeds/cultist/cultist_captain_breed.lua
+    cultist_captain = {
+		attack_type = "loc_contract_task_weapon_type_ranged", -- they use both; the other captain has this. monkey see, monkey do :)
+		faction = "mloc_chaos_faction",
+		type = "mloc_monstrosity",
+		class = "loc_breed_display_name_cultist_captain",
+		display_name = "loc_breed_display_name_cultist_captain",
+		armor_type = "loc_weapon_stats_display_armored",
+	},
 	chaos_mutated_poxwalker = {
 		attack_type = "loc_contract_task_weapon_type_melee",
 		faction = "mloc_chaos_faction",
@@ -309,6 +329,26 @@ local minion_categories = {
 		class = "mloc_basic",
 		display_name = "loc_breed_display_name_chaos_lesser_mutated_poxwalker",
 		armor_type = "loc_weapon_stats_display_disgustingly_resilient",
+	},
+    -- Mutated Horrors Mutant (?) or is this just the waves of Mutants
+    -- scripts/settings/breed/breeds/cultist/cultist_mutant_mutator_breed.lua
+    cultist_mutant_mutator = {
+		attack_type = "loc_contract_task_weapon_type_melee",
+		faction = "mloc_chaos_faction",
+		type = "mloc_specialist",
+		class = "loc_breed_display_name_cultist_mutant",
+		display_name = "loc_breed_display_name_cultist_mutant", -- name is identical to the regular mutant
+		armor_type = "loc_weapon_stats_display_berzerker",
+	},
+    -- Dark Communion Ritualist
+    -- scripts/settings/breed/breeds/cultist/cultist_ritualist_breed.lua
+    cultist_ritualist = {
+		attack_type = "loc_contract_task_weapon_type_melee", -- they don't attack, but i'm leaving this here as a hack since idk if you can skip attack_type
+		faction = "mloc_chaos_faction",
+		type = "mloc_horde", -- the only tag this unit has is 'ritualist', so i'll just leave it as horde. i'm too lazy to make a new category and don't even know if that'd be necessary to track
+		class = "mloc_basic",
+		display_name = "loc_breed_display_name_cultist_ritualist",
+		armor_type = "loc_weapon_stats_display_unarmored",
 	},
 }
  return minion_categories
