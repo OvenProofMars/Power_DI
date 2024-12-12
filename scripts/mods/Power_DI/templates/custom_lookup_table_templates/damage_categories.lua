@@ -9,20 +9,20 @@ local damage_profile_templates = {
         require("scripts/settings/equipment/weapon_templates/combat_blades/settings_templates/combat_blade_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/combat_knives/settings_templates/combat_knife_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/combat_swords/settings_templates/combatsword_damage_profile_templates"),
-        require("scripts/settings/equipment/weapon_templates/force_swords_2h/settings_templates/force_sword_2h_damage_profile_templates"),
-        require("scripts/settings/equipment/weapon_templates/force_swords/settings_templates/force_sword_damage_profile_templates"),        
+        require("scripts/settings/equipment/weapon_templates/force_swords/settings_templates/force_sword_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/ogryn_clubs/settings_templates/ogryn_club_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/ogryn_clubs/settings_templates/ogryn_shovel_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/ogryn_power_mauls/settings_templates/ogryn_power_maul_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/power_mauls/settings_templates/power_maul_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/power_swords/settings_templates/power_sword_damage_profile_templates"),
-        require("scripts/settings/equipment/weapon_templates/power_swords_2h/settings_templates/power_sword_2h_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/thunder_hammers_2h/settings_templates/thunder_hammer_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/linesman_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/ninjafencer_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/luggable_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/ogryn_pickaxes_2h/settings_templates/ogryn_pickaxe_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/power_mauls/settings_templates/power_maul_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/force_swords_2h/settings_templates/force_sword_2h_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/power_swords_2h/settings_templates/power_sword_2h_damage_profile_templates")
     },
     ["mloc_2_ranged_weapon_damage"] = {
         require("scripts/settings/equipment/weapon_templates/force_staffs/settings_templates/force_staff_damage_profile_templates"),
@@ -44,36 +44,36 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/bfg_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/killshot_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/tank_damage_profile_templates"),
-        require("scripts/settings/equipment/weapon_templates/bolt_pistols/settings_templates/boltpistol_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/bolt_pistols/settings_templates/boltpistol_damage_profile_templates")
     },
     ["mloc_3_blitz_damage"] = {
         require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/psyker_smite_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/smiter_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/zealot_damage_profile_templates"),
-        require("scripts/settings/damage/damage_profiles/demolitions_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/demolitions_damage_profile_templates")
     },
     ["mloc_4_combat_ability_damage"] = {
-        require("scripts/settings/damage/damage_profiles/ability_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/ability_damage_profile_templates")
     },
     ["mloc_5_debuff_damage"] = {
-        require("scripts/settings/damage/damage_profiles/buff_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/buff_damage_profile_templates")
     },
     ["mloc_6_environmental_damage"] = {
         require("scripts/settings/damage/damage_profiles/prop_damage_profile_templates"),
-        require("scripts/settings/damage/damage_profiles/minion_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/minion_damage_profile_templates")
     },
     ["mloc_7_other_damage"] = {
-        require("scripts/settings/damage/damage_profiles/common_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/common_damage_profile_templates")
     },
     -- ["mloc_8_minion"] = {
         
     -- },
-
+    
 }
 
 for category_name, category_array in pairs(damage_profile_templates) do
-    for _, damage_templates  in ipairs(category_array) do
+    for _, damage_templates in ipairs(category_array) do
         for damage_template_name, _ in pairs(damage_templates.base_templates.__data) do
             damage_categories[damage_template_name] = category_name
         end
@@ -83,7 +83,7 @@ for category_name, category_array in pairs(damage_profile_templates) do
     end
 end
 
---Overwrites, because FS is inconsistent
+-- Overwrites, because FS is inconsistent
 damage_categories["heavy_tank"] = "mloc_1_melee_weapon_damage"
 damage_categories["default_powersword_heavy"] = "mloc_1_melee_weapon_damage"
 damage_categories["ogryn_thumper_p1_m2_default"] = "mloc_2_ranged_weapon_damage"
