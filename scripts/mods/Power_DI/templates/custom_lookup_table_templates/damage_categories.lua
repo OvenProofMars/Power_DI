@@ -46,15 +46,20 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/tank_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/bolt_pistols/settings_templates/boltpistol_damage_profile_templates"),
     },
-    ["mloc_3_blitz_damage"] = {
-        require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),
-        require("scripts/settings/damage/damage_profiles/psyker_smite_damage_profile_templates"),
+  ["mloc_3_blitz_damage"] = {
+        require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),        
         require("scripts/settings/damage/damage_profiles/smiter_damage_profile_templates"),
-        require("scripts/settings/damage/damage_profiles/zealot_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/archetypes/psyker_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/archetypes/zealot_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/archetypes/veteran_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/archetypes/ogryn_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/demolitions_damage_profile_templates"),
     },
     ["mloc_4_combat_ability_damage"] = {
-        require("scripts/settings/damage/damage_profiles/ability_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/archetypes/psyker_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/archetypes/zealot_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/archetypes/veteran_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/archetypes/ogryn_damage_profile_templates"),        
     },
     ["mloc_5_debuff_damage"] = {
         require("scripts/settings/damage/damage_profiles/buff_damage_profile_templates"),
