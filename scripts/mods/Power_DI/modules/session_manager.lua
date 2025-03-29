@@ -48,7 +48,7 @@ session_manager.new = function()
         )
     end
 
-    session.info.difficulty = state_manager.difficulty and state_manager.difficulty:get_difficulty() or nil
+    session.info.difficulty = state_manager.difficulty and state_manager.difficulty:get_initial_challenge() or nil
     --session.info.date = os.date("%d/%m/%Y")
     session.info.start_time = os.time()
     session.info.resumed = false
