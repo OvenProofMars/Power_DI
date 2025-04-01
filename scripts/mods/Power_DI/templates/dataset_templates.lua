@@ -487,7 +487,7 @@ local player_buffs = function(data)
                                     local buff_template = BuffTemplates[buff_template_id]
                                     local buff_name = buff_template and buff_template.name
                                     local child_buff_name = buff_template and buff_template.child_buff_template
-                                    local display_name = ItemUtils.perk_description(perk_item, perk_rarity, perk_value)
+                                    local display_name = ItemUtils.trait_description(perk_item, perk_rarity, perk_value)
                                     display_name = string.gsub(display_name,"%%", " percent")
                                     local item_data = {}
                                     item_data.item_type = item_types_lookup[item_type]
@@ -776,34 +776,34 @@ dataset_templates = {
             time = "number",
         }
     },
-    -- player_buffs = {
-    --     name = "mloc_dataset_player_buffs",
-    --     dataset_function = player_buffs,
-    --     required_datasources = {
-    --         "PlayerBuffExtension",
-    --         "UnitSpawnerManager",
-    --         "PlayerProfiles",
-    --     },
-    --     legend = {
-    --         player_name = "string",
-    --         player = "player",
-    --         template_name = "string",
-    --         buff_category = "string",
-    --         class_name = "string",
-    --         icon = "string",
-    --         parent_template_name = "string",
-    --         parent_buff_category = "string",
-    --         parent_class_name = "string",
-    --         parent_icon = "string",
-    --         source_category = "string",
-    --         source_sub_category = "string",
-    --         source_item_name = "string",
-    --         source_icon = "string",
-    --         source_name = "string",
-    --         event = "string",
-    --         time = "number",
-    --     }
-    -- },
+    player_buffs = {
+        name = "mloc_dataset_player_buffs",
+        dataset_function = player_buffs,
+        required_datasources = {
+            "PlayerBuffExtension",
+            "UnitSpawnerManager",
+            "PlayerProfiles",
+        },
+        legend = {
+            player_name = "string",
+            player = "player",
+            template_name = "string",
+            buff_category = "string",
+            class_name = "string",
+            icon = "string",
+            parent_template_name = "string",
+            parent_buff_category = "string",
+            parent_class_name = "string",
+            parent_icon = "string",
+            source_category = "string",
+            source_sub_category = "string",
+            source_item_name = "string",
+            source_icon = "string",
+            source_name = "string",
+            event = "string",
+            time = "number",
+        }
+    },
 }
 
 return dataset_templates

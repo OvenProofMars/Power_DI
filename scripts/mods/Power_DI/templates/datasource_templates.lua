@@ -1276,43 +1276,43 @@ datasource_templates = {
             },
         },
     },
-    -- {   name = "PlayerBuffExtension",
-    --     hook_templates = {
-    --         {
-    --             hook_class = CLASS.PlayerUnitBuffExtension,
-    --             hook_functions = {
-    --                 rpc_add_buff = rpc_add_buff,
-    --                 rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
-    --                 rpc_remove_buff = rpc_remove_buff,
-    --                 rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
-    --                 rpc_buff_set_start_time = rpc_buff_set_start_time,
-    --             },
-    --         },
-    --         {
-    --             hook_class = CLASS.PlayerHuskBuffExtension,
-    --             hook_functions = {
-    --                 rpc_add_buff = rpc_add_buff,
-    --                 rpc_remove_buff = rpc_remove_buff,
-    --                 rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
-    --                 rpc_buff_set_start_time = rpc_buff_set_start_time,
-    --             },
-    --         },
-    --     },
-    -- },
-    -- {   name = "MinionBuffExtension",
-    --     hook_templates = {
-    --         {
-    --             hook_class = CLASS.MinionBuffExtension,
-    --             hook_functions = {
-    --                 rpc_add_buff = rpc_add_buff,
-    --                 rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
-    --                 rpc_remove_buff = rpc_remove_buff,
-    --                 rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
-    --                 rpc_buff_set_start_time = rpc_buff_set_start_time,
-    --             },
-    --         },
-    --     },
-    -- },
+    {   name = "PlayerBuffExtension",
+        hook_templates = {
+            {
+                hook_class = CLASS.PlayerUnitBuffExtension,
+                hook_functions = {
+                    rpc_add_buff = rpc_add_buff,
+                    rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
+                    rpc_remove_buff = rpc_remove_buff,
+                    rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
+                    rpc_buff_set_start_time = rpc_buff_set_start_time,
+                },
+            },
+            {
+                hook_class = CLASS.PlayerHuskBuffExtension,
+                hook_functions = {
+                    rpc_add_buff = rpc_add_buff,
+                    rpc_remove_buff = rpc_remove_buff,
+                    rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
+                    rpc_buff_set_start_time = rpc_buff_set_start_time,
+                },
+            },
+        },
+    },
+    {   name = "MinionBuffExtension",
+        hook_templates = {
+            {
+                hook_class = CLASS.MinionBuffExtension,
+                hook_functions = {
+                    rpc_add_buff = rpc_add_buff,
+                    rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
+                    rpc_remove_buff = rpc_remove_buff,
+                    rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
+                    rpc_buff_set_start_time = rpc_buff_set_start_time,
+                },
+            },
+        },
+    },
     {   name = "UnitSpawnerManager",
         hook_templates = {
             {

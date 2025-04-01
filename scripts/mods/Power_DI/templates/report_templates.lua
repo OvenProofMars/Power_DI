@@ -228,24 +228,24 @@ report_templates = {
         },
         filters = {"event_type = \""..mod:localize("mloc_ability_charge_used").."\" and player ~ nil"},
     },
-    -- player_buffs_report = {
-    --     name = "mloc_player_buffs_report",
-    --     --label = "Player buffs report",
-    --     dataset_name = "mloc_dataset_player_buffs",
-    --     report_type = "pivot_table",
-    --     columns = {"player"},
-    --     rows = {"source_category", "source_name", "event", "template_name"},
-    --     values = {
-    --         {
-    --             field_name = "player",
-    --             type = "count",
-    --             label = mod:localize("mloc_buff_events"),
-    --             visible = true,
-    --             format = "number"
-    --         },
-    --     },
-    --     filters = {"player ~ nil"},
-    -- },
+    player_buffs_report = {
+        name = "mloc_player_buffs_report",
+        --label = "Player buffs report",
+        dataset_name = "mloc_dataset_player_buffs",
+        report_type = "pivot_table",
+        columns = {"player"},
+        rows = {"source_category", "source_name", "event", "template_name"},
+        values = {
+            {
+                field_name = "player",
+                type = "count",
+                label = mod:localize("mloc_buff_events"),
+                visible = true,
+                format = "number"
+            },
+        },
+        filters = {"player ~ nil"},
+    },
 }
 
 return report_templates
