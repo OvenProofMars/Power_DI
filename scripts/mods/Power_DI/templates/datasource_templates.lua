@@ -1066,9 +1066,9 @@ local rpc_remove_smart_tag = function (self, channel_id, tag_id, reason_id)
     temp_table.event = "remove_smart_tag"
     temp_table.tag_id = tag_id
     temp_table.tagger_unit_uuid = tagger_unit_uuid
-    temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
+    --temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
     temp_table.target_unit_uuid = target_unit_uuid
-    temp_table.target_unit_position = target_unit and get_position(target_unit)
+    --temp_table.target_unit_position = target_unit and get_position(target_unit)
     temp_table.template_name = active_smart_tag and active_smart_tag.template_name
     temp_table.reason = remove_tags_reason_lookup[reason_id]
 
