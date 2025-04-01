@@ -974,17 +974,24 @@ local rpc_set_smart_tag = function (self, channel_id, tag_id, template_name_id, 
 	local target_unit
     local temp_table = {}
 
+    local taget_unit_is_level_unit
+
 	if target_game_object_id then
-		target_unit = unit_spawner_manager:unit(target_game_object_id, false)
+        taget_unit_is_level_unit = false
+		target_unit = unit_spawner_manager:unit(target_game_object_id, taget_unit_is_level_unit)
 	elseif target_level_index then
-		target_unit = unit_spawner_manager:unit(target_level_index, true)
+        taget_unit_is_level_unit = true
+		target_unit = unit_spawner_manager:unit(target_level_index, taget_unit_is_level_unit)
     end
+
+    local tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
+    local target_unit_uuid = target_unit and get_unit_uuid(target_unit)
     
     temp_table.time = get_gameplay_time()
     temp_table.event = "set_smart_tag"
-    temp_table.tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
+    temp_table.tagger_unit_uuid = tagger_unit_uuid
     temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
-    temp_table.target_unit_uuid = target_unit and get_unit_uuid(target_unit)
+    temp_table.target_unit_uuid = target_unit_uuit
     temp_table.target_unit_position = target_unit and get_position(target_unit)
     temp_table.template_name = template_name
 
@@ -994,7 +1001,9 @@ local rpc_set_smart_tag = function (self, channel_id, tag_id, template_name_id, 
 
     active_smart_tag.template_name = template_name
     active_smart_tag.tagger_unit = tagger_unit
+    active_smart_tag.tagger_unit_uuid = tagger_unit_uuid
     active_smart_tag.target_unit = target_unit
+    active_smart_tag.target_unit_uuid = target_unit_uuid
    
     active_smart_tags[tag_id] = active_smart_tag
 end
@@ -1048,15 +1057,17 @@ local rpc_remove_smart_tag = function (self, channel_id, tag_id, reason_id)
     local active_smart_tags = mod.cache.active_smart_tags
     local active_smart_tag = active_smart_tags and active_smart_tags[tag_id]
 	local tagger_unit = active_smart_tag and active_smart_tag.tagger_unit
+    local tagger_unit_uuid = active_smart_tag and active_smart_tag.tagger_unit_uuid
     local target_unit = active_smart_tag and active_smart_tag.target_unit
+    local target_unit_uuid = active_smart_tag and active_smart_tag.target_unit_uuid
     local temp_table = {}
 
     temp_table.time = get_gameplay_time()
     temp_table.event = "remove_smart_tag"
     temp_table.tag_id = tag_id
-    temp_table.tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
+    temp_table.tagger_unit_uuid = tagger_unit_uuid
     temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
-    temp_table.target_unit_uuid = target_unit and get_unit_uuid(target_unit)
+    temp_table.target_unit_uuid = target_unit_uuid
     temp_table.target_unit_position = target_unit and get_position(target_unit)
     temp_table.template_name = active_smart_tag and active_smart_tag.template_name
     temp_table.reason = remove_tags_reason_lookup[reason_id]
@@ -1442,19 +1453,19 @@ datasource_templates = {
             },
         },
     },
-    -- {   name = "SmartTagSystem",
-    --     hook_templates = {
-    --         {
-    --             hook_class = CLASS.SmartTagSystem,
-    --             hook_functions = {
-    --                 rpc_set_smart_tag = rpc_set_smart_tag,
-    --                 rpc_set_smart_tag_hot_join = rpc_set_smart_tag_hot_join,
-    --                 rpc_remove_smart_tag = rpc_remove_smart_tag,
-    --                 rpc_smart_tag_reply = rpc_smart_tag_reply,
-    --             },
-    --         },
-    --     },
-    -- },
+    {   name = "SmartTagSystem",
+        hook_templates = {
+            {
+                hook_class = CLASS.SmartTagSystem,
+                hook_functions = {
+                    rpc_set_smart_tag = rpc_set_smart_tag,
+                    rpc_set_smart_tag_hot_join = rpc_set_smart_tag_hot_join,
+                    rpc_remove_smart_tag = rpc_remove_smart_tag,
+                    rpc_smart_tag_reply = rpc_smart_tag_reply,
+                },
+            },
+        },
+    },
     {   name = "PlayerUnitStatus",
         hook_templates = {
             {

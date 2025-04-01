@@ -688,28 +688,28 @@ dataset_templates = {
             time = "number",
         }
     },
-    -- tagging = {
-    --     name = "mloc_dataset_tagging",
-    --     label = "Tagging",
-    --     dataset_function = tagging,
-    --     required_datasources = {
-    --         "SmartTagSystem",
-    --         "UnitSpawnerManager",
-    --         "PlayerProfiles",
-    --     },
-    --     legend = {
-    --         player_name = "string",
-    --         player = "player",
-    --         target_name = "string",
-    --         target_type = "string",
-    --         target_class = "string",
-    --         event = "string",
-    --         tag_type = "string",
-    --         reason = "string",
-    --         time = "number",
-    --         tag_id = "number",
-    --     }
-    -- },
+    tagging = {
+        name = "mloc_dataset_tagging",
+        label = "Tagging",
+        dataset_function = tagging,
+        required_datasources = {
+            "SmartTagSystem",
+            "UnitSpawnerManager",
+            "PlayerProfiles",
+        },
+        legend = {
+            player_name = "string",
+            player = "player",
+            target_name = "string",
+            target_type = "string",
+            target_class = "string",
+            event = "string",
+            tag_type = "string",
+            reason = "string",
+            time = "number",
+            tag_id = "number",
+        }
+    },
     player_suppression = {
         name = "mloc_dataset_player_supression",
         dataset_function = player_suppression,

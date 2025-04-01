@@ -141,25 +141,25 @@ report_templates = {
             "event = \"interaction_stopped\" and result = \"success\" and interaction_type ~ \"default\" and interactor_player ~ nil"
         },
     },
-    -- player_tagging_report = {
-    --     name = "mloc_player_tagging_report",
-    --     dataset_name = "mloc_dataset_tagging",
-    --     report_type = "pivot_table",
-    --     columns = {"player"},
-    --     rows = {"tag_type", "target_type", "target_class", "target_name"},
-    --     values = {
-    --         {
-    --             field_name = "target_name",
-    --             type = "count",
-    --             label = mod:localize("mloc_total_tags"),
-    --             visible = true,
-    --             format = "number"
-    --         },
-    --     },
-    --     filters = {
-    --         "event = \"set smart tag\" and player ~ nil"
-    --     },
-    -- },
+    player_tagging_report = {
+        name = "mloc_player_tagging_report",
+        dataset_name = "mloc_dataset_tagging",
+        report_type = "pivot_table",
+        columns = {"player"},
+        rows = {"tag_type", "target_type", "target_class", "target_name"},
+        values = {
+            {
+                field_name = "target_name",
+                type = "count",
+                label = mod:localize("mloc_total_tags"),
+                visible = true,
+                format = "number"
+            },
+        },
+        filters = {
+            "event = \"set smart tag\" and player ~ nil"
+        },
+    },
     player_suppression_report = {
         name = "mloc_player_suppression_report",
         dataset_name = "mloc_dataset_player_supression",
