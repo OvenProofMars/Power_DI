@@ -1265,43 +1265,43 @@ datasource_templates = {
             },
         },
     },
-    {   name = "PlayerBuffExtension",
-        hook_templates = {
-            {
-                hook_class = CLASS.PlayerUnitBuffExtension,
-                hook_functions = {
-                    rpc_add_buff = rpc_add_buff,
-                    rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
-                    rpc_remove_buff = rpc_remove_buff,
-                    rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
-                    rpc_buff_set_start_time = rpc_buff_set_start_time,
-                },
-            },
-            {
-                hook_class = CLASS.PlayerHuskBuffExtension,
-                hook_functions = {
-                    rpc_add_buff = rpc_add_buff,
-                    rpc_remove_buff = rpc_remove_buff,
-                    rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
-                    rpc_buff_set_start_time = rpc_buff_set_start_time,
-                },
-            },
-        },
-    },
-    {   name = "MinionBuffExtension",
-        hook_templates = {
-            {
-                hook_class = CLASS.MinionBuffExtension,
-                hook_functions = {
-                    rpc_add_buff = rpc_add_buff,
-                    rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
-                    rpc_remove_buff = rpc_remove_buff,
-                    rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
-                    rpc_buff_set_start_time = rpc_buff_set_start_time,
-                },
-            },
-        },
-    },
+    -- {   name = "PlayerBuffExtension",
+    --     hook_templates = {
+    --         {
+    --             hook_class = CLASS.PlayerUnitBuffExtension,
+    --             hook_functions = {
+    --                 rpc_add_buff = rpc_add_buff,
+    --                 rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
+    --                 rpc_remove_buff = rpc_remove_buff,
+    --                 rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
+    --                 rpc_buff_set_start_time = rpc_buff_set_start_time,
+    --             },
+    --         },
+    --         {
+    --             hook_class = CLASS.PlayerHuskBuffExtension,
+    --             hook_functions = {
+    --                 rpc_add_buff = rpc_add_buff,
+    --                 rpc_remove_buff = rpc_remove_buff,
+    --                 rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
+    --                 rpc_buff_set_start_time = rpc_buff_set_start_time,
+    --             },
+    --         },
+    --     },
+    -- },
+    -- {   name = "MinionBuffExtension",
+    --     hook_templates = {
+    --         {
+    --             hook_class = CLASS.MinionBuffExtension,
+    --             hook_functions = {
+    --                 rpc_add_buff = rpc_add_buff,
+    --                 rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
+    --                 rpc_remove_buff = rpc_remove_buff,
+    --                 rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
+    --                 rpc_buff_set_start_time = rpc_buff_set_start_time,
+    --             },
+    --         },
+    --     },
+    -- },
     {   name = "UnitSpawnerManager",
         hook_templates = {
             {
@@ -1442,19 +1442,19 @@ datasource_templates = {
             },
         },
     },
-    {   name = "SmartTagSystem",
-        hook_templates = {
-            {
-                hook_class = CLASS.SmartTagSystem,
-                hook_functions = {
-                    rpc_set_smart_tag = rpc_set_smart_tag,
-                    rpc_set_smart_tag_hot_join = rpc_set_smart_tag_hot_join,
-                    rpc_remove_smart_tag = rpc_remove_smart_tag,
-                    rpc_smart_tag_reply = rpc_smart_tag_reply,
-                },
-            },
-        },
-    },
+    -- {   name = "SmartTagSystem",
+    --     hook_templates = {
+    --         {
+    --             hook_class = CLASS.SmartTagSystem,
+    --             hook_functions = {
+    --                 rpc_set_smart_tag = rpc_set_smart_tag,
+    --                 rpc_set_smart_tag_hot_join = rpc_set_smart_tag_hot_join,
+    --                 rpc_remove_smart_tag = rpc_remove_smart_tag,
+    --                 rpc_smart_tag_reply = rpc_smart_tag_reply,
+    --             },
+    --         },
+    --     },
+    -- },
     {   name = "PlayerUnitStatus",
         hook_templates = {
             {

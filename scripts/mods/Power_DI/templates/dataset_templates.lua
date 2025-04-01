@@ -688,28 +688,28 @@ dataset_templates = {
             time = "number",
         }
     },
-    tagging = {
-        name = "mloc_dataset_tagging",
-        label = "Tagging",
-        dataset_function = tagging,
-        required_datasources = {
-            "SmartTagSystem",
-            "UnitSpawnerManager",
-            "PlayerProfiles",
-        },
-        legend = {
-            player_name = "string",
-            player = "player",
-            target_name = "string",
-            target_type = "string",
-            target_class = "string",
-            event = "string",
-            tag_type = "string",
-            reason = "string",
-            time = "number",
-            tag_id = "number",
-        }
-    },
+    -- tagging = {
+    --     name = "mloc_dataset_tagging",
+    --     label = "Tagging",
+    --     dataset_function = tagging,
+    --     required_datasources = {
+    --         "SmartTagSystem",
+    --         "UnitSpawnerManager",
+    --         "PlayerProfiles",
+    --     },
+    --     legend = {
+    --         player_name = "string",
+    --         player = "player",
+    --         target_name = "string",
+    --         target_type = "string",
+    --         target_class = "string",
+    --         event = "string",
+    --         tag_type = "string",
+    --         reason = "string",
+    --         time = "number",
+    --         tag_id = "number",
+    --     }
+    -- },
     player_suppression = {
         name = "mloc_dataset_player_supression",
         dataset_function = player_suppression,
@@ -776,34 +776,34 @@ dataset_templates = {
             time = "number",
         }
     },
-    player_buffs = {
-        name = "mloc_dataset_player_buffs",
-        dataset_function = player_buffs,
-        required_datasources = {
-            "PlayerBuffExtension",
-            "UnitSpawnerManager",
-            "PlayerProfiles",
-        },
-        legend = {
-            player_name = "string",
-            player = "player",
-            template_name = "string",
-            buff_category = "string",
-            class_name = "string",
-            icon = "string",
-            parent_template_name = "string",
-            parent_buff_category = "string",
-            parent_class_name = "string",
-            parent_icon = "string",
-            source_category = "string",
-            source_sub_category = "string",
-            source_item_name = "string",
-            source_icon = "string",
-            source_name = "string",
-            event = "string",
-            time = "number",
-        }
-    },
+    -- player_buffs = {
+    --     name = "mloc_dataset_player_buffs",
+    --     dataset_function = player_buffs,
+    --     required_datasources = {
+    --         "PlayerBuffExtension",
+    --         "UnitSpawnerManager",
+    --         "PlayerProfiles",
+    --     },
+    --     legend = {
+    --         player_name = "string",
+    --         player = "player",
+    --         template_name = "string",
+    --         buff_category = "string",
+    --         class_name = "string",
+    --         icon = "string",
+    --         parent_template_name = "string",
+    --         parent_buff_category = "string",
+    --         parent_class_name = "string",
+    --         parent_icon = "string",
+    --         source_category = "string",
+    --         source_sub_category = "string",
+    --         source_item_name = "string",
+    --         source_icon = "string",
+    --         source_name = "string",
+    --         event = "string",
+    --         time = "number",
+    --     }
+    -- },
 }
 
 return dataset_templates
