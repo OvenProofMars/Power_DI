@@ -990,9 +990,9 @@ local rpc_set_smart_tag = function (self, channel_id, tag_id, template_name_id, 
     temp_table.time = get_gameplay_time()
     temp_table.event = "set_smart_tag"
     temp_table.tagger_unit_uuid = tagger_unit_uuid
-    temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
+    --temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
     temp_table.target_unit_uuid = target_unit_uuit
-    temp_table.target_unit_position = target_unit and get_position(target_unit)
+    --temp_table.target_unit_position = target_unit and get_position(target_unit)
     temp_table.template_name = template_name
 
     output_table[#output_table+1] = temp_table
@@ -1032,23 +1032,28 @@ local rpc_set_smart_tag_hot_join = function (self, channel_id, tag_id, template_
 		replies[replier_unit_uuid] = reply_name
 	end
 
+    local tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
+    local target_unit_uuid = target_unit and get_unit_uuid(target_unit)
+
     temp_table.time = get_gameplay_time()
     temp_table.event = "set_smart_tag_hot_join"
     temp_table.tag_id = tag_id
-    temp_table.tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
-    temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
-    temp_table.target_unit_uuid = target_unit and get_unit_uuid(target_unit)
-    temp_table.target_unit_position = target_unit and get_position(target_unit)
+    temp_table.tagger_unit_uuid = tagger_unit_uuid
+    --temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
+    temp_table.target_unit_uuid = target_unit_uuid
+    --temp_table.target_unit_position = target_unit and get_position(target_unit)
     temp_table.template_name = template_name
     temp_table.replies = replies
 
     output_table[#output_table+1] = temp_table
 
     local active_smart_tag = {}
-
+    
     active_smart_tag.template_name = template_name
     active_smart_tag.tagger_unit = tagger_unit
+    active_smart_tag.tagger_unit_uuid = tagger_unit_uuid
     active_smart_tag.target_unit = target_unit
+    active_smart_tag.target_unit_uuid = target_unit_uuid
    
     active_smart_tags[tag_id] = active_smart_tag
 end
@@ -1082,19 +1087,22 @@ local rpc_smart_tag_reply = function (self, channel_id, tag_id, replier_game_obj
     local active_smart_tag = active_smart_tags and active_smart_tags[tag_id]
     local replier_unit = managers_state.unit_spawner:unit(replier_game_object_id)
 	local tagger_unit = active_smart_tag and active_smart_tag.tagger_unit
+    local tagger_unit_uuid = active_smart_tag and active_smart_tag.tagger_unit_uuid
     local target_unit = active_smart_tag and active_smart_tag.target_unit
+    local target_unit_uuid = active_smart_tag and active_smart_tag.target_unit_uuid
     local temp_table = {}
 
     temp_table.time = get_gameplay_time()
     temp_table.event = "smart_tag_reply"
     temp_table.tag_id = tag_id
-    temp_table.tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
-    temp_table.tagger_unit_position = get_position(tagger_unit)
-    temp_table.target_unit_uuid = target_unit and get_unit_uuid(target_unit)
-    temp_table.target_unit_position = get_position(target_unit)
+
+    temp_table.tagger_unit_uuid = tagger_unit_uuid
+    --temp_table.tagger_unit_position = get_position(tagger_unit)
+    temp_table.target_unit_uuid = target_unit_uuid
+    --temp_table.target_unit_position = get_position(target_unit)
     temp_table.template_name = active_smart_tag and active_smart_tag.template_name
     temp_table.replier_unit_uuid = get_unit_uuid(replier_unit)
-    temp_table.replier_unit_position = get_position(replier_unit)
+    --temp_table.replier_unit_position = get_position(replier_unit)
 
     output_table[#output_table+1] = temp_table
 end
