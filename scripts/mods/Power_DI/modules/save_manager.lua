@@ -155,6 +155,7 @@ local function auto_save()
     if modulus > auto_save_interval and not saved_this_cycle then
         auto_save_coroutine()
         saved_this_cycle = true
+        --mod:notify("Auto save successful")
     elseif modulus < auto_save_interval then
         saved_this_cycle = false
     end
