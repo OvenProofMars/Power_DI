@@ -350,5 +350,15 @@ local minion_categories = {
 		display_name = "loc_breed_display_name_cultist_ritualist",
 		armor_type = "loc_weapon_stats_display_unarmored",
 	},
+	-- Scab Radio Operator - Communication Breakdown
+	-- scripts/settings/breed/breeds/renegade/renegade_radio_operator_breed.lua
+	renegade_radio_operator = {
+		attack_type = "loc_contract_task_weapon_type_ranged",
+		faction = "loc_contract_task_enemy_type_traitor",
+		type = "mloc_elite",
+		class = "mloc_gunner",
+		display_name = "loc_breed_display_name_renegade_radio_operator",
+		armor_type = "loc_weapon_stats_display_armored",
+	},
 }
  return minion_categories
