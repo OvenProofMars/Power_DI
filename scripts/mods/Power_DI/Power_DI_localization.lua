@@ -575,6 +575,11 @@ return {
 		["zh-cn"] = "敌人",
 		["zh-tw"] = "小兵 / 雜兵",
 	},
+	mloc_9_companion = {
+		en = "Companion",
+		--["zh-cn"] = "",
+		--["zh-tw"] = "",
+	},
 	mloc_chaos_faction = {
 		en = "Chaos",
 		["zh-cn"] = "混沌",

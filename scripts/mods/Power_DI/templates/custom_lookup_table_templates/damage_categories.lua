@@ -23,6 +23,7 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/luggable_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/ogryn_pickaxes_2h/settings_templates/ogryn_pickaxe_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/power_mauls/settings_templates/power_maul_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/power_maul_shields/settings_templates/power_maul_shield_damage_profile_templates"),
     },
     ["mloc_2_ranged_weapon_damage"] = {
         require("scripts/settings/equipment/weapon_templates/force_staffs/settings_templates/force_staff_damage_profile_templates"),
@@ -45,6 +46,7 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/killshot_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/tank_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/bolt_pistols/settings_templates/boltpistol_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/shotpistol_shield/settings_templates/shotpistol_shield_damage_profile_templates"),
     },
   ["mloc_3_blitz_damage"] = {
         require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),        
@@ -59,7 +61,8 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/archetypes/psyker_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/zealot_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/veteran_damage_profile_templates"),
-        require("scripts/settings/damage/damage_profiles/archetypes/ogryn_damage_profile_templates"),        
+        require("scripts/settings/damage/damage_profiles/archetypes/ogryn_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/archetypes/adamant_damage_profile_templates"),        
     },
     ["mloc_5_debuff_damage"] = {
         require("scripts/settings/damage/damage_profiles/buff_damage_profile_templates"),
@@ -71,10 +74,6 @@ local damage_profile_templates = {
     ["mloc_7_other_damage"] = {
         require("scripts/settings/damage/damage_profiles/common_damage_profile_templates"),
     },
-    -- ["mloc_8_minion"] = {
-        
-    -- },
-
 }
 
 for category_name, category_array in pairs(damage_profile_templates) do
@@ -98,6 +97,22 @@ damage_categories["ogryn_thumper_p1_m2_close"] = "mloc_2_ranged_weapon_damage"
 damage_categories["ogryn_thumper_p1_m2_close_instant"] = "mloc_2_ranged_weapon_damage"
 damage_categories["force_staff_demolition_close"] = "mloc_2_ranged_weapon_damage"
 damage_categories["plasma_demolition"] = "mloc_2_ranged_weapon_damage"
+damage_categories["adamant_companion_pounce"] = "mloc_9_companion"
+damage_categories["adamant_companion_human_pounce"] = "mloc_9_companion"
+damage_categories["adamant_companion_ogryn_pounce"] = "mloc_9_companion"
+damage_categories["adamant_companion_monster_pounce"] = "mloc_9_companion"
+damage_categories["adamant_companion_initial_pounce"] = "mloc_9_companion"
+damage_categories["adamant_companion_no_damage_pounce"] = "mloc_9_companion"
+damage_categories["psyker_heavy_swings_shock"] = "mloc_3_blitz_damage"
+damage_categories["psyker_smite_kill"] = "mloc_3_blitz_damage"
+damage_categories["psyker_protectorate_channel_chain_lightning_activated"] = "mloc_3_blitz_damage"
+damage_categories["psyker_protectorate_spread_chain_lightning_interval"] = "mloc_3_blitz_damage"
+damage_categories["psyker_protectorate_chain_lighting"] = "mloc_3_blitz_damage"
+damage_categories["psyker_throwing_knives"] = "mloc_3_blitz_damage"
+damage_categories["psyker_throwing_knives_aimed"] = "mloc_3_blitz_damage"
+damage_categories["psyker_throwing_knives_aimed_pierce"] = "mloc_3_blitz_damage"
+damage_categories["psyker_throwing_knives_psychic_fortress"] = "mloc_3_blitz_damage"
+damage_categories["zealot_throwing_knives"] = "mloc_3_blitz_damage"
 
 damage_profile_templates = nil
 
