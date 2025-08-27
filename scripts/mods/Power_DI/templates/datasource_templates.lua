@@ -364,36 +364,41 @@ local rpc_player_collected_materials = function(self, channel_id, peer_id, mater
     output_table[#output_table+1] = temp_table
 end
 local add_network_unit = function(self, unit, game_object_id, is_husk)
+    local go_field = GameSession.game_object_field
+    local has_go_field = GameSession.has_game_object_field
     local output_table = data_locations.UnitSpawnerManager()
     local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
-    local unit_template_name = self._unit_template_network_lookup[GameSession.game_object_field(game_session, game_object_id, "unit_template")]
+    local unit_template_name = self._unit_template_network_lookup[go_field(game_session, game_object_id, "unit_template")]
     local unit_uuid = utilities.get_address(unit)
     local unit_name, max_health, owner_unit
     
     if unit_template_name == "player_character" then
-        local package_synchronizer_client = Managers.package_synchronization:synchronizer_client()
-        local player_peer_id = GameSession.game_object_field(game_session, game_object_id, "owner_peer_id")
-        local player_profile = player_peer_id and package_synchronizer_client:cached_profile(player_peer_id, 1)
-        local players_table = data_locations.PlayerProfiles()
-        players_table[unit_uuid] = utilities.copy(player_profile)
-        unit_name = player_profile and player_profile.name
-        utilities.clean_table_for_saving(players_table[unit_uuid])
-    elseif GameSession.has_game_object_field(game_session, game_object_id, "breed_id") then
-        local breed_id = GameSession.game_object_field(game_session, game_object_id, "breed_id")
+        local owner_peer_id = go_field(game_session, game_object_id, "owner_peer_id")     
+        local local_player_id = go_field(game_session, game_object_id, "local_player_id")
+        local player_target = owner_peer_id and Managers.player:player(owner_peer_id, local_player_id)
+        if player_target:is_human_controlled() then
+            local player_profile = player_target:profile()
+            local players_table = data_locations.PlayerProfiles()
+            players_table[unit_uuid] = utilities.copy(player_profile)
+            unit_name = player_profile and player_profile.name
+            utilities.clean_table_for_saving(players_table[unit_uuid])
+        end
+    elseif has_go_field(game_session, game_object_id, "breed_id") then
+        local breed_id = go_field(game_session, game_object_id, "breed_id")
         unit_name = NetworkLookup.breed_names[breed_id]
-    elseif GameSession.has_game_object_field(game_session, game_object_id, "pickup_id") then
-        local pickup_id = GameSession.game_object_field(game_session, game_object_id, "pickup_id")
+    elseif has_go_field(game_session, game_object_id, "pickup_id") then
+        local pickup_id = go_field(game_session, game_object_id, "pickup_id")
         unit_name = NetworkLookup.pickup_names[pickup_id]
-    elseif GameSession.has_game_object_field(game_session, game_object_id, "prop_id") then
-        local prop_id = GameSession.game_object_field(game_session, game_object_id, "prop_id")
+    elseif has_go_field(game_session, game_object_id, "prop_id") then
+        local prop_id = go_field(game_session, game_object_id, "prop_id")
 		unit_name = NetworkLookup.level_props_names[prop_id]
     end
-    if GameSession.has_game_object_field(game_session, game_object_id, "health") then
-        max_health = GameSession.game_object_field(game_session, game_object_id, "health")
+    if has_go_field(game_session, game_object_id, "health") then
+        max_health = go_field(game_session, game_object_id, "health")
     end
-    if GameSession.has_game_object_field(game_session, game_object_id, "owner_unit_id") then
-        local owner_unit_id = GameSession.game_object_field(game_session, game_object_id, "owner_unit_id")
+    if has_go_field(game_session, game_object_id, "owner_unit_id") then
+        local owner_unit_id = go_field(game_session, game_object_id, "owner_unit_id")
         owner_unit = unit_spawner_manager:unit(owner_unit_id)
     end
 
