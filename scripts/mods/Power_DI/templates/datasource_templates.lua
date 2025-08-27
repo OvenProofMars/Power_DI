@@ -364,36 +364,42 @@ local rpc_player_collected_materials = function(self, channel_id, peer_id, mater
     output_table[#output_table+1] = temp_table
 end
 local add_network_unit = function(self, unit, game_object_id, is_husk)
+    
+    local go_field = GameSession.game_object_field
+    local has_go_field = GameSession.has_game_object_field
     local output_table = data_locations.UnitSpawnerManager()
     local game_session = managers_state.game_session:game_session()
     local unit_spawner_manager = managers_state.unit_spawner
-    local unit_template_name = self._unit_template_network_lookup[GameSession.game_object_field(game_session, game_object_id, "unit_template")]
+    local unit_template_name = self._unit_template_network_lookup[go_field(game_session, game_object_id, "unit_template")]
     local unit_uuid = utilities.get_address(unit)
     local unit_name, max_health, owner_unit
-    
-    if unit_template_name == "player_character" then
-        local package_synchronizer_client = Managers.package_synchronization:synchronizer_client()
-        local player_peer_id = GameSession.game_object_field(game_session, game_object_id, "owner_peer_id")
-        local player_profile = player_peer_id and package_synchronizer_client:cached_profile(player_peer_id, 1)
-        local players_table = data_locations.PlayerProfiles()
-        players_table[unit_uuid] = utilities.copy(player_profile)
-        unit_name = player_profile and player_profile.name
-        utilities.clean_table_for_saving(players_table[unit_uuid])
-    elseif GameSession.has_game_object_field(game_session, game_object_id, "breed_id") then
-        local breed_id = GameSession.game_object_field(game_session, game_object_id, "breed_id")
+
+    if unit_template_name == "player_character" then            
+        local player_peer_id = go_field(game_session, game_object_id, "owner_peer_id")     
+        local local_player_id = go_field(game_session, game_object_id, "local_player_id")
+        local player_target = player_peer_id and Managers.player:player(player_peer_id, local_player_id)
+        if player_target:is_human_controlled() then
+            local player_profile = player_target:profile()
+            local players_table = data_locations.PlayerProfiles()
+            players_table[unit_uuid] = utilities.copy(player_profile)
+            unit_name = player_profile and player_profile.name
+            utilities.clean_table_for_saving(players_table[unit_uuid])
+        end
+    elseif has_go_field(game_session, game_object_id, "breed_id") then
+        local breed_id = go_field(game_session, game_object_id, "breed_id")
         unit_name = NetworkLookup.breed_names[breed_id]
-    elseif GameSession.has_game_object_field(game_session, game_object_id, "pickup_id") then
-        local pickup_id = GameSession.game_object_field(game_session, game_object_id, "pickup_id")
+    elseif has_go_field(game_session, game_object_id, "pickup_id") then
+        local pickup_id = go_field(game_session, game_object_id, "pickup_id")
         unit_name = NetworkLookup.pickup_names[pickup_id]
-    elseif GameSession.has_game_object_field(game_session, game_object_id, "prop_id") then
-        local prop_id = GameSession.game_object_field(game_session, game_object_id, "prop_id")
+    elseif has_go_field(game_session, game_object_id, "prop_id") then
+        local prop_id = go_field(game_session, game_object_id, "prop_id")
 		unit_name = NetworkLookup.level_props_names[prop_id]
     end
-    if GameSession.has_game_object_field(game_session, game_object_id, "health") then
-        max_health = GameSession.game_object_field(game_session, game_object_id, "health")
+    if has_go_field(game_session, game_object_id, "health") then
+        max_health = go_field(game_session, game_object_id, "health")
     end
-    if GameSession.has_game_object_field(game_session, game_object_id, "owner_unit_id") then
-        local owner_unit_id = GameSession.game_object_field(game_session, game_object_id, "owner_unit_id")
+    if has_go_field(game_session, game_object_id, "owner_unit_id") then
+        local owner_unit_id = go_field(game_session, game_object_id, "owner_unit_id")
         owner_unit = unit_spawner_manager:unit(owner_unit_id)
     end
 
@@ -990,9 +996,9 @@ local rpc_set_smart_tag = function (self, channel_id, tag_id, template_name_id, 
     temp_table.time = get_gameplay_time()
     temp_table.event = "set_smart_tag"
     temp_table.tagger_unit_uuid = tagger_unit_uuid
-    temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
+    --temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
     temp_table.target_unit_uuid = target_unit_uuit
-    temp_table.target_unit_position = target_unit and get_position(target_unit)
+    --temp_table.target_unit_position = target_unit and get_position(target_unit)
     temp_table.template_name = template_name
 
     output_table[#output_table+1] = temp_table
@@ -1032,23 +1038,28 @@ local rpc_set_smart_tag_hot_join = function (self, channel_id, tag_id, template_
 		replies[replier_unit_uuid] = reply_name
 	end
 
+    local tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
+    local target_unit_uuid = target_unit and get_unit_uuid(target_unit)
+
     temp_table.time = get_gameplay_time()
     temp_table.event = "set_smart_tag_hot_join"
     temp_table.tag_id = tag_id
-    temp_table.tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
-    temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
-    temp_table.target_unit_uuid = target_unit and get_unit_uuid(target_unit)
-    temp_table.target_unit_position = target_unit and get_position(target_unit)
+    temp_table.tagger_unit_uuid = tagger_unit_uuid
+    --temp_table.tagger_unit_position = tagger_unit and get_position(tagger_unit)
+    temp_table.target_unit_uuid = target_unit_uuid
+    --temp_table.target_unit_position = target_unit and get_position(target_unit)
     temp_table.template_name = template_name
     temp_table.replies = replies
 
     output_table[#output_table+1] = temp_table
 
     local active_smart_tag = {}
-
+    
     active_smart_tag.template_name = template_name
     active_smart_tag.tagger_unit = tagger_unit
+    active_smart_tag.tagger_unit_uuid = tagger_unit_uuid
     active_smart_tag.target_unit = target_unit
+    active_smart_tag.target_unit_uuid = target_unit_uuid
    
     active_smart_tags[tag_id] = active_smart_tag
 end
@@ -1082,19 +1093,22 @@ local rpc_smart_tag_reply = function (self, channel_id, tag_id, replier_game_obj
     local active_smart_tag = active_smart_tags and active_smart_tags[tag_id]
     local replier_unit = managers_state.unit_spawner:unit(replier_game_object_id)
 	local tagger_unit = active_smart_tag and active_smart_tag.tagger_unit
+    local tagger_unit_uuid = active_smart_tag and active_smart_tag.tagger_unit_uuid
     local target_unit = active_smart_tag and active_smart_tag.target_unit
+    local target_unit_uuid = active_smart_tag and active_smart_tag.target_unit_uuid
     local temp_table = {}
 
     temp_table.time = get_gameplay_time()
     temp_table.event = "smart_tag_reply"
     temp_table.tag_id = tag_id
-    temp_table.tagger_unit_uuid = tagger_unit and get_unit_uuid(tagger_unit)
-    temp_table.tagger_unit_position = get_position(tagger_unit)
-    temp_table.target_unit_uuid = target_unit and get_unit_uuid(target_unit)
-    temp_table.target_unit_position = get_position(target_unit)
+
+    temp_table.tagger_unit_uuid = tagger_unit_uuid
+    --temp_table.tagger_unit_position = get_position(tagger_unit)
+    temp_table.target_unit_uuid = target_unit_uuid
+    --temp_table.target_unit_position = get_position(target_unit)
     temp_table.template_name = active_smart_tag and active_smart_tag.template_name
     temp_table.replier_unit_uuid = get_unit_uuid(replier_unit)
-    temp_table.replier_unit_position = get_position(replier_unit)
+    --temp_table.replier_unit_position = get_position(replier_unit)
 
     output_table[#output_table+1] = temp_table
 end
