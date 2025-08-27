@@ -113,6 +113,8 @@ damage_categories["psyker_throwing_knives_aimed"] = "mloc_3_blitz_damage"
 damage_categories["psyker_throwing_knives_aimed_pierce"] = "mloc_3_blitz_damage"
 damage_categories["psyker_throwing_knives_psychic_fortress"] = "mloc_3_blitz_damage"
 damage_categories["zealot_throwing_knives"] = "mloc_3_blitz_damage"
+damage_categories["shockmaul_stun_interval_damage"] = "mloc_5_debuff_damage"
+damage_categories["shockmaul_shield_stun_interval_damage"] = "mloc_5_debuff_damage"
 
 damage_profile_templates = nil
 
