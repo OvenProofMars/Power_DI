@@ -360,5 +360,14 @@ local minion_categories = {
 		display_name = "loc_breed_display_name_renegade_radio_operator",
 		armor_type = "loc_weapon_stats_display_armored",
 	},
+	--renegade_plasma_gunner
+	renegade_plasma_gunner = {
+		attack_type = "loc_contract_task_weapon_type_ranged",
+		faction = "loc_contract_task_enemy_type_traitor",
+		type = "mloc_elite",
+		class = "mloc_gunner",
+		display_name = "loc_breed_display_name_renegade_plasma_gunner",
+		armor_type = "loc_weapon_stats_display_armored",
+	},
 }
  return minion_categories
