@@ -650,24 +650,24 @@ local rpc_health_station_on_socket_spawned = function(self, channel_id, level_un
 
     output_table[#output_table+1] = temp_table
 end
-local rpc_health_station_on_battery_spawned = function(self, channel_id, level_unit_id, battery_id, battery_is_level_unit)
-    local output_table = data_locations.HealthStationSystem()
-    local unit_spawner_manager = managers_state.unit_spawner
-    local health_station_unit = unit_spawner_manager:unit(level_unit_id, true)
-    local battery_unit = unit_spawner_manager:unit(battery_id, battery_is_level_unit)
+-- local rpc_health_station_on_battery_spawned = function(self, channel_id, level_unit_id, battery_id, battery_is_level_unit)
+--     local output_table = data_locations.HealthStationSystem()
+--     local unit_spawner_manager = managers_state.unit_spawner
+--     local health_station_unit = unit_spawner_manager:unit(level_unit_id, true)
+--     local battery_unit = unit_spawner_manager:unit(battery_id, battery_is_level_unit)
    
-    local temp_table ={}
+--     local temp_table ={}
 
-    temp_table.time = get_gameplay_time()
-    temp_table.event = "health_station_on_battery_spawned"
-    temp_table.health_station_unit_uuid = get_unit_uuid(health_station_unit)
-    temp_table.health_station_unit_position = get_position(health_station_unit)
-    temp_table.battery_unit_uuid = get_unit_uuid(battery_unit)
-    temp_table.battery_unit_position = get_position(battery_unit)
+--     temp_table.time = get_gameplay_time()
+--     temp_table.event = "health_station_on_battery_spawned"
+--     temp_table.health_station_unit_uuid = get_unit_uuid(health_station_unit)
+--     temp_table.health_station_unit_position = get_position(health_station_unit)
+--     temp_table.battery_unit_uuid = get_unit_uuid(battery_unit)
+--     temp_table.battery_unit_position = get_position(battery_unit)
 
-    output_table[#output_table+1] = temp_table
+--     output_table[#output_table+1] = temp_table
 
-end
+-- end
 local rpc_health_station_sync_charges = function(self, channel_id, level_unit_id, charge_amount)
     local output_table = data_locations.HealthStationSystem()
     local unit_spawner_manager = managers_state.unit_spawner
@@ -765,20 +765,20 @@ local rpc_servo_skull_set_scanning_active = function (self, channel_id, game_obj
 
     output_table[#output_table+1] = temp_table
 end
-local rpc_minigame_hot_join = function (self, channel_id, unit_id, is_level_unit, state_id)
-    local output_table = data_locations.ServoSkullEvents()
-    local unit_spawner_manager = managers_state.unit_spawner
-	local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
-    local temp_table = {}
+-- local rpc_minigame_hot_join = function (self, channel_id, unit_id, is_level_unit, state_id)
+--     local output_table = data_locations.ServoSkullEvents()
+--     local unit_spawner_manager = managers_state.unit_spawner
+-- 	local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
+--     local temp_table = {}
 
-    temp_table.time = get_gameplay_time()
-    temp_table.event = "minigame_hot_join"
-    temp_table.interactee_unit = get_unit_uuid(interactee_unit)
-    temp_table.interactee_unit_position = get_position(interactee_unit)
-    temp_table.state = NetworkLookup.minigame_states[state_id]
+--     temp_table.time = get_gameplay_time()
+--     temp_table.event = "minigame_hot_join"
+--     temp_table.interactee_unit = get_unit_uuid(interactee_unit)
+--     temp_table.interactee_unit_position = get_position(interactee_unit)
+--     temp_table.state = NetworkLookup.minigame_states[state_id]
 
-    output_table[#output_table+1] = temp_table
-end
+--     output_table[#output_table+1] = temp_table
+-- end
 local rpc_minigame_sync_start = function (self, channel_id, unit_id, is_level_unit)
     local output_table = data_locations.ServoSkullEvents()
     local active_interactions = mod.cache.active_interactions
@@ -1419,7 +1419,7 @@ datasource_templates = {
                 hook_functions = {
                     rpc_health_station_use = rpc_health_station_use,
                     rpc_health_station_on_socket_spawned = rpc_health_station_on_socket_spawned,
-                    rpc_health_station_on_battery_spawned = rpc_health_station_on_battery_spawned,
+                    --rpc_health_station_on_battery_spawned = rpc_health_station_on_battery_spawned,
                     rpc_health_station_sync_charges = rpc_health_station_sync_charges,
                     rpc_health_station_hot_join = rpc_health_station_hot_join,
                 },
@@ -1440,7 +1440,7 @@ datasource_templates = {
             {
                 hook_class = CLASS.MinigameSystem,
                 hook_functions = {
-                    rpc_minigame_hot_join = rpc_minigame_hot_join,
+                    --rpc_minigame_hot_join = rpc_minigame_hot_join,
                     rpc_minigame_sync_start = rpc_minigame_sync_start,
                     rpc_minigame_sync_stop = rpc_minigame_sync_stop,
                     rpc_minigame_sync_completed = rpc_minigame_sync_completed,
