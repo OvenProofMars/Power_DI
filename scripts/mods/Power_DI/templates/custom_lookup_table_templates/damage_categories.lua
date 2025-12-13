@@ -24,6 +24,9 @@ local damage_profile_templates = {
         require("scripts/settings/equipment/weapon_templates/ogryn_pickaxes_2h/settings_templates/ogryn_pickaxe_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/power_mauls/settings_templates/power_maul_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/power_maul_shields/settings_templates/power_maul_shield_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/crowbars/settings_templates/crowbar_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/dual_shivs/settings_templates/dual_shivs_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/saws/settings_templates/saw_damage_profile_templates"),
     },
     ["mloc_2_ranged_weapon_damage"] = {
         require("scripts/settings/equipment/weapon_templates/force_staffs/settings_templates/force_staff_damage_profile_templates"),
@@ -47,6 +50,9 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/tank_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/bolt_pistols/settings_templates/boltpistol_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/shotpistol_shield/settings_templates/shotpistol_shield_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/dual_autopistols/settings_templates/dual_autopistol_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/dual_stub_pistols/settings_templates/dual_stub_pistols_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/needlepistols/settings_templates/needlepistol_damage_profile_templates"),
     },
   ["mloc_3_blitz_damage"] = {
         require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),        
@@ -115,6 +121,17 @@ damage_categories["psyker_throwing_knives_psychic_fortress"] = "mloc_3_blitz_dam
 damage_categories["zealot_throwing_knives"] = "mloc_3_blitz_damage"
 damage_categories["shockmaul_stun_interval_damage"] = "mloc_5_debuff_damage"
 damage_categories["shockmaul_shield_stun_interval_damage"] = "mloc_5_debuff_damage"
+damage_categories["broker_flash_grenade"] = "mloc_3_blitz_damage"
+damage_categories["broker_flash_grenade_close"] = "mloc_3_blitz_damage"
+damage_categories["broker_flash_grenade_impact"] = "mloc_3_blitz_damage"
+damage_categories["broker_missile_launcher_explosion"] = "mloc_3_blitz_damage"
+damage_categories["broker_missile_launcher_explosion_close"] = "mloc_3_blitz_damage"
+damage_categories["broker_missile_launcher_impact"] = "mloc_3_blitz_damage"
+damage_categories["missile_launcher_knockback"] = "mloc_3_blitz_damage"
+damage_categories["broker_punk_rage_shout"] = "mloc_4_combat_ability_damage"
+damage_categories["broker_stimm_field"] = "mloc_4_combat_ability_damage"
+damage_categories["broker_stimm_field_close"] = "mloc_4_combat_ability_damage"
+damage_categories["broker_vultures_mark_aoe_stagger"] = "mloc_3_blitz_damage"
 
 damage_profile_templates = nil
 
