@@ -19,6 +19,8 @@ local DropdownPassTemplates = require("scripts/ui/pass_templates/dropdown_pass_t
 local TextInputPassTemplates = require("scripts/ui/pass_templates/text_input_pass_templates")
 local CustomMultiLineTextInput = mod:io_dofile("Power_DI/scripts/mods/Power_DI/templates/widgets/custom_multi_line_text_input")
 
+local BrokerArchetype = require("scripts/settings/archetype/archetypes/broker_archetype")
+
 local input_manager = Managers.input
 local input_service = input_manager and input_manager:get_input_service("View")
 
@@ -3313,6 +3315,10 @@ ui_manager.close_ui = function()
 end
 --Function to view a player's profile
 ui_manager.view_player_profile = function(player_profile)
+
+    if player_profile and player_profile.archetype and player_profile.archetype.name == "broker" then
+        player_profile.archetype.conditional_base_talent_funcs = BrokerArchetype.conditional_base_talent_funcs
+    end
     
     for _, value in pairs(player_profile.loadout) do
         PDI.utilities.set_master_item_meta_table(value)
