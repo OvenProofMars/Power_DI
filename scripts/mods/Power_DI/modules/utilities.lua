@@ -122,6 +122,11 @@ utilities.get_unit_uuid = function(input_unit)
     end
     local unit_spawner_manager = Managers.state.unit_spawner
     local is_level_unit, level_unit_id = unit_spawner_manager:game_object_id_or_level_index(input_unit)
+
+    if not level_unit_id then
+        return
+    end
+
     local unit = unit_spawner_manager:unit(level_unit_id, is_level_unit)
     local unit_uuid
 
