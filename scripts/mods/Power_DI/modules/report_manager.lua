@@ -129,7 +129,7 @@ local function generate_pivot_table_report_coroutine(template)
     report_output.values_as_rows = {}
     report_output.rows = {}
     report_output.columns = {}
-    report_output.template = table.clone(template)
+    report_output.template = PDI.utilities.copy(template)
 
     local output_data =  report_output.data
 
@@ -355,7 +355,7 @@ local function generate_pivot_table_report_coroutine(template)
         output_table[index] = {}
         output_table = output_table[index]
         output_table.name = field_name
-        output_table.children = table.clone(report_output.rows)
+        output_table.children = PDI.utilities.copy(report_output.rows)
         generate_values_structure(report_output.data, output_table, report_output.columns, field_name)
     end
     PDI.debug("generate_pivot_table_report_coroutine", "values structure end")
@@ -436,7 +436,7 @@ report_manager.get_user_reports = function()
     if not next(user_reports) then
         for _, report_template in pairs(report_manager.registered_reports) do
             local uuid = PDI.utilities.uuid()
-            local user_report_template = table.clone(report_template)
+            local user_report_template = PDI.utilities.copy(report_template)
             if string.sub(report_template.name,1,5) == "mloc_" then
                 user_report_template.name = mod:localize(user_report_template.name)
             end
@@ -451,7 +451,7 @@ end
 
 --Function to get a report template by name--
 report_manager.get_report_template = function(report_name)
-    return table.clone(report_manager.registered_reports[report_name])
+    return PDI.utilities.copy(report_manager.registered_reports[report_name])
 end
 
 --Function to prepare the session data for report data--

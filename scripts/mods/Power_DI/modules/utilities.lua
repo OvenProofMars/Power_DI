@@ -171,7 +171,7 @@ utilities.create_proxy_table = function(input_table)
       __index = function (t,k)
         local item = rawget(input_table,k)
         if item and type(item) == "table" then
-            return table.clone(item)
+            return PDI.utilities.copy(item)
         elseif item then
             return(item)
         else

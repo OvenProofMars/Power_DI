@@ -98,7 +98,7 @@ local function is_widget_visible_horizontal (self, widget, extra_margin)
 end
 --Function to get a modified scrollbar template
 local function get_custom_scrollbar_template()
-    local template = table.clone(ScrollbarPassTemplates.terminal_scrollbar)
+    local template = PDI.utilities.copy(ScrollbarPassTemplates.terminal_scrollbar)
 
     local thumb_pass = template[8]
     thumb_pass.style.idle_color = terminal_green_color
@@ -306,7 +306,7 @@ local function get_custom_text_input_template()
     
         content.last_frame_left_pressed = input_service:get("left_pressed")
     end
-    local template = table.clone(TextInputPassTemplates.terminal_input_field)
+    local template = PDI.utilities.copy(TextInputPassTemplates.terminal_input_field)
 
     template[1].change_function = text_input_hotspot_change_function
 
@@ -2565,7 +2565,7 @@ local function update_grids(dt, t)
 end
 --Function to create a temporary report template
 local function generate_temp_report_template()
-    local temp_report_template = table.clone(user_reports[selected_report_id])
+    local temp_report_template = PDI.utilities.copy(user_reports[selected_report_id])
     local grid_settings = scenegraphs_data.report_rows_order.grids.report_rows_order
     if not grid_settings then
         return temp_report_template
@@ -2690,7 +2690,7 @@ local function handle_changes()
         
         ui_manager.setup_edit_report_settings()
         if load_edit == "edit" and selected_report_id then
-            local template = table.clone(user_reports[selected_report_id])
+            local template = PDI.utilities.copy(user_reports[selected_report_id])
             edit_mode_cache.template = template
             ui_manager.setup_edit_pivot_table()
             edit_pivot_table_functions.create_dataset_field_widgets(template.dataset_name)edit_pivot_table_functions.load_report_template_to_edit(template)
@@ -4264,7 +4264,7 @@ ui_manager.setup_sessions = function()
         local session_id = sessions_index[i]
         local session = sessions_data[session_id]
         if session then
-            session = table.clone(session)
+            session = PDI.utilities.copy(session)
             local item_template = get_item_template()
 
             item_template.passes[1].style.material_values.texture_map  = session.mission.texture_big
@@ -5092,7 +5092,7 @@ ui_manager.setup_report_rows_order = function()
 
         if on_pressed then
             content.cursor_start = Vector3.to_array(cursor)
-            content.widget_start = table.clone(widget.offset)
+            content.widget_start = PDI.utilities.copy(widget.offset)
         end
 
         content.drag_active = on_pressed or content.drag_active and left_hold
@@ -5121,7 +5121,7 @@ ui_manager.setup_report_rows_order = function()
             if math.abs(index_offset) > 0 then
                 change_rows_item_index(widget, grid, index_offset)
                 content.cursor_start = Vector3.to_array(cursor)
-                content.widget_start = table.clone(widget.offset)
+                content.widget_start = PDI.utilities.copy(widget.offset)
             end
         else
             content.cursor_start = nil
@@ -5402,7 +5402,7 @@ ui_manager.setup_pivot_table = function()
             local player_profiles = PDI.data.session_data.datasources.PlayerProfiles
             for player_unit_uuid, profile in pairs(player_profiles) do
                 if profile.character_id == column_name then
-                    player_profile = table.clone(profile)
+                    player_profile = PDI.utilities.copy(profile)
                 end
             end
             column_name = player_profile and player_profile.name or column_name
@@ -6875,7 +6875,7 @@ ui_manager.setup_edit_pivot_table = function()
     end
     edit_pivot_table_functions.get_default_edit_item_size = function()
         local scenegraph = edit_pivot_table_functions.get_scenegraph()
-        return table.clone(scenegraph.values_item.size)
+        return PDI.utilities.copy(scenegraph.values_item.size)
     end
     edit_pivot_table_functions.edit_item_drag_function = function(widget, pass, ui_renderer, ui_style, content, position, size)
         local hotspot = content.hotspot
@@ -6893,7 +6893,7 @@ ui_manager.setup_edit_pivot_table = function()
                 values_grid:force_update_list_size()
             end
             content.cursor_start = Vector3.to_array(cursor)
-            content.widget_start = table.clone(widget.offset)
+            content.widget_start = PDI.utilities.copy(widget.offset)
             edit_pivot_table_functions.change_widget_renderer(widget, "default_renderer")
         end
 
@@ -7019,7 +7019,7 @@ ui_manager.setup_edit_pivot_table = function()
         local new_scenegraph_id = new_expanded_state and "values_item_expanded" or "values_item"
         local scenegraph_settings = scenegraphs_data.edit_pivot_table
         local scenegraph_item = scenegraph_settings.scenegraph[new_scenegraph_id]
-        local new_size = table.clone(scenegraph_item.size)
+        local new_size = PDI.utilities.copy(scenegraph_item.size)
         widget.size = new_size
 
         local scenegraph = edit_pivot_table_functions.get_scenegraph()
@@ -7767,7 +7767,7 @@ ui_manager.setup_edit_pivot_table = function()
     -- for _, widget in ipairs(widgets) do
     --     local scenegraph_id = widget.scenegraph_id
     --     local scenegraph_item = scenegraph[scenegraph_id]
-    --     local scenegraph_item_size = table.clone(scenegraph_item.size)
+    --     local scenegraph_item_size = PDI.utilities.copy(scenegraph_item.size)
     --     widget.content.size = scenegraph_item_size
     -- end
 

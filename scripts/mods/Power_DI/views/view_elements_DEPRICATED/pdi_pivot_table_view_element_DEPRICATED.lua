@@ -1106,7 +1106,7 @@ local function generate_widgets(self)
             if is_player_column then
                 for player_unit_uuid, profile in pairs(player_profiles) do
                     if profile.character_id == column.name then
-                        player_profile = table.clone(profile)
+                        player_profile = PDI.utilities.copy(profile)
                     end
                 end
             end

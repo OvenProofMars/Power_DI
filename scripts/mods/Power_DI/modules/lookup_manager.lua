@@ -55,7 +55,7 @@ end
 
 --Function to add the MasterItems to the lookup table, only triggered after login--
 lookup_manager.add_master_item_lookup_table = function()
-    game_lookup_tables["MasterItems"] = table.clone(master_data_items_cache:get_cached())
+    game_lookup_tables["MasterItems"] = PDI.utilities.copy(master_data_items_cache:get_cached())
     PDI.save_manager.save("game_lookup_tables", game_lookup_tables)
 end
 
