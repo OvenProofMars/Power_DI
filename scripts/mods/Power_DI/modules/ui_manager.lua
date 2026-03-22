@@ -58,7 +58,8 @@ local packages_array = {
     "packages/ui/hud/mission_objective_popup/mission_objective_popup",
     "packages/ui/hud/interaction/interaction",
     "packages/ui/views/main_menu_view/main_menu_view",
-    "packages/ui/views/store_item_detail_view/store_item_detail_view"
+    "packages/ui/views/store_item_detail_view/store_item_detail_view",
+    "packages/ui/hud/mission_objective_feed/mission_objective_feed",
 }
 
 local edit_pivot_table_functions = {}
@@ -4267,7 +4268,9 @@ ui_manager.setup_sessions = function()
             session = table.clone(session)
             local item_template = get_item_template()
 
-            item_template.passes[1].style.material_values.texture_map  = session.mission.texture_big
+            local texture_big = string.gsub(session.mission.texture_big,"content/ui/textures/pj_missions/", "content/ui/textures/missions/")
+
+            item_template.passes[1].style.material_values.texture_map  = texture_big
             local mission_name = Localize(session.mission.mission_name)
             item_template.passes[5].value = mission_name
             item_template.passes[5].style.font_size = font_size * 0.9
@@ -4277,7 +4280,7 @@ ui_manager.setup_sessions = function()
 
             if circumstance then
                 local circumstance_template = circumstance_templates[circumstance]
-                local circumstance_template_ui = circumstance_template.ui
+                local circumstance_template_ui = circumstance_template and circumstance_template.ui
                 if circumstance_template_ui then
                     local display_name = circumstance_template_ui.display_name
                     local icon = circumstance_template_ui.icon

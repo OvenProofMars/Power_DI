@@ -7,9 +7,25 @@ local game_lookup_tables = {
     weapon_trait_templates = table.clone(require("scripts/settings/equipment/weapon_traits/weapon_trait_templates")),
 }
 
+local function clone_table(t)
+	local clone = {}
+
+	for key, value in pairs(t) do
+		if value == t then
+			clone[key] = clone
+		elseif type(value) == "table" then
+			clone[key] = clone_table(value)
+		else
+			clone[key] = value
+		end
+	end
+
+	return clone
+end
+
 for k, v in pairs(NetworkLookup) do
     if type(v) == "table" then
-    game_lookup_tables[k] = table.clone(v)
+    game_lookup_tables[k] = clone_table(v)
     end
 end
 

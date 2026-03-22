@@ -76,9 +76,11 @@ local damage_profile_templates = {
     ["mloc_6_environmental_damage"] = {
         require("scripts/settings/damage/damage_profiles/prop_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/minion_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/trap_damage_profile_templates"),
     },
     ["mloc_7_other_damage"] = {
         require("scripts/settings/damage/damage_profiles/common_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/artillery_damage_profile_templates"),
     },
 }
 
