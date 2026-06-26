@@ -2566,7 +2566,7 @@ local function update_grids(dt, t)
 end
 --Function to create a temporary report template
 local function generate_temp_report_template()
-    local temp_report_template = table.clone(user_reports[selected_report_id])
+    local temp_report_template = PDI.utilities.safe_clone(user_reports[selected_report_id])
     local grid_settings = scenegraphs_data.report_rows_order.grids.report_rows_order
     if not grid_settings then
         return temp_report_template
@@ -2691,7 +2691,7 @@ local function handle_changes()
         
         ui_manager.setup_edit_report_settings()
         if load_edit == "edit" and selected_report_id then
-            local template = table.clone(user_reports[selected_report_id])
+            local template = PDI.utilities.safe_clone(user_reports[selected_report_id])
             edit_mode_cache.template = template
             ui_manager.setup_edit_pivot_table()
             edit_pivot_table_functions.create_dataset_field_widgets(template.dataset_name)edit_pivot_table_functions.load_report_template_to_edit(template)
@@ -4265,7 +4265,7 @@ ui_manager.setup_sessions = function()
         local session_id = sessions_index[i]
         local session = sessions_data[session_id]
         if session then
-            session = table.clone(session)
+            session = PDI.utilities.safe_clone(session)
             local item_template = get_item_template()
 
             local texture_big = string.gsub(session.mission.texture_big,"content/ui/textures/pj_missions/", "content/ui/textures/missions/")
@@ -5405,7 +5405,7 @@ ui_manager.setup_pivot_table = function()
             local player_profiles = PDI.data.session_data.datasources.PlayerProfiles
             for player_unit_uuid, profile in pairs(player_profiles) do
                 if profile.character_id == column_name then
-                    player_profile = table.clone(profile)
+                    player_profile = PDI.utilities.safe_clone(profile)
                 end
             end
             column_name = player_profile and player_profile.name or column_name
