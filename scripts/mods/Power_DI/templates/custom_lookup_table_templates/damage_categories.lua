@@ -10,7 +10,7 @@ local damage_profile_templates = {
         require("scripts/settings/equipment/weapon_templates/combat_knives/settings_templates/combat_knife_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/combat_swords/settings_templates/combatsword_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/force_swords_2h/settings_templates/force_sword_2h_damage_profile_templates"),
-        require("scripts/settings/equipment/weapon_templates/force_swords/settings_templates/force_sword_damage_profile_templates"),        
+        require("scripts/settings/equipment/weapon_templates/force_swords/settings_templates/force_sword_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/ogryn_clubs/settings_templates/ogryn_club_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/ogryn_clubs/settings_templates/ogryn_shovel_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/ogryn_power_mauls/settings_templates/ogryn_power_maul_damage_profile_templates"),
@@ -59,14 +59,12 @@ local damage_profile_templates = {
         require("scripts/settings/equipment/weapon_templates/galvanic_rifle/settings_templates/galvanic_rifle_damage_profile_templates"),
     },
   ["mloc_3_blitz_damage"] = {
-        require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),        
+        require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/smiter_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/psyker_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/zealot_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/veteran_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/ogryn_damage_profile_templates"),
-        require("scripts/settings/damage/damage_profiles/archetypes/cryptic_damage_profile_templates"),
-        require("scripts/settings/equipment/weapon_templates/servo_skull/companion_servo_skull_lasgun_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/demolitions_damage_profile_templates"),
     },
     ["mloc_4_combat_ability_damage"] = {
@@ -75,7 +73,7 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/archetypes/veteran_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/ogryn_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/cryptic_damage_profile_templates"),
-        require("scripts/settings/damage/damage_profiles/archetypes/adamant_damage_profile_templates"),        
+        require("scripts/settings/damage/damage_profiles/archetypes/adamant_damage_profile_templates"),
     },
     ["mloc_5_debuff_damage"] = {
         require("scripts/settings/damage/damage_profiles/buff_damage_profile_templates"),
@@ -89,6 +87,9 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/common_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/artillery_damage_profile_templates"),
     },
+    ["mloc_9_companion"] = {
+        require("scripts/settings/equipment/weapon_templates/servo_skull/companion_servo_skull_lasgun_damage_profile_templates"),
+    }
 }
 
 for category_name, category_array in pairs(damage_profile_templates) do
@@ -141,66 +142,14 @@ damage_categories["broker_punk_rage_shout"] = "mloc_4_combat_ability_damage"
 damage_categories["broker_stimm_field"] = "mloc_4_combat_ability_damage"
 damage_categories["broker_stimm_field_close"] = "mloc_4_combat_ability_damage"
 damage_categories["broker_vultures_mark_aoe_stagger"] = "mloc_3_blitz_damage"
-damage_categories["arc_grenade_impact"] = "mloc_3_blitz_damage"
-damage_categories["arc_grenade_explosion"] = "mloc_3_blitz_damage"
-damage_categories["arc_rifle_p1_m1_damage"] = "mloc_2_ranged_weapon_damage"
-damage_categories["arc_rifle_p1_m1_damage_braced"] = "mloc_2_ranged_weapon_damage"
-damage_categories["arc_rifle_arc_chain_lightning_link_damage"] = "mloc_2_ranged_weapon_damage"
-damage_categories["arc_rifle_arc_chain_lightning_link_damage_brace"] = "mloc_2_ranged_weapon_damage"
-damage_categories["phosphor_pistol_backblast_explosion"] = "mloc_2_ranged_weapon_damage"
-
--- Cryptic
-damage_categories["cryptic_arc_chain_lightning_link_damage"] = "mloc_3_blitz_damage"
-damage_categories["arc_damage_on_melee_hit"] = "mloc_5_debuff_damage"
-damage_categories["cryptic_discharge_shock_damage"] = "mloc_4_combat_ability_damage"
-damage_categories["cryptic_discharge_weapon_shock"] = "mloc_4_combat_ability_damage"
-damage_categories["cryptic_discharge_explosion"] = "mloc_4_combat_ability_damage"
-damage_categories["cryptic_discharge_weapon_malfunction_explosion"] = "mloc_4_combat_ability_damage"
-damage_categories["cryptic_overload_keystone_debuff_explosion"] = "mloc_4_combat_ability_damage"
-damage_categories["cryptic_corruption_resistance_doom_tick"] = "mloc_7_other_damage"
-damage_categories["companion_servo_skull_flamer"] = "mloc_9_companion"
-damage_categories["arc_grenade"] = "mloc_3_blitz_damage"
-damage_categories["arc_grenade_chain_jump_damage"] = "mloc_3_blitz_damage"
-damage_categories["discharge_chain_jump_damage"] = "mloc_3_blitz_damage"
-damage_categories["force_field_chain_jump_damage"] = "mloc_4_combat_ability_damage"
-
--- Shock Maul p3 & Power Sword p3
-damage_categories["powermaul_p3_light_smiter"] = "mloc_1_melee_weapon_damage"
-damage_categories["powermaul_p3_light_smiter_pushfollow"] = "mloc_1_melee_weapon_damage"
-damage_categories["powermaul_p3_light_linesman"] = "mloc_1_melee_weapon_damage"
-damage_categories["powermaul_p3_light_tank"] = "mloc_1_melee_weapon_damage"
-damage_categories["powermaul_p3_heavy_tank"] = "mloc_1_melee_weapon_damage"
-damage_categories["powermaul_p3_heavy_smiter"] = "mloc_1_melee_weapon_damage"
-damage_categories["powermaul_p3_pushfollow_special"] = "mloc_1_melee_weapon_damage"
-damage_categories["powermaul_p3_arc_chain_lightning_link_damage"] = "mloc_1_melee_weapon_damage"
-
-damage_categories["light_sword_linesman_p3"] = "mloc_1_melee_weapon_damage"
-damage_categories["light_sword_linesman_active_p3"] = "mloc_1_melee_weapon_damage"
-damage_categories["light_sword_smiter_p3"] = "mloc_1_melee_weapon_damage"
-damage_categories["light_sword_smiter_active_p3"] = "mloc_1_melee_weapon_damage"
-damage_categories["light_sword_stab_p3"] = "mloc_1_melee_weapon_damage"
-damage_categories["light_sword_stab_active_p3"] = "mloc_1_melee_weapon_damage"
-damage_categories["heavy_sword_linesman_p3"] = "mloc_1_melee_weapon_damage"
-damage_categories["heavy_sword_linesman_active_p3"] = "mloc_1_melee_weapon_damage"
-damage_categories["heavy_sword_smiter_p3"] = "mloc_1_melee_weapon_damage"
-damage_categories["heavy_sword_smiter_active_p3"] = "mloc_1_melee_weapon_damage"
-damage_categories["heavy_sword_stab_p3"] = "mloc_1_melee_weapon_damage"
-damage_categories["heavy_sword_stab_active_p3"] = "mloc_1_melee_weapon_damage"
-
--- Transonic Sword & Knife
-damage_categories["transonic_sword_transonic_knife_light_linesman"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_light_linesman_ap"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_light_ninja"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_light_ninja_ap"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_light_smiter"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_light_smiter_ap"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_heavy_linesman"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_heavy_linesman_ap"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_heavy_double_linesman"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_heavy_smiter_ap"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_heavy_double_smiter_ap"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_special_linesman"] = "mloc_1_melee_weapon_damage"
-damage_categories["transonic_sword_transonic_knife_special_smiter_ap"] = "mloc_1_melee_weapon_damage"
+damage_categories["cryptic_corruption_resistance_doom_tick"] = "mloc_7_other_damage" -- Ablative Wards Talent
+damage_categories["companion_servo_skull_flamer"] = "mloc_4_combat_ability_damage" -- Purgator Servoskull
+damage_categories["cryptic_discharge_shock_damage"] = "mloc_4_combat_ability_damage" -- Voltaic Emitter
+damage_categories["cryptic_discharge_weapon_shock"] = "mloc_4_combat_ability_damage" -- Voltaic Emitter
+damage_categories["discharge_chain_jump_damage"] = "mloc_4_combat_ability_damage"       -- Voltaic Emitter
+damage_categories["cryptic_overload_keystone_debuff_explosion"] = "mloc_7_other_damage" -- Critical Power Overload
+damage_categories["force_field_explosion_damage "] = "mloc_3_blitz_damage" -- Integrated Refration Emitter
+damage_categories["force_field_chain_jump_damage"] = "mloc_3_blitz_damage" -- Integrated Refration Emitter (Voltaic Resistance)
 
 damage_profile_templates = nil
 
