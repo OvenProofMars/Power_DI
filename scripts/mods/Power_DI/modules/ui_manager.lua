@@ -4822,8 +4822,10 @@ ui_manager.setup_reports = function()
         temp_user_reports_array[#temp_user_reports_array+1] = report_template
     end
 
-    table.sort(temp_user_reports_array,function (v1,v2) return v1.name < v2.name end)
-
+    if not next(temp_user_reports_array) == nil then
+        table.sort(temp_user_reports_array,function (v1,v2) return v1.name < v2.name end)
+    end
+    
     local function select_report(widget_index, report_id)
         if report_id == selected_report_id then
             return
