@@ -4809,7 +4809,7 @@ ui_manager.setup_reports = function()
 
     local temp_user_reports_array = {}
 
-    if not next(user_reports) then
+    if next(user_reports) == nil then
         local edit_report_button_widget = widgets_by_name.report_edit
         edit_report_button_widget.visible = false
         local report_title_widget = widgets_by_name.report_title
@@ -4822,9 +4822,7 @@ ui_manager.setup_reports = function()
         temp_user_reports_array[#temp_user_reports_array+1] = report_template
     end
 
-    if not next(temp_user_reports_array) == nil then
-        table.sort(temp_user_reports_array,function (v1,v2) return v1.name < v2.name end)
-    end
+    table.sort(temp_user_reports_array,function (v1,v2) return v1.name < v2.name end)
     
     local function select_report(widget_index, report_id)
         if report_id == selected_report_id then
