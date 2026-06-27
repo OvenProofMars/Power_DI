@@ -10,7 +10,7 @@ local damage_profile_templates = {
         require("scripts/settings/equipment/weapon_templates/combat_knives/settings_templates/combat_knife_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/combat_swords/settings_templates/combatsword_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/force_swords_2h/settings_templates/force_sword_2h_damage_profile_templates"),
-        require("scripts/settings/equipment/weapon_templates/force_swords/settings_templates/force_sword_damage_profile_templates"),        
+        require("scripts/settings/equipment/weapon_templates/force_swords/settings_templates/force_sword_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/ogryn_clubs/settings_templates/ogryn_club_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/ogryn_clubs/settings_templates/ogryn_shovel_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/ogryn_power_mauls/settings_templates/ogryn_power_maul_damage_profile_templates"),
@@ -27,6 +27,7 @@ local damage_profile_templates = {
         require("scripts/settings/equipment/weapon_templates/crowbars/settings_templates/crowbar_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/dual_shivs/settings_templates/dual_shivs_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/saws/settings_templates/saw_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/transonic_sword_transonic_knife/settings_templates/transonic_sword_transonic_knife_damage_profile_templates"),
     },
     ["mloc_2_ranged_weapon_damage"] = {
         require("scripts/settings/equipment/weapon_templates/force_staffs/settings_templates/force_staff_damage_profile_templates"),
@@ -53,9 +54,12 @@ local damage_profile_templates = {
         require("scripts/settings/equipment/weapon_templates/dual_autopistols/settings_templates/dual_autopistol_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/dual_stub_pistols/settings_templates/dual_stub_pistols_damage_profile_templates"),
         require("scripts/settings/equipment/weapon_templates/needlepistols/settings_templates/needlepistol_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/arc_rifle/settings_templates/arc_rifle_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/phosphor_pistol/settings_templates/phosphor_pistol_damage_profile_templates"),
+        require("scripts/settings/equipment/weapon_templates/galvanic_rifle/settings_templates/galvanic_rifle_damage_profile_templates"),
     },
   ["mloc_3_blitz_damage"] = {
-        require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),        
+        require("scripts/settings/damage/damage_profiles/grenade_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/smiter_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/psyker_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/zealot_damage_profile_templates"),
@@ -68,7 +72,8 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/archetypes/zealot_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/veteran_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/archetypes/ogryn_damage_profile_templates"),
-        require("scripts/settings/damage/damage_profiles/archetypes/adamant_damage_profile_templates"),        
+        require("scripts/settings/damage/damage_profiles/archetypes/cryptic_damage_profile_templates"),
+        require("scripts/settings/damage/damage_profiles/archetypes/adamant_damage_profile_templates"),
     },
     ["mloc_5_debuff_damage"] = {
         require("scripts/settings/damage/damage_profiles/buff_damage_profile_templates"),
@@ -82,6 +87,9 @@ local damage_profile_templates = {
         require("scripts/settings/damage/damage_profiles/common_damage_profile_templates"),
         require("scripts/settings/damage/damage_profiles/artillery_damage_profile_templates"),
     },
+    ["mloc_9_companion"] = {
+        require("scripts/settings/equipment/weapon_templates/servo_skull/companion_servo_skull_lasgun_damage_profile_templates"),
+    }
 }
 
 for category_name, category_array in pairs(damage_profile_templates) do
@@ -134,6 +142,14 @@ damage_categories["broker_punk_rage_shout"] = "mloc_4_combat_ability_damage"
 damage_categories["broker_stimm_field"] = "mloc_4_combat_ability_damage"
 damage_categories["broker_stimm_field_close"] = "mloc_4_combat_ability_damage"
 damage_categories["broker_vultures_mark_aoe_stagger"] = "mloc_3_blitz_damage"
+damage_categories["cryptic_corruption_resistance_doom_tick"] = "mloc_7_other_damage" -- Ablative Wards Talent
+damage_categories["companion_servo_skull_flamer"] = "mloc_4_combat_ability_damage" -- Purgator Servoskull
+damage_categories["cryptic_discharge_shock_damage"] = "mloc_4_combat_ability_damage" -- Voltaic Emitter
+damage_categories["cryptic_discharge_weapon_shock"] = "mloc_4_combat_ability_damage" -- Voltaic Emitter
+damage_categories["discharge_chain_jump_damage"] = "mloc_4_combat_ability_damage"       -- Voltaic Emitter
+damage_categories["cryptic_overload_keystone_debuff_explosion"] = "mloc_7_other_damage" -- Critical Power Overload
+damage_categories["force_field_explosion_damage "] = "mloc_3_blitz_damage" -- Integrated Refration Emitter
+damage_categories["force_field_chain_jump_damage"] = "mloc_3_blitz_damage" -- Integrated Refration Emitter (Voltaic Resistance)
 
 damage_profile_templates = nil
 

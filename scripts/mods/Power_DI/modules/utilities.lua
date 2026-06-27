@@ -101,10 +101,35 @@ utilities.copy = function(input_table)
     return DMF.deepcopy(input_table)
 end
 
+-- Function to safely clone a table, even if it has metatables.
+-- It will NOT copy the metatable itself.
+utilities.safe_clone = function(t, coroutine_yield, strip_functions)
+    if type(t) ~= "table" then
+        return t
+    end
+    local clone = {}
+    for k, v in pairs(t) do
+        if coroutine_yield and PDI.coroutine_manager.must_yield() then
+            coroutine:yield()
+        end
+
+        local v_type = type(v)
+        if v_type == "table" then
+            clone[k] = utilities.safe_clone(v, coroutine_yield, strip_functions)
+        elseif strip_functions and (v_type == "function" or v_type == "userdata" or v_type == "thread") then
+            -- Skip non-serializable types
+        else
+            clone[k] = v
+        end
+    end
+    return clone
+end
+
 --Function to create a JSON dump of a table--
 utilities.dump = function(input_table, filename)
     local path = filename..".json"
-    local output_string = cjson.encode(input_table)
+    local safe_table = utilities.safe_clone(input_table, false, true)
+    local output_string = cjson.encode(safe_table)
     local file = Mods.lua.io.open(path, "w+")
     file:write(output_string)
     file:close()    
@@ -171,7 +196,7 @@ utilities.create_proxy_table = function(input_table)
       __index = function (t,k)
         local item = rawget(input_table,k)
         if item and type(item) == "table" then
-            return table.clone(item)
+            return utilities.safe_clone(item)
         elseif item then
             return(item)
         else
@@ -205,7 +230,8 @@ end
 
 --Function to hash a table, uses MD5--
 utilities.hash = function(input_table)
-    local json_string = cjson.encode(input_table)
+    local safe_table = utilities.safe_clone(input_table, false, true)
+    local json_string = cjson.encode(safe_table)
     local hash = MD5.sumhexa(json_string)
     return hash
 end

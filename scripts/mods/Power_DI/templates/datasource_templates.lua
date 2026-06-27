@@ -84,11 +84,11 @@ local rpc_player_suppressed = function (self, channel_id, unit_id, num_suppressi
 
     output_table[#output_table+1] = temp_table
 end
-local rpc_interaction_started = function (self, channel_id, unit_id, is_level_unit, game_object_id)
+local rpc_interaction_started = function (self, channel_id, unit_id, is_level_unit, interactor_game_object_id)
     local output_table = data_locations.InteracteeSystem()
     local active_interactions = mod.cache.active_interactions
     local unit_spawner_manager = managers_state.unit_spawner
-    local interactor_unit = unit_spawner_manager:unit(game_object_id, false)
+    local interactor_unit = unit_spawner_manager:unit(interactor_game_object_id, false)
     local interactee_unit = unit_spawner_manager:unit(unit_id, is_level_unit)
     local extension = self._unit_to_extension_map[interactee_unit]
     local interaction_type = extension:interaction_type()
@@ -108,7 +108,7 @@ local rpc_interaction_started = function (self, channel_id, unit_id, is_level_un
 
     output_table[#output_table+1] = temp_table
 end
-local rpc_interaction_stopped = function (self, channel_id, unit_id, is_level_unit, result)
+local rpc_interaction_stopped = function (self, channel_id, unit_id, is_level_unit, interactor_game_object_id, result)
     local output_table = data_locations.InteracteeSystem()
     local active_interactions = mod.cache.active_interactions
     local unit_spawner_manager = managers_state.unit_spawner
@@ -128,7 +128,7 @@ local rpc_interaction_stopped = function (self, channel_id, unit_id, is_level_un
     temp_table.interactor_unit_position = get_position(interactor_unit)
     temp_table.interactee_unit_uuid = get_unit_uuid(interactee_unit)
     temp_table.interactee_unit_position = get_position(interactee_unit)
-    temp_table.is_level_unit = self._is_level_unit
+    temp_table.is_level_unit = is_level_unit
     temp_table.result = NetworkLookup.interaction_result[result]
 
     output_table[#output_table+1] = temp_table
@@ -288,35 +288,37 @@ local rpc_remove_buff = function(self, channel_id, game_object_id, server_index)
 
     output_table[#output_table+1] = temp_table
 end
-local rpc_buff_proc_set_active_time = function(self, channel_id, game_object_id, server_index, activation_frame)
+local rpc_buff_batched_proc_set_active_time = function(self, channel_id, game_object_id, server_index_array, activation_frame)
     local class_name = self.__class_name
     local output_table = buff_data_location_lookup(class_name)
     local buff_lookup_table = mod.cache.buffs
     local unit_spawner_manager = managers_state.unit_spawner
     local unit = unit_spawner_manager:unit(game_object_id)
     local unit_uuid = get_unit_uuid(unit)
-    local server_index_uuid = unit_uuid.."_"..server_index
-    local buff_lookup = buff_lookup_table[server_index_uuid]
 
-    if not buff_lookup then
-        return
+    for i = 1, #server_index_array do
+        local server_index = server_index_array[i]
+        local server_index_uuid = unit_uuid.."_"..server_index
+        local buff_lookup = buff_lookup_table[server_index_uuid]
+
+        if buff_lookup then
+            local temp_table = {}
+
+            temp_table.event = "buff_proc_set_active_time"
+            temp_table.unit_uuid = unit_uuid
+            temp_table.unit_position = get_position(unit)
+            temp_table.time = get_gameplay_time()
+            
+            temp_table.buff_template_id = buff_lookup.buff_template_id
+            temp_table.optional_lerp_value = buff_lookup.optional_lerp_value
+            temp_table.optional_parent_buff_id = buff_lookup.optional_parent_buff_template_id
+            temp_table.optional_item_slot_id = buff_lookup.optional_item_slot_id
+            temp_table.from_specialization = buff_lookup.from_specialization
+            temp_table.activation_frame = activation_frame
+
+            output_table[#output_table+1] = temp_table
+        end
     end
-
-    local temp_table = {}
-
-    temp_table.event = "buff_proc_set_active_time"
-    temp_table.unit_uuid = unit_uuid
-    temp_table.unit_position = get_position(unit)
-    temp_table.time = get_gameplay_time()
-    
-    temp_table.buff_template_id = buff_lookup.buff_template_id
-    temp_table.optional_lerp_value = buff_lookup.optional_lerp_value
-    temp_table.optional_parent_buff_id = buff_lookup.optional_parent_buff_template_id
-    temp_table.optional_item_slot_id = buff_lookup.optional_item_slot_id
-    temp_table.from_specialization = buff_lookup.from_specialization
-    temp_table.activation_frame = activation_frame
-
-    output_table[#output_table+1] = temp_table
 end
 local rpc_buff_set_start_time = function(self, channel_id, game_object_id, server_index, activation_frame)
     local class_name = self.__class_name
@@ -1297,7 +1299,7 @@ datasource_templates = {
                     rpc_add_buff = rpc_add_buff,
                     rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
                     rpc_remove_buff = rpc_remove_buff,
-                    rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
+                    rpc_buff_batched_proc_set_active_time = rpc_buff_batched_proc_set_active_time,
                     rpc_buff_set_start_time = rpc_buff_set_start_time,
                 },
             },
@@ -1306,7 +1308,7 @@ datasource_templates = {
                 hook_functions = {
                     rpc_add_buff = rpc_add_buff,
                     rpc_remove_buff = rpc_remove_buff,
-                    rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
+                    rpc_buff_batched_proc_set_active_time = rpc_buff_batched_proc_set_active_time,
                     rpc_buff_set_start_time = rpc_buff_set_start_time,
                 },
             },
@@ -1320,7 +1322,7 @@ datasource_templates = {
                     rpc_add_buff = rpc_add_buff,
                     rpc_add_buff_with_stacks = rpc_add_buff_with_stacks,
                     rpc_remove_buff = rpc_remove_buff,
-                    rpc_buff_proc_set_active_time = rpc_buff_proc_set_active_time,
+                    rpc_buff_batched_proc_set_active_time = rpc_buff_batched_proc_set_active_time,
                     rpc_buff_set_start_time = rpc_buff_set_start_time,
                 },
             },
